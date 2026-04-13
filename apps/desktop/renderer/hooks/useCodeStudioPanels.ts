@@ -13,7 +13,7 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 import { streamChat, type ChatMsg } from "@/lib/ai-providers";
 import type { AgentRole } from "@/lib/code-studio/ai/agents";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import type { CanvasNode, CanvasConnection } from "@/components/code-studio/CanvasPanel";
 import type { SymbolEntry } from "@/components/code-studio/SymbolPalette";
 import type { AIFeature } from "@/components/code-studio/AIHub";

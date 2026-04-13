@@ -1,5 +1,5 @@
 /**
- * @eh/quill-engine — public API
+ * @noa/quill-engine — public API
  *
  * Pure-TS verification engine. NO Node API imports allowed
  * (no `fs`, `child_process`, `path`, `os`). Callers inject IO.
@@ -9,7 +9,7 @@
  *   - packages/quill-cli (CLI binary)
  *   - apps/desktop/renderer (browser, optional lightweight scans)
  *
- * PART 1 — Type re-exports from @eh/shared-types
+ * PART 1 — Type re-exports from @noa/shared-types
  * PART 2 — Core verification surface
  * PART 3 — Detector registry + rule catalog
  * PART 4 — runVerify() — single high-level entry for hosts
@@ -32,7 +32,7 @@ export type {
   ScopeLevel,
   ScopePolicy,
   ARIState,
-} from '@eh/shared-types';
+} from '@noa/shared-types';
 
 // ============================================================
 // PART 2 — Core engine surface

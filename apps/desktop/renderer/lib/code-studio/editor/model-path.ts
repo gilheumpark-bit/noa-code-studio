@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 export function findFilePathById(
   nodes: FileNode[],

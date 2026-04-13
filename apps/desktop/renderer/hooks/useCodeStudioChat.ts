@@ -22,7 +22,7 @@ import {
 import { DESIGN_SYSTEM_MINIMAL } from '@/lib/code-studio/core/design-system-spec';
 import { extractPhysicalConstraints, buildConstraintInjection, type IntentConstraints } from '@/lib/code-studio/ai/intent-parser';
 import { logger } from '@/lib/logger';
-import type { FileNode } from '@eh/quill-engine/types';
+import type { FileNode } from '@noa/quill-engine/types';
 
 export interface ChatMessage {
   id: string;

@@ -42,11 +42,11 @@ import {
   Network, ShieldCheck, Gavel, BarChart3, Download, Copy,
   Play, Square, Clock,
 } from "lucide-react";
-import type { TeamResult, Finding } from "@eh/quill-engine/pipeline/pipeline-teams";
+import type { TeamResult, Finding } from "@noa/quill-engine/pipeline/pipeline-teams";
 import { useLang } from "@/lib/LangContext";
 import { createT } from "@/lib/i18n";
-import type { AppLanguage } from "@eh/shared-types";
-import { generateReport } from "@eh/quill-engine/pipeline/pipeline-utils";
+import type { AppLanguage } from "@noa/shared-types";
+import { generateReport } from "@noa/quill-engine/pipeline/pipeline-utils";
 
 // ============================================================
 // PART 1-B — Progress Streaming Types

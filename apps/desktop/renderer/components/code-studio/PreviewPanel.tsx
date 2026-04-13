@@ -42,7 +42,7 @@ import {
   type WebContainerInstance,
 } from "@/lib/code-studio/features/webcontainer";
 import { createHMRBridge, type HMRBridge, type HMREvent } from "@/lib/code-studio/features/preview-hmr";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import { useCodeStudioT } from "@/lib/use-code-studio-translations";
 
 type PreviewState = "idle" | "booting" | "installing" | "starting" | "ready" | "error";

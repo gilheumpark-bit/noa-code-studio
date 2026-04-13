@@ -1,7 +1,7 @@
 import type { Config } from 'jest';
 
 const sharedMapper: Record<string, string> = {
-  '^@eh/quill-engine/(.*)$': '<rootDir>/../../packages/quill-engine/src/$1',
+  '^@noa/quill-engine/(.*)$': '<rootDir>/../../packages/quill-engine/src/$1',
   '^@/lib/code-studio/pipeline/(.*)$': '<rootDir>/../../packages/quill-engine/src/pipeline/$1',
   '^firebase/firestore$': '<rootDir>/renderer/test-utils/mocks/firebase-firestore.js',
   '^firebase/auth$': '<rootDir>/renderer/test-utils/mocks/firebase-auth.js',

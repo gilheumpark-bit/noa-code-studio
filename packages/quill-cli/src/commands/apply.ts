@@ -107,7 +107,7 @@ export async function runApply(file: string | undefined, opts: ApplyOptions): Pr
     if (existsSync(targetPath)) {
       try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { runDiffGuard } = require('@eh/quill-engine/pipeline/diff-guard');
+        const { runDiffGuard } = require('@noa/quill-engine/pipeline/diff-guard');
         const original = readFileSync(targetPath, 'utf-8');
         const decision = runDiffGuard({
           original,

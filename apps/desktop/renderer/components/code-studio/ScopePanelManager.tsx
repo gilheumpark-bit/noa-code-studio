@@ -22,16 +22,16 @@ import {
 } from "lucide-react";
 import { L4 } from "@/lib/i18n";
 import { useLang } from "@/lib/LangContext";
-import type { FileNode, OpenFile } from "@eh/quill-engine/types";
+import type { FileNode, OpenFile } from "@noa/quill-engine/types";
 import type { RightPanel } from "@/lib/code-studio/core/panel-registry";
 import { getVisiblePanels } from "@/lib/code-studio/core/panel-registry";
-import type { BugReport } from "@eh/quill-engine/pipeline/bugfinder";
-import type { StressReport } from "@eh/quill-engine/pipeline/stress-test";
-import type { VerificationResult } from "@eh/quill-engine/pipeline/verification-loop";
+import type { BugReport } from "@noa/quill-engine/pipeline/bugfinder";
+import type { StressReport } from "@noa/quill-engine/pipeline/stress-test";
+import type { VerificationResult } from "@noa/quill-engine/pipeline/verification-loop";
 import type { ComposerMode } from "@/lib/code-studio/core/composer-state";
 import type { useCodeStudioPanels } from "@/hooks/useCodeStudioPanels";
 import * as PI from "@/components/code-studio/PanelImports";
-import { detectLanguage } from "@eh/quill-engine/types";
+import { detectLanguage } from "@noa/quill-engine/types";
 import { saveProjectSpec } from "@/lib/code-studio/core/project-spec";
 import {
   CODE_STUDIO_SPEC_CHAT_SEED_KEY,
@@ -41,7 +41,7 @@ import {
 } from "@/lib/code-studio/core/project-spec-bridge";
 import { explainCode, lintCode, generateDocstring } from "@/lib/code-studio/ai/ai-features";
 import { runApplyGuard } from "@/lib/code-studio/diff-guard/apply-guard";
-import type { Finding } from "@eh/quill-engine/pipeline/pipeline-teams";
+import type { Finding } from "@noa/quill-engine/pipeline/pipeline-teams";
 
 function findFileNodeByName(nodes: FileNode[], name: string): FileNode | null {
   const basename = name.includes("/") ? name.split("/").pop() : name;
@@ -139,7 +139,7 @@ export interface ScopePanelManagerProps {
   onOverrideFile: (fileName: string) => void;
   onRejectFile: (fileName: string) => void;
   stagedFiles: Record<string, string>;
-  guardFindingsByFile: Record<string, import("@eh/quill-engine/pipeline/pipeline-teams").Finding[]>;
+  guardFindingsByFile: Record<string, import("@noa/quill-engine/pipeline/pipeline-teams").Finding[]>;
   onSetFiles: React.Dispatch<React.SetStateAction<FileNode[]>>;
   handleRunStressTest: () => void;
   handleRunVerification: () => void;

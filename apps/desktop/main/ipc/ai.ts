@@ -16,7 +16,7 @@
 import { ipcMain, type WebContents } from 'electron';
 import { randomUUID, createHash } from 'node:crypto';
 
-import type { AIProvider, AIChatRequest, ARIState } from '@eh/shared-types';
+import type { AIProvider, AIChatRequest, ARIState } from '@noa/shared-types';
 import { getKey } from './keystore';
 import { handleAiChatRequest, type ChatRequest } from '../services/ai-service';
 

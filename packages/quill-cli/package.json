@@ -1,8 +1,8 @@
 {
-  "name": "@eh/quill-cli",
-  "version": "0.1.0",
+  "name": "@noa/quill-cli",
+  "version": "0.2.0-beta",
   "private": true,
-  "description": "EH Code Studio CLI — `cs` command",
+  "description": "NOA Code Studio CLI — `cs verify`, `cs suggest`, `cs audit`",
   "main": "./dist/index.js",
   "bin": {
     "cs": "./dist/bin/cs.js"
@@ -13,8 +13,8 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@eh/quill-engine": "workspace:*",
-    "@eh/shared-types": "workspace:*",
+    "@noa/quill-engine": "workspace:*",
+    "@noa/shared-types": "workspace:*",
     "commander": "^12.1.0"
   },
   "devDependencies": {

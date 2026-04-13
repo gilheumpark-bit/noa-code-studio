@@ -9,7 +9,7 @@ import { useState, useCallback } from "react";
 import {
   X, Loader2, BarChart3, TrendingUp, Shield, Wrench, Maximize2, Trophy,
 } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 interface EvalScore {
   overall: number;

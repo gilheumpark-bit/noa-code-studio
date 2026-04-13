@@ -5,12 +5,12 @@
 // Full flow: verify -> fix -> re-verify -> stage -> apply -> rollback
 // Tests multiple modules working together.
 
-import type { PipelineResult, PipelineStage } from '@eh/quill-engine/pipeline/pipeline';
-import type { BugReport } from '@eh/quill-engine/pipeline/bugfinder';
-import type { FixSuggestion } from '@eh/quill-engine/pipeline/pipeline-utils';
+import type { PipelineResult, PipelineStage } from '@noa/quill-engine/pipeline/pipeline';
+import type { BugReport } from '@noa/quill-engine/pipeline/bugfinder';
+import type { FixSuggestion } from '@noa/quill-engine/pipeline/pipeline-utils';
 import {
   runVerificationLoop,
-} from '@eh/quill-engine/pipeline/verification-loop';
+} from '@noa/quill-engine/pipeline/verification-loop';
 import {
   canTransition,
   createModeTransition,

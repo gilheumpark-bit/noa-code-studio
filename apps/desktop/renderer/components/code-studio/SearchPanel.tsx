@@ -8,12 +8,12 @@
 import { useState, useMemo, useCallback, useRef, useDeferredValue } from "react";
 import { useLang } from "@/lib/LangContext";
 import { L4, createT } from "@/lib/i18n";
-import type { AppLanguage } from "@eh/shared-types";
+import type { AppLanguage } from "@noa/shared-types";
 import {
   Search, X, FileCode, ChevronDown, ChevronRight,
   Replace, History, Filter,
 } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 const FILE_TYPE_FILTERS = [
   { label: "All Files", value: "" },

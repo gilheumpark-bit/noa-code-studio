@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { L4 } from "@/lib/i18n";
-import type { StressReport } from "@eh/quill-engine/pipeline/stress-test";
-import type { VerificationResult } from "@eh/quill-engine/pipeline/verification-loop";
+import type { StressReport } from "@noa/quill-engine/pipeline/stress-test";
+import type { VerificationResult } from "@noa/quill-engine/pipeline/verification-loop";
 
 interface TeamProgress {
   name: string;

@@ -40,7 +40,7 @@ import {
   Save,
   FileText,
 } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import {
   type DeployPanelProps,
   type DeployStep,

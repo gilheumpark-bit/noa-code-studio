@@ -7,7 +7,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { Terminal as TerminalIcon, Loader2 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { createT } from "@/lib/i18n";
-import type { AppLanguage } from "@eh/shared-types";
+import type { AppLanguage } from "@noa/shared-types";
 import "@xterm/xterm/css/xterm.css";
 
 // ============================================================

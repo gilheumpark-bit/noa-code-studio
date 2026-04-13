@@ -9,13 +9,13 @@
 export { runHarnessLoop, errorsToPrompt, type HarnessResult, type HarnessConfig, type ParsedError } from './build-test-loop';
 
 // AST Hollow Scanner (Gate 1 Backend)
-export { scanForHollowCode, scanProjectForHollowCode, type HollowCodeFinding } from '@eh/quill-engine/pipeline/ast-hollow-scanner';
+export { scanForHollowCode, scanProjectForHollowCode, type HollowCodeFinding } from '@noa/quill-engine/pipeline/ast-hollow-scanner';
 
 // Frontend Gate 1: 5-State + Dead DOM
-export { runFrontendGate1, scan5States, scanDeadDOM, type FrontendGateFinding } from '@eh/quill-engine/pipeline/frontend-gate1';
+export { runFrontendGate1, scan5States, scanDeadDOM, type FrontendGateFinding } from '@noa/quill-engine/pipeline/frontend-gate1';
 
 // Frontend Gate 2: Design Token Linter
-export { runFrontendGate2, scanDesignTokens, type DesignTokenFinding } from '@eh/quill-engine/pipeline/frontend-gate2';
+export { runFrontendGate2, scanDesignTokens, type DesignTokenFinding } from '@noa/quill-engine/pipeline/frontend-gate2';
 
 // Adversarial Core (Spy + Fuzz + Mutation)
 export { analyzeSpyPatterns, generateFuzzInputs, extractFunctionParams, analyzeFuzzVulnerabilities, generateMutations, buildHarnessFeedback, type HarnessFeedback, type GateResult, type SpyReport, type FuzzResult } from './adversarial-core';
@@ -27,7 +27,7 @@ export { runHeadlessFirst, buildSkeletonPrompt, buildDesignPrompt, type Headless
 export { runSpyTest, runFuzzTest, runMutationTest, runVisualTest, runDynamicSuite, type DynamicTestResult } from './dynamic-executor';
 
 // Good Pattern Detector (양품 패턴 탐지 — false-positive 억제 + 점수 가산)
-export { detectGoodPatterns, suppressFindings, downgradeFindings, type DetectedGoodPattern, type GoodPatternReport } from '@eh/quill-engine/pipeline/good-pattern-detector';
+export { detectGoodPatterns, suppressFindings, downgradeFindings, type DetectedGoodPattern, type GoodPatternReport } from '@noa/quill-engine/pipeline/good-pattern-detector';
 
 // ============================================================
 // Master Harness — Fail-Fast 단일 진입점
@@ -47,7 +47,7 @@ export interface MasterHarnessResult {
   feedback?: HarnessFeedback;
   totalDurationMs: number;
   /** 양품 패턴 탐지 결과 (good-pattern-catalog 기반) */
-  goodPatterns?: import('@eh/quill-engine/pipeline/good-pattern-detector').GoodPatternReport;
+  goodPatterns?: import('@noa/quill-engine/pipeline/good-pattern-detector').GoodPatternReport;
 }
 
 /**
@@ -73,7 +73,7 @@ export async function runMasterHarness(
   const opts = { entryFunction: 'main', language: 'typescript', ...options };
 
   // ── Gate 1: AST 정적 스캔 (0.1초 — 빈깡통/pass/TODO 사냥) ──
-  const { scanForHollowCode } = await import('@eh/quill-engine/pipeline/ast-hollow-scanner');
+  const { scanForHollowCode } = await import('@noa/quill-engine/pipeline/ast-hollow-scanner');
   const hollowFindings = scanForHollowCode(code, opts.entryFunction);
   const hollowErrors = hollowFindings.filter(f => f.severity === 'error');
   const gate1: GateResult = {
@@ -97,8 +97,8 @@ export async function runMasterHarness(
 
   // ── Gate 2: Frontend 정적 검사 (0.2초 — 5-State/DeadDOM/디자인토큰) ──
   const gate2Start = Date.now();
-  const { runFrontendGate1 } = await import('@eh/quill-engine/pipeline/frontend-gate1');
-  const { scanDesignTokens } = await import('@eh/quill-engine/pipeline/frontend-gate2');
+  const { runFrontendGate1 } = await import('@noa/quill-engine/pipeline/frontend-gate1');
+  const { scanDesignTokens } = await import('@noa/quill-engine/pipeline/frontend-gate2');
   const fg1 = runFrontendGate1(code, opts.language);
   const fg2 = scanDesignTokens(code);
   const fg1Errors = fg1.findings.filter(f => f.severity === 'error');
@@ -179,7 +179,7 @@ export async function runMasterHarness(
   }
 
   // ── Good Pattern Detection — 양품 패턴으로 finding 억제 + 점수 보정 ──
-  const { detectGoodPatterns, downgradeFindings: downgrade } = await import('@eh/quill-engine/pipeline/good-pattern-detector');
+  const { detectGoodPatterns, downgradeFindings: downgrade } = await import('@noa/quill-engine/pipeline/good-pattern-detector');
   const goodReport = detectGoodPatterns(code);
 
   // 양품 패턴이 탐지되면 각 게이트 findings를 다운그레이드

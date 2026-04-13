@@ -10,8 +10,8 @@
 // ============================================================
 
 import { useState, useCallback, useRef } from 'react';
-import type { FileNode } from '@eh/quill-engine/types';
-import { detectLanguage } from '@eh/quill-engine/types';
+import type { FileNode } from '@noa/quill-engine/types';
+import { detectLanguage } from '@noa/quill-engine/types';
 import { saveFileTree, loadFileTree } from '@/lib/code-studio/core/store';
 
 interface UseCodeStudioFileSystemReturn {

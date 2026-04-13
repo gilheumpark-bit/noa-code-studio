@@ -5,12 +5,12 @@
  *         no-fixes stop, max iterations, safe fix filtering, onProgress callback
  */
 
-import { runVerificationLoop, type VerificationConfig } from '@eh/quill-engine/pipeline/verification-loop';
-import type { PipelineResult, PipelineStage } from '@eh/quill-engine/pipeline/pipeline';
-import type { BugReport } from '@eh/quill-engine/pipeline/bugfinder';
-import type { FixSuggestion } from '@eh/quill-engine/pipeline/pipeline-utils';
-import type { StressReport } from '@eh/quill-engine/pipeline/stress-test';
-import type { IPReport } from '@eh/quill-engine/patent-scanner';
+import { runVerificationLoop, type VerificationConfig } from '@noa/quill-engine/pipeline/verification-loop';
+import type { PipelineResult, PipelineStage } from '@noa/quill-engine/pipeline/pipeline';
+import type { BugReport } from '@noa/quill-engine/pipeline/bugfinder';
+import type { FixSuggestion } from '@noa/quill-engine/pipeline/pipeline-utils';
+import type { StressReport } from '@noa/quill-engine/pipeline/stress-test';
+import type { IPReport } from '@noa/quill-engine/patent-scanner';
 import type { FileNode } from '@/lib/code-studio/core/types';
 
 // ============================================================
@@ -23,19 +23,19 @@ const mockGenerateFixes = jest.fn<FixSuggestion[], [unknown, unknown]>();
 const mockRunStressReport = jest.fn<Promise<StressReport>, [string, string]>();
 const mockScanProject = jest.fn<IPReport, [FileNode[]]>();
 
-jest.mock('@eh/quill-engine/pipeline/pipeline', () => ({
+jest.mock('@noa/quill-engine/pipeline/pipeline', () => ({
   runStaticPipeline: (...args: unknown[]) => mockRunStaticPipeline(...(args as [string, string])),
 }));
-jest.mock('@eh/quill-engine/pipeline/bugfinder', () => ({
+jest.mock('@noa/quill-engine/pipeline/bugfinder', () => ({
   findBugsStatic: (...args: unknown[]) => mockFindBugsStatic(...(args as [string, string])),
 }));
-jest.mock('@eh/quill-engine/pipeline/pipeline-utils', () => ({
+jest.mock('@noa/quill-engine/pipeline/pipeline-utils', () => ({
   generateFixes: (...args: unknown[]) => mockGenerateFixes(...(args as [unknown, unknown])),
 }));
-jest.mock('@eh/quill-engine/pipeline/stress-test', () => ({
+jest.mock('@noa/quill-engine/pipeline/stress-test', () => ({
   runStressReport: (...args: unknown[]) => mockRunStressReport(...(args as [string, string])),
 }));
-jest.mock('@eh/quill-engine/patent-scanner', () => ({
+jest.mock('@noa/quill-engine/patent-scanner', () => ({
   scanProject: (...args: unknown[]) => mockScanProject(...(args as [FileNode[]])),
 }));
 

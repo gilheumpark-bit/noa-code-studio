@@ -1,8 +1,8 @@
 {
-  "name": "@eh/quill-engine",
-  "version": "0.1.0",
+  "name": "@noa/quill-engine",
+  "version": "0.2.0-beta",
   "private": true,
-  "description": "EH Code Studio verification engine — pure TS, no Node API deps",
+  "description": "NOA Code Studio verification engine — 228 detectors, 8-team pipeline, pure TS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.29.2",
-    "@eh/shared-types": "workspace:*",
+    "@noa/shared-types": "workspace:*",
     "acorn": "^8.16.0",
     "esquery": "^1.7.0"
   },

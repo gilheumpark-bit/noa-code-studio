@@ -12,20 +12,20 @@ import {
   Files, Plus, FileText, FolderOpen, Folder,
   Edit3, Trash2, Loader2,
 } from "lucide-react";
-import type { FileNode, OpenFile, CodeStudioSettings } from "@eh/quill-engine/types";
-import { DEFAULT_SETTINGS, detectLanguage, fileIconColor } from "@eh/quill-engine/types";
+import type { FileNode, OpenFile, CodeStudioSettings } from "@noa/quill-engine/types";
+import { DEFAULT_SETTINGS, detectLanguage, fileIconColor } from "@noa/quill-engine/types";
 import { saveSettings, loadSettings, listProjects, switchProject } from "@/lib/code-studio/core/store";
-import { runStaticPipeline } from "@eh/quill-engine/pipeline/pipeline";
-import { findBugsStatic, type BugReport } from "@eh/quill-engine/pipeline/bugfinder";
-import { runStressReport, type StressReport } from "@eh/quill-engine/pipeline/stress-test";
-import { runVerificationLoop, type VerificationResult } from "@eh/quill-engine/pipeline/verification-loop";
-import { parseErrors } from "@eh/quill-engine/pipeline/error-parser";
-import type { Finding } from "@eh/quill-engine/pipeline/pipeline-teams";
+import { runStaticPipeline } from "@noa/quill-engine/pipeline/pipeline";
+import { findBugsStatic, type BugReport } from "@noa/quill-engine/pipeline/bugfinder";
+import { runStressReport, type StressReport } from "@noa/quill-engine/pipeline/stress-test";
+import { runVerificationLoop, type VerificationResult } from "@noa/quill-engine/pipeline/verification-loop";
+import { parseErrors } from "@noa/quill-engine/pipeline/error-parser";
+import type { Finding } from "@noa/quill-engine/pipeline/pipeline-teams";
 import { PANEL_REGISTRY, getPanelLabel, getGroupLabel, type RightPanel, type PanelGroup, type PanelDef } from "@/lib/code-studio/core/panel-registry";
 import { useSessionRestore, type SessionSnapshot } from "@/hooks/useSessionRestore";
 import { useLang } from "@/lib/LangContext";
 import { L4 } from "@/lib/i18n";
-import type { AppLanguage } from "@eh/shared-types";
+import type { AppLanguage } from "@noa/shared-types";
 import { TRANSLATIONS } from "@/lib/studio-translations";
 
 import { infiniteContext } from "@/lib/code-studio/features/infinite-context";

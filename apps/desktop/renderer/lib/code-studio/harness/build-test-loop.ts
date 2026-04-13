@@ -8,7 +8,7 @@
 // 모든 게이트 통과 시에만 최종 승인.
 
 import type { WebContainerInstance } from '@/lib/code-studio/features/webcontainer';
-import { scanForHollowCode, type HollowCodeFinding } from '@eh/quill-engine/pipeline/ast-hollow-scanner';
+import { scanForHollowCode, type HollowCodeFinding } from '@noa/quill-engine/pipeline/ast-hollow-scanner';
 import { buildHarnessFeedback, type HarnessFeedback } from '@/lib/code-studio/harness/adversarial-core';
 
 export interface HarnessResult {

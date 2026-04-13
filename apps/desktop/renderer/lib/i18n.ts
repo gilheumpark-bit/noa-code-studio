@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { AppLanguage } from '@eh/shared-types';
+import type { AppLanguage } from '@noa/shared-types';
 import { TRANSLATIONS } from './studio-translations';
 import type { Lang } from './LangContext';
 

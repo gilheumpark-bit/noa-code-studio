@@ -3,7 +3,7 @@
 // PART 1 — Types & Constants
 // ============================================================
 
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import { tokenize, type Token } from "@/lib/code-studio/core/shell-parser";
 
 export interface TerminalLine {

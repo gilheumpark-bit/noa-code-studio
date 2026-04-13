@@ -2,7 +2,7 @@
 import {
   classifyFixDescription,
   UNSAFE_AUTOFIX_DESCRIPTION_PATTERNS,
-} from '@eh/quill-engine/autofix-policy';
+} from '@noa/quill-engine/autofix-policy';
 
 describe('autofix-policy', () => {
   it('classifies console removal as safe', () => {

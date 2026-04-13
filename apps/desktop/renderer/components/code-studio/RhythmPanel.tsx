@@ -12,7 +12,7 @@ import {
   type CodeRhythmResult,
   type RhythmSection,
   type CodeLineType,
-} from '@eh/quill-engine/pipeline/code-rhythm';
+} from '@noa/quill-engine/pipeline/code-rhythm';
 
 interface Props {
   code?: string;

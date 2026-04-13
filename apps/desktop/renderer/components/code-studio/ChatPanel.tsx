@@ -20,11 +20,11 @@ import { CODE_STUDIO_SPEC_CHAT_SEED_KEY } from "@/lib/code-studio/core/project-s
 import { DESIGN_SYSTEM_SPEC } from "@/lib/code-studio/core/design-system-spec";
 import { DESIGN_LINTER_SPEC } from "@/lib/code-studio/core/design-linter";
 import { detectPreset, buildPresetPrompt } from "@/lib/code-studio/core/design-presets";
-import { runDesignLint } from "@eh/quill-engine/pipeline/design-lint";
+import { runDesignLint } from "@noa/quill-engine/pipeline/design-lint";
 import { TIER_REGISTRY, resolveTierConfig, type AITier } from "@/lib/code-studio/ai/tier-registry";
 import { AuditInvoice } from "@/components/code-studio/AuditInvoice";
 import { Settings } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 interface Props {
   activeFileContent?: string;

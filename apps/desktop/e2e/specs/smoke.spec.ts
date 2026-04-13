@@ -2,10 +2,10 @@
  * apps/desktop/e2e/specs/smoke.spec.ts
  *
  * Critical 7-scenario smoke test for desktop CS.
- * Run via: pnpm --filter @eh/desktop exec playwright test
+ * Run via: pnpm --filter @noa/desktop exec playwright test
  *
  * NOTE: These tests require the desktop app to be built first
- * (`pnpm --filter @eh/desktop run build`). They drive the production
+ * (`pnpm --filter @noa/desktop run build`). They drive the production
  * bundle, not the dev server.
  */
 

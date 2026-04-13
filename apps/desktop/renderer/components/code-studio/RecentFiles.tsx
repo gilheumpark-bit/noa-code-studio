@@ -2,7 +2,7 @@
 "use client";
 
 import { FileText, Trash2, Clock } from "lucide-react";
-import { fileIconColor } from "@eh/quill-engine/types";
+import { fileIconColor } from "@noa/quill-engine/types";
 
 interface RecentFileEntry {
   fileId: string;

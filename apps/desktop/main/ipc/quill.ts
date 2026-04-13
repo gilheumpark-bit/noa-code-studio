@@ -25,7 +25,7 @@ import {
   ENGINE_VERSION,
   type EngineFinding,
   type VerifyOutcome,
-} from '@eh/quill-engine';
+} from '@noa/quill-engine';
 
 // ============================================================
 // PART 1 — Types & constants

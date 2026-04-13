@@ -12,8 +12,8 @@ import {
   Settings, RotateCcw, Shield, Zap, Bug, Wrench, BookOpen,
   GitCommit, BrainCircuit, Eye, FlaskConical, RefreshCw,
 } from "lucide-react";
-import { runGenVerifyFixLoop } from "@eh/quill-engine/pipeline/gen-verify-fix-loop";
-import type { GenVerifyFixResult, GenVerifyFixIteration } from "@eh/quill-engine/pipeline/gen-verify-fix-loop";
+import { runGenVerifyFixLoop } from "@noa/quill-engine/pipeline/gen-verify-fix-loop";
+import type { GenVerifyFixResult, GenVerifyFixIteration } from "@noa/quill-engine/pipeline/gen-verify-fix-loop";
 import { useLang } from "@/lib/LangContext";
 import { L4 } from "@/lib/i18n";
 

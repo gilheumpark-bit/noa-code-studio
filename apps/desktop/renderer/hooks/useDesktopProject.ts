@@ -12,8 +12,8 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { FileNode } from '@eh/quill-engine/types';
-import { detectLanguage } from '@eh/quill-engine/types';
+import type { FileNode } from '@noa/quill-engine/types';
+import { detectLanguage } from '@noa/quill-engine/types';
 
 // ============================================================
 // PART 1 — Types

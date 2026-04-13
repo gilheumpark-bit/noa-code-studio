@@ -11,8 +11,8 @@ import {
   CheckCircle, ChevronDown, ChevronRight,
   Filter, ThumbsUp, ThumbsDown, MessageSquare,
 } from "lucide-react";
-import type { TeamResult, Finding, Severity } from "@eh/quill-engine/pipeline/pipeline-teams";
-import { getReviewChecklist, type ChecklistItem } from "@eh/quill-engine/pipeline/pipeline-utils";
+import type { TeamResult, Finding, Severity } from "@noa/quill-engine/pipeline/pipeline-teams";
+import { getReviewChecklist, type ChecklistItem } from "@noa/quill-engine/pipeline/pipeline-utils";
 
 type ReviewTab = "problems" | "pipeline" | "checklist" | "bugfinder";
 

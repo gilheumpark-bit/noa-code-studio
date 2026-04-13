@@ -1,4 +1,4 @@
-/** Minimal shape used by desktop renderer tests and stubs (full type lives in @eh/quill-engine/types). */
+/** Minimal shape used by desktop renderer tests and stubs (full type lives in @noa/quill-engine/types). */
 export interface FileNode {
   id: string;
   name: string;

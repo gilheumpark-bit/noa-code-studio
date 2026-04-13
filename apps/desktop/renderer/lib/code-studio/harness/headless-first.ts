@@ -5,8 +5,8 @@
 // AI에게 기능(로직)과 디자인(스타일)을 동시에 짜라고 하면 빈깡통.
 // 2단계로 분리: 뼈대(기능) → 검증 → 디자인 입히기 → 검증
 
-import { runFrontendGate1 } from '@eh/quill-engine/pipeline/frontend-gate1';
-import { runFrontendGate2 } from '@eh/quill-engine/pipeline/frontend-gate2';
+import { runFrontendGate1 } from '@noa/quill-engine/pipeline/frontend-gate1';
+import { runFrontendGate2 } from '@noa/quill-engine/pipeline/frontend-gate2';
 import { analyzeSpyPatterns, analyzeFuzzVulnerabilities, buildHarnessFeedback, type GateResult, type HarnessFeedback } from './adversarial-core';
 
 export interface HeadlessFirstConfig {

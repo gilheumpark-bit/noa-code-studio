@@ -4,7 +4,7 @@
 // Pure types, constants, and utility functions for GitPanel.
 // Zero React/UI dependencies.
 
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 // ============================================================
 // PART 1 — Types & Constants

@@ -14,7 +14,7 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import type { OpenFile } from "@eh/quill-engine/types";
+import type { OpenFile } from "@noa/quill-engine/types";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { L4 } from "@/lib/i18n";
 

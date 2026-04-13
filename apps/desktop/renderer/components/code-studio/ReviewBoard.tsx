@@ -10,7 +10,7 @@ import {
   Shield, Eye, Accessibility, Code2, Gauge,
   Play, CheckCircle, Loader2, AlertTriangle,
 } from 'lucide-react';
-import { runStaticPipeline, type PipelineResult } from '@eh/quill-engine/pipeline/pipeline';
+import { runStaticPipeline, type PipelineResult } from '@noa/quill-engine/pipeline/pipeline';
 
 /** Status of an individual reviewer run */
 type ReviewerStatus = 'pending' | 'reviewing' | 'done';

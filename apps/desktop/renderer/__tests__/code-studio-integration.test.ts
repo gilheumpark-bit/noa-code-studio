@@ -4,9 +4,9 @@
  * static pipeline, and shell parsing.
  */
 
-import { runDesignLint, formatDesignLintReport } from '@eh/quill-engine/pipeline/design-lint';
+import { runDesignLint, formatDesignLintReport } from '@noa/quill-engine/pipeline/design-lint';
 import { detectPreset, DESIGN_PRESETS, buildPresetPrompt } from '@/lib/code-studio/core/design-presets';
-import { runStaticPipeline } from '@eh/quill-engine/pipeline/pipeline';
+import { runStaticPipeline } from '@noa/quill-engine/pipeline/pipeline';
 import { tokenize, parseCommandChain, expandGlob, containsGlob, isIncomplete } from '@/lib/code-studio/core/shell-parser';
 
 // ============================================================

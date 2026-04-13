@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Files, Columns2, Command, Settings, Loader2
 } from "lucide-react";
-import type { FileNode, OpenFile, CodeStudioSettings } from "@eh/quill-engine/types";
+import type { FileNode, OpenFile, CodeStudioSettings } from "@noa/quill-engine/types";
 import type { EditorPane } from "@/components/code-studio/EditorGroup";
 import { registerGhostTextProvider, cancelGhostText } from "@/lib/code-studio/ai/ghost";
 import { processStealthClipboard } from "@/lib/code-studio/ai/stealth-clipboard";

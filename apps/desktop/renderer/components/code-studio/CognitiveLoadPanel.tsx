@@ -11,7 +11,7 @@ import {
   analyzeCognitiveLoad,
   type CognitiveLoadResult,
   type FunctionMetrics,
-} from '@eh/quill-engine/pipeline/cognitive-load';
+} from '@noa/quill-engine/pipeline/cognitive-load';
 
 interface Props {
   code?: string;

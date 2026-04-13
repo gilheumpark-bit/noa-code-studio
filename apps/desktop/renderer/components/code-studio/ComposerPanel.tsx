@@ -7,8 +7,8 @@
 
 import { useState, useCallback } from "react";
 import { FileText, Send, Check, X, ChevronDown, ChevronRight, Loader2, Eye } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
-import { fileIconColor } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
+import { fileIconColor } from "@noa/quill-engine/types";
 import type { ComposerMode } from "@/lib/code-studio/core/composer-state";
 import { useLang } from "@/lib/LangContext";
 import { L4 } from "@/lib/i18n";

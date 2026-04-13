@@ -11,7 +11,7 @@ import {
   auditMigration,
   type MigrationAuditResult,
   type FunctionSignature,
-} from '@eh/quill-engine/pipeline/migration-audit';
+} from '@noa/quill-engine/pipeline/migration-audit';
 
 // ============================================================
 // PART 2 — Signature Display

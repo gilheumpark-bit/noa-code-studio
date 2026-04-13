@@ -20,7 +20,7 @@ import { app, ipcMain, safeStorage } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { AIProvider } from '@eh/shared-types';
+import type { AIProvider } from '@noa/shared-types';
 
 // ============================================================
 // PART 1 — Storage location + load/save

@@ -5,9 +5,9 @@
 // Tests that the verification loop's safe fix classification
 // correctly allows/blocks auto-application of fixes.
 
-import type { FixSuggestion } from '@eh/quill-engine/pipeline/pipeline-utils';
-import type { PipelineResult } from '@eh/quill-engine/pipeline/pipeline';
-import { runVerificationLoop } from '@eh/quill-engine/pipeline/verification-loop';
+import type { FixSuggestion } from '@noa/quill-engine/pipeline/pipeline-utils';
+import type { PipelineResult } from '@noa/quill-engine/pipeline/pipeline';
+import { runVerificationLoop } from '@noa/quill-engine/pipeline/verification-loop';
 
 // ============================================================
 // PART 1 — Mocks

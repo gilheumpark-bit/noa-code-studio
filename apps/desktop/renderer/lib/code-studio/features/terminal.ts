@@ -6,7 +6,7 @@
 // Ported from CSL IDE terminal/index.ts with adapted imports.
 // ============================================================
 
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 
 export interface CommandResult {
   lines: { text: string; color?: string }[];

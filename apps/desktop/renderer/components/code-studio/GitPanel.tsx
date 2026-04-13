@@ -21,7 +21,7 @@ import {
   Plus,
   Loader2,
 } from "lucide-react";
-import type { FileNode, OpenFile } from "@eh/quill-engine/types";
+import type { FileNode, OpenFile } from "@noa/quill-engine/types";
 import {
   gitStatus,
   gitCommit as gitRealCommit,

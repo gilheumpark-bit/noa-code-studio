@@ -10,7 +10,7 @@ import {
   Package, Search, Download, Trash2, Loader2,
   ChevronDown, ChevronRight, Terminal,
 } from "lucide-react";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import { useCodeStudioT } from "@/lib/use-code-studio-translations";
 
 interface PackageInfo { name: string; version: string; description: string }

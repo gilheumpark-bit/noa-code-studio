@@ -30,8 +30,8 @@ export { getCachedFiles, setCachedFiles, invalidateCache } from './core/file-cac
 export * from './core/constants';
 export { searchPatterns, buildReferencePrompt, addPattern, seedDB, getRefStats, CATEGORIES, SEED_PATTERNS, type ReferencePattern, type ReferenceDB } from './core/reference-db';
 export { runEnhancedPipeline, type ASTFinding, type EnhancedPipelineResult } from './core/ast-bridge';
-// deep-verify moved to @eh/quill-engine in B-2 — re-export wiring TBD
-// export { runDeepVerify, runDeepVerifyProject, type DeepFinding, type DeepVerifyResult } from '@eh/quill-engine';
+// deep-verify moved to @noa/quill-engine in B-2 — re-export wiring TBD
+// export { runDeepVerify, runDeepVerifyProject, type DeepFinding, type DeepVerifyResult } from '@noa/quill-engine';
 export { buildCFG, findRiskPaths, sliceContext, runBrainAnalysis, type CFGNode, type CFGGraph, type ExecutionPath } from './core/cfg-engine';
 export { runAutoHeal, healFile, type HealResult } from './core/auto-heal';
 export { collectEvidence, getAgentOpinion, runArena, type Evidence, type AgentOpinion, type ArenaResult } from './core/arena';

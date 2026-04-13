@@ -10,7 +10,7 @@ import {
   X, Columns, Rows, LayoutGrid, Maximize2, Minimize2,
   SplitSquareHorizontal, SplitSquareVertical, FileCode,
 } from "lucide-react";
-import type { OpenFile } from "@eh/quill-engine/types";
+import type { OpenFile } from "@noa/quill-engine/types";
 import { useLang } from "@/lib/LangContext";
 import { L4 } from "@/lib/i18n";
 

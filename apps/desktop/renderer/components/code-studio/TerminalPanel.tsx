@@ -59,7 +59,7 @@ import {
 import { parseAnsi } from "@/lib/code-studio/core/ansi";
 import { useLang } from "@/lib/LangContext";
 import { createT } from "@/lib/i18n";
-import type { AppLanguage } from "@eh/shared-types";
+import type { AppLanguage } from "@noa/shared-types";
 import {
   HistoryManager,
   EnvironmentManager,
@@ -71,7 +71,7 @@ import {
   type HighlightedSpan,
 } from "@/lib/code-studio/features/terminal-emulator";
 import { streamChat, getApiKey, getActiveProvider } from "@/lib/ai-providers";
-import type { FileNode } from "@eh/quill-engine/types";
+import type { FileNode } from "@noa/quill-engine/types";
 import { NativeTerminal } from "./NativeTerminal";
 
 export interface TerminalPanelProps {

@@ -1,5 +1,5 @@
-import { runDiffGuard, type DiffGuardFinding } from '@eh/quill-engine/pipeline/diff-guard';
-import type { Finding, Severity } from '@eh/quill-engine/pipeline/pipeline-teams';
+import { runDiffGuard, type DiffGuardFinding } from '@noa/quill-engine/pipeline/diff-guard';
+import type { Finding, Severity } from '@noa/quill-engine/pipeline/pipeline-teams';
 
 export type GuardDecision =
   | { status: 'pass'; findings: Finding[] }
