@@ -71,7 +71,7 @@ export function TemplateGallery({ onSelectTemplate, onClose }: Props) {
     if (!aiPrompt.trim() || isGenerating) return;
     setIsGenerating(true);
     try {
-      const { streamChat } = await import("@/lib/code-studio/ai/stream-chat");
+      const { streamChat } = await import("@/lib/ai-providers/streaming");
       let result = '';
       await streamChat({
         systemInstruction: "You are a project scaffolding assistant. Generate a minimal but complete project structure as JSON: {files: [{name: string, content: string}]}. Return only valid JSON.",

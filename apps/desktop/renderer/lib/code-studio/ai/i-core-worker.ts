@@ -56,8 +56,9 @@ async function initExtractor() {
   // @xenova/transformers 로드 (동적 로딩 시뮬레이션)
   // WebGPU/WASM 환경에서 로컬 임베딩 모델 로드
   try {
-    // @ts-ignore
-    const { pipeline, env } = await import('@xenova/transformers').catch(() => ({ 
+    // @ts-ignore — optional dep, suppress webpack static analysis
+    const moduleName = '@xenova/' + 'transformers';
+    const { pipeline, env } = await import(/* webpackIgnore: true */ moduleName).catch(() => ({
       pipeline: async () => ((_text: string) => ({ tolist: () => new Array(VECTOR_DIMENSIONS).fill(Math.random()) })),
       env: { allowLocalModels: true, useBrowserCache: true }
     }));
