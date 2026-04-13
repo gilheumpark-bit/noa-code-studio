@@ -71,7 +71,8 @@ async function createWindow(): Promise<void> {
       // Avoid a hard crash/blank screen by enabling preload only when present.
       preload: fs.existsSync(preloadPath) ? preloadPath : undefined,
     },
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    autoHideMenuBar: process.platform !== 'darwin', // Win/Linux: hide menu, Alt to show
     backgroundColor: '#0a0e1a',
   });
 
