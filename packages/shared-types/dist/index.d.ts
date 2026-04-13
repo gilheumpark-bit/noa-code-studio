@@ -36,7 +36,9 @@ export interface VerifyReport {
     passedRules: number;
     totalRules: number;
 }
-export type AIProvider = 'gemini' | 'openai' | 'claude' | 'groq';
+export type AIProvider = 'gemini' | 'openai' | 'claude' | 'groq' | 'ollama' | 'lmstudio';
+export type LocalAIProvider = 'ollama' | 'lmstudio';
+export declare function isLocalProvider(p: AIProvider): p is LocalAIProvider;
 export interface AIChatRequest {
     provider: AIProvider;
     model: string;

@@ -1,11 +1,13 @@
-import { WebContents } from 'electron';
-import { 
-  dispatchStream, 
-  runNoa, 
-  getTierLimits, 
-  normalizeUserApiKey, 
-  isGeminiAllocationExhaustedError, 
-  resolveServerProviderKey, 
+import { app, WebContents } from 'electron';
+import fs from 'node:fs';
+import path from 'node:path';
+import {
+  dispatchStream,
+  runNoa,
+  getTierLimits,
+  normalizeUserApiKey,
+  isGeminiAllocationExhaustedError,
+  resolveServerProviderKey,
   hasServerProviderCredentials,
   type ServerProviderId,
   type UserTier,
@@ -13,7 +15,7 @@ import {
 } from './providers';
 
 // ============================================================
-// PART 1: TYPES
+// PART 1: TYPES & CONSTANTS
 // ============================================================
 
 export interface ChatRequest {
@@ -31,24 +33,170 @@ export interface ChatRequest {
 }
 
 const DAILY_TOKEN_BUDGET = 500_000;
+const BUDGET_WARNING_THRESHOLD = 0.8;
+const HISTORY_RETENTION_DAYS = 30;
 
-// In-memory daily token tracker (resets on app restart)
-const tokenUsage = { date: '', used: 0 };
+// ============================================================
+// PART 1-B: PERSISTENT TOKEN BUDGET
+// ============================================================
 
-function checkTokenBudget(isByok: boolean, dailyLimit: number = DAILY_TOKEN_BUDGET): { allowed: boolean; remaining: number } {
-  if (isByok) return { allowed: true, remaining: Infinity };
-
-  const today = new Date().toISOString().slice(0, 10);
-  if (tokenUsage.date !== today) { tokenUsage.date = today; tokenUsage.used = 0; }
-
-  const remaining = dailyLimit - tokenUsage.used;
-  return { allowed: remaining > 0, remaining: Math.max(0, remaining) };
+interface ProviderUsage {
+  used: number;
 }
 
-export function recordTokenUsage(estimatedTokens: number): void {
+interface DailyHistoryEntry {
+  date: string;
+  used: number;
+  byProvider: Record<string, number>;
+}
+
+interface TokenBudgetFile {
+  date: string;
+  used: number;
+  limit: number;
+  byProvider: Record<string, ProviderUsage>;
+  history: DailyHistoryEntry[];
+}
+
+function budgetFilePath(): string {
+  return path.join(app.getPath('userData'), 'token-budget.json');
+}
+
+function createEmptyBudget(today: string): TokenBudgetFile {
+  return {
+    date: today,
+    used: 0,
+    limit: DAILY_TOKEN_BUDGET,
+    byProvider: {},
+    history: [],
+  };
+}
+
+function loadBudgetSync(): TokenBudgetFile {
   const today = new Date().toISOString().slice(0, 10);
-  if (tokenUsage.date !== today) { tokenUsage.date = today; tokenUsage.used = 0; }
-  tokenUsage.used += estimatedTokens;
+  try {
+    const raw = fs.readFileSync(budgetFilePath(), 'utf-8');
+    const parsed = JSON.parse(raw) as TokenBudgetFile;
+
+    // Date rollover: archive yesterday, start fresh
+    if (parsed.date !== today) {
+      const archiveEntry: DailyHistoryEntry = {
+        date: parsed.date,
+        used: parsed.used,
+        byProvider: Object.fromEntries(
+          Object.entries(parsed.byProvider).map(([k, v]) => [k, v.used])
+        ),
+      };
+      const history = [...(parsed.history ?? []), archiveEntry];
+
+      // Prune history older than HISTORY_RETENTION_DAYS
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - HISTORY_RETENTION_DAYS);
+      const cutoffStr = cutoff.toISOString().slice(0, 10);
+      const pruned = history.filter(h => h.date >= cutoffStr);
+
+      return {
+        date: today,
+        used: 0,
+        limit: parsed.limit ?? DAILY_TOKEN_BUDGET,
+        byProvider: {},
+        history: pruned,
+      };
+    }
+
+    // Ensure all fields exist (defensive for partial/corrupt files)
+    return {
+      date: parsed.date,
+      used: parsed.used ?? 0,
+      limit: parsed.limit ?? DAILY_TOKEN_BUDGET,
+      byProvider: parsed.byProvider ?? {},
+      history: parsed.history ?? [],
+    };
+  } catch {
+    // File missing or corrupt -- start fresh
+    return createEmptyBudget(today);
+  }
+}
+
+function saveBudgetSync(budget: TokenBudgetFile): void {
+  try {
+    fs.writeFileSync(budgetFilePath(), JSON.stringify(budget, null, 2), 'utf-8');
+  } catch {
+    // Non-fatal: budget write failure should not crash the app
+  }
+}
+
+// --- In-memory budget cache (loaded from disk on first access) ---
+let budgetCache: TokenBudgetFile | null = null;
+
+function getBudget(): TokenBudgetFile {
+  if (!budgetCache) {
+    budgetCache = loadBudgetSync();
+  }
+  // Handle date rollover mid-session
+  const today = new Date().toISOString().slice(0, 10);
+  if (budgetCache.date !== today) {
+    budgetCache = loadBudgetSync();
+  }
+  return budgetCache;
+}
+
+function checkTokenBudget(
+  isByok: boolean,
+  dailyLimit: number = DAILY_TOKEN_BUDGET
+): { allowed: boolean; remaining: number; warningPercent: number | null } {
+  if (isByok) return { allowed: true, remaining: Infinity, warningPercent: null };
+
+  const budget = getBudget();
+  const effectiveLimit = dailyLimit > 0 ? dailyLimit : budget.limit;
+  const remaining = effectiveLimit - budget.used;
+  const usageRatio = budget.used / effectiveLimit;
+
+  return {
+    allowed: remaining > 0,
+    remaining: Math.max(0, remaining),
+    warningPercent: usageRatio >= BUDGET_WARNING_THRESHOLD ? Math.round(usageRatio * 100) : null,
+  };
+}
+
+export function recordTokenUsage(estimatedTokens: number, provider?: string): void {
+  const budget = getBudget();
+
+  budget.used += estimatedTokens;
+
+  // Per-provider tracking
+  const providerKey = provider ?? 'unknown';
+  if (!budget.byProvider[providerKey]) {
+    budget.byProvider[providerKey] = { used: 0 };
+  }
+  budget.byProvider[providerKey].used += estimatedTokens;
+
+  saveBudgetSync(budget);
+}
+
+/** Expose budget state for renderer analytics panels */
+export function getTokenBudgetSnapshot(): {
+  date: string;
+  used: number;
+  limit: number;
+  remaining: number;
+  byProvider: Record<string, number>;
+  history: DailyHistoryEntry[];
+  warningActive: boolean;
+} {
+  const budget = getBudget();
+  const remaining = Math.max(0, budget.limit - budget.used);
+  return {
+    date: budget.date,
+    used: budget.used,
+    limit: budget.limit,
+    remaining,
+    byProvider: Object.fromEntries(
+      Object.entries(budget.byProvider).map(([k, v]) => [k, v.used])
+    ),
+    history: budget.history,
+    warningActive: (budget.used / budget.limit) >= BUDGET_WARNING_THRESHOLD,
+  };
 }
 
 // ============================================================
@@ -90,10 +238,18 @@ export async function handleAiChatRequest(
     // 1. Auth & Tier Resolve
     const tierLimits = getTierLimits(userTier);
     const budget = checkTokenBudget(isByok, tierLimits.dailyLimit);
-    
+
     if (!budget.allowed) {
       webContents.send(`ai:chat-error:${requestId}`, 'Daily usage limit reached.');
       return;
+    }
+
+    // Budget warning at 80% usage
+    if (budget.warningPercent !== null) {
+      webContents.send('ai:budget-warning', {
+        percent: budget.warningPercent,
+        remaining: budget.remaining,
+      });
     }
 
     const apiKey = isByok ? userApiKey : (resolveServerProviderKey(provider, clientKey) || '');

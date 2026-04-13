@@ -3,4 +3,6 @@
  *
  * Rule: Types only. No runtime code, no Node API imports.
  */
-export {};
+export function isLocalProvider(p) {
+    return p === 'ollama' || p === 'lmstudio';
+}

@@ -179,23 +179,205 @@ async function streamGemini(
 }
 
 // ============================================================
-// PART 4: SECURITY & DISPATCHER
+// PART 4: SECURITY GATE — NOA Pattern Scanner
 // ============================================================
 
-export async function runNoa(input: { text: string; domain?: string; sourceTier?: number }): Promise<{ allowed: boolean; tactical: { reason: string }; auditEntry: { id: string } }> {
-  // Main-process NOA gate: basic safety checks before allowing AI requests
+export type NoaSensitivity = 'strict' | 'normal' | 'permissive';
+
+interface NoaResult {
+  allowed: boolean;
+  tactical: { reason: string };
+  auditEntry: { id: string };
+}
+
+interface NoaInput {
+  text: string;
+  domain?: string;
+  sourceTier?: number;
+  sensitivity?: NoaSensitivity;
+}
+
+// --- 4-A: Prompt Injection Patterns ---
+
+const PROMPT_INJECTION_PATTERNS_STRICT: RegExp[] = [
+  /ignore\s+(all\s+)?previous\s+instructions/i,
+  /ignore\s+(all\s+)?above\s+instructions/i,
+  /disregard\s+(all\s+)?(previous|prior|above)/i,
+  /forget\s+(everything|all|your)\s+(previous|prior|above)/i,
+  /you\s+are\s+now\s+(a|an|in)\s+/i,
+  /new\s+system\s+prompt/i,
+  /override\s+system\s+(prompt|instructions|message)/i,
+  /act\s+as\s+(if\s+)?(you\s+have\s+)?no\s+(restrictions|rules|limitations)/i,
+  /\bDAN\b.*\bmode\b/i,
+  /jailbreak/i,
+  /bypass\s+(safety|filter|content|restriction)/i,
+  /pretend\s+(you\s+are|to\s+be|you're)\s/i,
+  /roleplay\s+as\s+(a\s+)?system/i,
+  /\[system\]\s*:/i,
+  /<<\s*SYS\s*>>/i,
+  /###\s*(system|instruction)\s*(prompt|override)/i,
+  /\bsudo\s+mode\b/i,
+  /developer\s+mode\s+(enabled|activated|on)/i,
+];
+
+const PROMPT_INJECTION_PATTERNS_NORMAL: RegExp[] = [
+  /ignore\s+(all\s+)?previous\s+instructions/i,
+  /disregard\s+(all\s+)?(previous|prior|above)/i,
+  /override\s+system\s+(prompt|instructions)/i,
+  /\bDAN\b.*\bmode\b/i,
+  /jailbreak/i,
+  /bypass\s+(safety|filter|content|restriction)/i,
+  /\[system\]\s*:/i,
+  /<<\s*SYS\s*>>/i,
+  /developer\s+mode\s+(enabled|activated|on)/i,
+];
+
+// --- 4-B: Code Injection Patterns ---
+
+const CODE_INJECTION_PATTERNS: RegExp[] = [
+  /\beval\s*\(/,
+  /\bexec\s*\(/,
+  /\b__import__\s*\(/,
+  /\bos\.system\s*\(/,
+  /\bsubprocess\.(call|run|Popen)\s*\(/,
+  /\bchild_process\b/,
+  /\brequire\s*\(\s*['"]child_process['"]\s*\)/,
+  /\bspawn\s*\(\s*['"](?:cmd|sh|bash|powershell)['"]/i,
+  /\bnew\s+Function\s*\(/,
+  /\bprocess\.env\b.*(?:=|delete\s)/,
+  /\bfs\.(unlink|rmdir|rm|writeFile)Sync?\s*\(/,
+];
+
+// --- 4-C: PII Leakage Patterns ---
+
+const PII_PATTERNS: Array<{ pattern: RegExp; label: string }> = [
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/, label: 'SSN' },
+  { pattern: /\b\d{9}\b(?=.*\b(ssn|social)\b)/i, label: 'SSN_CONTEXT' },
+  { pattern: /\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b/, label: 'CREDIT_CARD' },
+  { pattern: /\b(sk-[a-zA-Z0-9]{20,})\b/, label: 'OPENAI_KEY' },
+  { pattern: /\b(AIza[a-zA-Z0-9_-]{35})\b/, label: 'GOOGLE_KEY' },
+  { pattern: /\b(sk-ant-[a-zA-Z0-9_-]{20,})\b/, label: 'ANTHROPIC_KEY' },
+  { pattern: /\b(gsk_[a-zA-Z0-9]{20,})\b/, label: 'GROQ_KEY' },
+  { pattern: /\b(ghp_[a-zA-Z0-9]{36})\b/, label: 'GITHUB_TOKEN' },
+  { pattern: /\b(xoxb-[0-9]{10,}-[a-zA-Z0-9]+)\b/, label: 'SLACK_TOKEN' },
+  { pattern: /\bAKIA[0-9A-Z]{16}\b/, label: 'AWS_ACCESS_KEY' },
+];
+
+// --- 4-D: Scanner Engine ---
+
+function scanPromptInjection(text: string, sensitivity: NoaSensitivity): string | null {
+  if (sensitivity === 'permissive') return null;
+  const patterns = sensitivity === 'strict'
+    ? PROMPT_INJECTION_PATTERNS_STRICT
+    : PROMPT_INJECTION_PATTERNS_NORMAL;
+
+  for (const pattern of patterns) {
+    if (pattern.test(text)) {
+      return `PROMPT_INJECTION:${pattern.source.slice(0, 40)}`;
+    }
+  }
+  return null;
+}
+
+function scanCodeInjection(text: string, sensitivity: NoaSensitivity): string | null {
+  if (sensitivity === 'permissive') return null;
+
+  // Only scan inside code fences or the full text in strict mode
+  const codeBlockRegex = /```[\s\S]*?```|`[^`]+`/g;
+  const codeBlocks: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    codeBlocks.push(match[0]);
+  }
+
+  const targets = sensitivity === 'strict'
+    ? [text]
+    : codeBlocks;
+
+  if (targets.length === 0) return null;
+
+  for (const target of targets) {
+    for (const pattern of CODE_INJECTION_PATTERNS) {
+      if (pattern.test(target)) {
+        return `CODE_INJECTION:${pattern.source.slice(0, 40)}`;
+      }
+    }
+  }
+  return null;
+}
+
+function scanPiiLeakage(text: string, sensitivity: NoaSensitivity): string | null {
+  // PII scanning applies at all sensitivity levels
+  for (const { pattern, label } of PII_PATTERNS) {
+    if (pattern.test(text)) {
+      // In permissive mode, only block high-confidence PII (credit cards, API keys)
+      if (sensitivity === 'permissive') {
+        const highConfidence = ['CREDIT_CARD', 'OPENAI_KEY', 'ANTHROPIC_KEY', 'GOOGLE_KEY', 'AWS_ACCESS_KEY'];
+        if (!highConfidence.includes(label)) continue;
+      }
+      return `PII_LEAKAGE:${label}`;
+    }
+  }
+  return null;
+}
+
+// --- 4-E: Public Gate ---
+
+export async function runNoa(input: NoaInput): Promise<NoaResult> {
   const MAX_INPUT_LENGTH = 200_000;
-  if (!input.text || input.text.length > MAX_INPUT_LENGTH) {
+  const sensitivity: NoaSensitivity = input.sensitivity ?? 'normal';
+  const ts = Date.now();
+
+  // Input validation (preserved from original)
+  if (!input.text || input.text.trim().length === 0) {
     return {
       allowed: false,
-      tactical: { reason: input.text ? 'INPUT_TOO_LARGE' : 'EMPTY_INPUT' },
-      auditEntry: { id: `main-reject-${Date.now()}` },
+      tactical: { reason: 'EMPTY_INPUT' },
+      auditEntry: { id: `noa-reject-empty-${ts}` },
     };
   }
+  if (input.text.length > MAX_INPUT_LENGTH) {
+    return {
+      allowed: false,
+      tactical: { reason: 'INPUT_TOO_LARGE' },
+      auditEntry: { id: `noa-reject-size-${ts}` },
+    };
+  }
+
+  // Gate 1: Prompt injection
+  const injectionHit = scanPromptInjection(input.text, sensitivity);
+  if (injectionHit) {
+    return {
+      allowed: false,
+      tactical: { reason: injectionHit },
+      auditEntry: { id: `noa-block-injection-${ts}` },
+    };
+  }
+
+  // Gate 2: Code injection
+  const codeHit = scanCodeInjection(input.text, sensitivity);
+  if (codeHit) {
+    return {
+      allowed: false,
+      tactical: { reason: codeHit },
+      auditEntry: { id: `noa-block-code-${ts}` },
+    };
+  }
+
+  // Gate 3: PII leakage
+  const piiHit = scanPiiLeakage(input.text, sensitivity);
+  if (piiHit) {
+    return {
+      allowed: false,
+      tactical: { reason: piiHit },
+      auditEntry: { id: `noa-block-pii-${ts}` },
+    };
+  }
+
   return {
     allowed: true,
-    tactical: { reason: 'MAIN_PROCESS_PASSTHROUGH' },
-    auditEntry: { id: `main-${Date.now()}` },
+    tactical: { reason: 'PASSED_ALL_GATES' },
+    auditEntry: { id: `noa-pass-${ts}` },
   };
 }
 
