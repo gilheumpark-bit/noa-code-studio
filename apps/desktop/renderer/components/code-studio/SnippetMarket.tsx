@@ -9,6 +9,8 @@ import { useState, useCallback, useMemo } from 'react';
 import {
   Plus, Search, Copy, Trash2, Edit3, Save, X, Code2, Check, ChevronDown, ChevronUp,
 } from 'lucide-react';
+import { useLang } from "@/lib/LangContext";
+import { L4 } from "@/lib/i18n";
 
 export interface CodeSnippet {
   id: string;
@@ -106,6 +108,7 @@ function SnippetCard({
   onDelete: (id: string) => void;
   onImport: (code: string) => void;
 }) {
+  const { lang } = useLang();
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -174,10 +177,10 @@ function SnippetCard({
           Import
         </button>
         <div className="flex-1" />
-        <button onClick={() => onEdit(snippet)} className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-bg-primary" aria-label="Edit">
+        <button onClick={() => onEdit(snippet)} className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-bg-primary" aria-label={L4(lang, { ko: "편집", en: "Edit" })}>
           <Edit3 className="w-3 h-3 text-text-secondary" />
         </button>
-        <button onClick={() => onDelete(snippet.id)} className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-bg-primary" aria-label="Delete">
+        <button onClick={() => onDelete(snippet.id)} className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-bg-primary" aria-label={L4(lang, { ko: "삭제", en: "Delete" })}>
           <Trash2 className="w-3 h-3 text-text-danger" />
         </button>
       </div>
@@ -194,6 +197,7 @@ interface SnippetMarketProps {
 }
 
 export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
+  const { lang } = useLang();
   const [snippets, setSnippets] = useState<CodeSnippet[]>(() => readSnippets());
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -275,6 +279,7 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
   }, []);
 
   const handleDelete = useCallback((id: string) => {
+    if (!window.confirm("Delete this snippet? This cannot be undone.")) return;
     deleteSnippet(id);
     reload();
   }, [reload]);
@@ -297,14 +302,14 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
       <div className="flex items-center justify-between px-3 py-2 border-b border-border">
         <span className="font-semibold flex items-center gap-1.5">
           <Code2 className="w-4 h-4 text-accent-blue" />
-          Snippet Market
+          {L4(lang, { ko: "스니펫 마켓", en: "Snippet Market" })}
         </span>
         <div className="flex items-center gap-1">
           <span className="text-text-tertiary text-xs">{snippets.length}</span>
           <button
             onClick={() => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(!showForm); }}
             className="p-1 rounded hover:bg-bg-tertiary transition-colors"
-            aria-label="Add snippet"
+            aria-label={L4(lang, { ko: "스니펫 추가", en: "Add snippet" })}
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -318,7 +323,8 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search snippets..."
+            placeholder={L4(lang, { ko: "스니펫 검색...", en: "Search snippets..." })}
+            aria-label={L4(lang, { ko: "스니펫 검색", en: "Search snippets" })}
             className="w-full pl-6 pr-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
           />
         </div>
@@ -328,7 +334,7 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
             onChange={(e) => setFilterLang(e.target.value)}
             className="flex-1 px-1.5 py-0.5 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
           >
-            <option value="">All Languages</option>
+            <option value="">{L4(lang, { ko: "모든 언어", en: "All Languages" })}</option>
             {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           {allTags.length > 0 && (
@@ -337,7 +343,7 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
               onChange={(e) => setFilterTag(e.target.value)}
               className="flex-1 px-1.5 py-0.5 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
             >
-              <option value="">All Tags</option>
+              <option value="">{L4(lang, { ko: "모든 태그", en: "All Tags" })}</option>
               {allTags.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           )}
@@ -350,13 +356,15 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
           <input
             value={form.title}
             onChange={(e) => setField('title', e.target.value)}
-            placeholder="Snippet title"
+            placeholder={L4(lang, { ko: "스니펫 제목", en: "Snippet title" })}
+            aria-label={L4(lang, { ko: "스니펫 제목", en: "Snippet title" })}
             className="w-full px-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
           />
           <input
             value={form.description}
             onChange={(e) => setField('description', e.target.value)}
-            placeholder="Description (optional)"
+            placeholder={L4(lang, { ko: "설명 (선택사항)", en: "Description (optional)" })}
+            aria-label={L4(lang, { ko: "설명", en: "Description" })}
             className="w-full px-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
           />
           <div className="flex items-center gap-1">
@@ -371,31 +379,33 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
               onClick={handlePasteCode}
               className="px-1.5 py-1 rounded text-xs bg-bg-tertiary border border-border hover:bg-bg-primary transition-colors focus-visible:ring-2 ring-accent-blue"
             >
-              Paste Code
+              {L4(lang, { ko: "코드 붙여넣기", en: "Paste Code" })}
             </button>
           </div>
           <textarea
             value={form.code}
             onChange={(e) => setField('code', e.target.value)}
-            placeholder="Code..."
+            placeholder={L4(lang, { ko: "코드...", en: "Code..." })}
+            aria-label={L4(lang, { ko: "코드", en: "Code" })}
             rows={6}
             className="w-full px-2 py-1 rounded bg-bg-primary border border-border text-text-primary text-xs font-mono resize-none focus-visible:ring-2 ring-accent-blue"
           />
           <input
             value={form.tags}
             onChange={(e) => setField('tags', e.target.value)}
-            placeholder="Tags (comma-separated: react, hook, auth)"
+            placeholder={L4(lang, { ko: "태그 (쉼표 구분: react, hook, auth)", en: "Tags (comma-separated: react, hook, auth)" })}
+            aria-label={L4(lang, { ko: "태그", en: "Tags" })}
             className="w-full px-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue"
           />
           <div className="flex justify-end gap-1">
-            <button onClick={() => setShowForm(false)} className="p-1 rounded hover:bg-bg-tertiary" aria-label="Cancel">
+            <button onClick={() => setShowForm(false)} className="p-1 rounded hover:bg-bg-tertiary" aria-label={L4(lang, { ko: "취소", en: "Cancel" })}>
               <X className="w-4 h-4" />
             </button>
             <button
               onClick={handleSave}
               disabled={!form.title.trim() || !form.code.trim()}
               className="px-2 py-1 rounded bg-accent-blue text-white text-xs hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:ring-2 ring-accent-blue"
-              aria-label="Save"
+              aria-label={L4(lang, { ko: "저장", en: "Save" })}
             >
               <Save className="w-3 h-3 inline mr-1" />
               {editingId ? 'Update' : 'Save'}
@@ -409,8 +419,8 @@ export function SnippetMarket({ onImportToEditor }: SnippetMarketProps) {
         {filtered.length === 0 && (
           <p className="text-text-secondary text-xs p-3">
             {snippets.length === 0
-              ? 'No snippets yet. Click + to save your first snippet.'
-              : 'No snippets match your search.'}
+              ? L4(lang, { ko: "아직 스니펫이 없습니다. +를 클릭하여 첫 스니펫을 저장하세요.", en: "No snippets yet. Click + to save your first snippet." })
+              : L4(lang, { ko: "검색 결과가 없습니다.", en: "No snippets match your search." })}
           </p>
         )}
         {filtered.map((s) => (

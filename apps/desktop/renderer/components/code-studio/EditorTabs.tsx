@@ -258,15 +258,17 @@ export const EditorTabs = memo(function EditorTabs({
               <span className="truncate max-w-[120px]">{file.name}</span>
 
               {/* Close button */}
-              <span
+              <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onCloseFile(file.id);
                 }}
+                aria-label={L4(lang, { ko: `${file.name} 탭 닫기`, en: `Close ${file.name} tab` })}
                 className="opacity-0 group-hover:opacity-100 hover:text-red-400 cursor-pointer shrink-0 transition-opacity"
               >
                 <X size={12} />
-              </span>
+              </button>
             </button>
           );
         })}

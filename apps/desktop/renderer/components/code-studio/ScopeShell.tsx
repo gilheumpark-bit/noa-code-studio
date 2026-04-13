@@ -1119,7 +1119,7 @@ function ScopeShellInner() {
   );
 
   const chatPanel = (
-    <PI.ChatPanelComponent activeFileContent={activeFile?.content} activeFileName={activeFile?.name} activeFileLanguage={activeFile?.language} allFileNames={openFiles.map(f => f.name)} onApplyCode={handleApplyCode} />
+    <PI.ChatPanelComponent activeFileContent={activeFile?.content} activeFileName={activeFile?.name} activeFileLanguage={activeFile?.language} allFileNames={openFiles.map(f => f.name)} tree={files} onApplyCode={handleApplyCode} />
   );
 
   const terminalPanel = (<div className="h-full bg-bg-primary"><div ref={termRef} className="h-full" /></div>);

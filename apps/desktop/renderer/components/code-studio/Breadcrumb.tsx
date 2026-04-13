@@ -6,6 +6,8 @@
 // ============================================================
 
 import { ChevronRight, FileCode, Folder, GitBranch, Circle } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { L4 } from "@/lib/i18n";
 
 interface BreadcrumbProps {
   path: string[];
@@ -30,13 +32,14 @@ export function Breadcrumb({
   gitBranch,
   isModified,
 }: BreadcrumbProps) {
+  const { lang } = useLang();
   if (path.length === 0 && !gitBranch) return null;
 
   return (
-    <div className="flex items-center gap-0.5 px-3 py-1 bg-[#0d1220] border-b border-white/[0.08] text-[10px] text-text-secondary overflow-x-auto shrink-0">
+    <nav aria-label={L4(lang, { ko: "파일 경로", en: "File path breadcrumb" })} className="flex items-center gap-0.5 px-3 py-1 bg-[#0d1220] border-b border-white/[0.08] text-[10px] text-text-secondary overflow-x-auto shrink-0">
       {/* Git branch badge */}
       {gitBranch && (
-        <span className="flex items-center gap-1 mr-2 px-1.5 py-0.5 rounded bg-white/5 text-accent-purple shrink-0">
+        <span className="flex items-center gap-1 mr-2 px-1.5 py-0.5 rounded bg-white/5 text-accent-purple shrink-0" aria-label={L4(lang, { ko: `Git 브랜치: ${gitBranch}`, en: `Git branch: ${gitBranch}` })}>
           <GitBranch size={10} />
           <span className="max-w-[80px] truncate">{gitBranch}</span>
         </span>
@@ -47,18 +50,20 @@ export function Breadcrumb({
         const isLast = i === path.length - 1;
         return (
           <span key={i} className="flex items-center gap-0.5 shrink-0">
-            {i > 0 && <ChevronRight size={10} className="opacity-50" />}
+            {i > 0 && <ChevronRight size={10} className="opacity-50" aria-hidden="true" />}
             <button
               onClick={() => onNavigate?.(i)}
               className={`hover:text-text-primary transition-colors flex items-center gap-0.5 ${
                 isLast ? "text-text-primary" : ""
               }`}
-              title={isLast ? segment : `${segment} 폴더로 이동`}
+              title={isLast ? segment : L4(lang, { ko: `${segment} 폴더로 이동`, en: `Navigate to ${segment} folder` })}
+              aria-label={isLast ? L4(lang, { ko: `현재 파일: ${segment}`, en: `Current file: ${segment}` }) : L4(lang, { ko: `${segment} 폴더로 이동`, en: `Navigate to ${segment} folder` })}
+              aria-current={isLast ? "page" : undefined}
             >
               {isLast ? (
-                <FileCode size={10} className="inline text-accent-purple" />
+                <FileCode size={10} className="inline text-accent-purple" aria-hidden="true" />
               ) : (
-                <Folder size={10} className="inline text-accent-amber" />
+                <Folder size={10} className="inline text-accent-amber" aria-hidden="true" />
               )}
               {segment}
             </button>
@@ -83,7 +88,7 @@ export function Breadcrumb({
           </span>
         </>
       )}
-    </div>
+    </nav>
   );
 }
 

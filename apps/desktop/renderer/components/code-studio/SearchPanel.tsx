@@ -263,6 +263,7 @@ export function SearchPanel({ files, onOpenFile, onClose, onReplaceInFile, onRep
               onFocus={() => searchHistory.length > 0 && setShowHistory(true)}
               onBlur={() => setTimeout(() => setShowHistory(false), 200)}
               placeholder={t('searchPanel.searchPlaceholder')}
+              aria-label={t('searchPanel.searchPlaceholder')}
               className="flex-1 bg-transparent text-xs outline-none text-text-primary placeholder:text-text-tertiary"
               autoFocus
             />
@@ -270,6 +271,7 @@ export function SearchPanel({ files, onOpenFile, onClose, onReplaceInFile, onRep
               onClick={() => setShowHistory((v) => !v)}
               className="text-text-tertiary hover:text-text-primary"
               title={t('searchPanel.history')}
+              aria-label={t('searchPanel.history')}
             >
               <History size={10} />
             </button>
@@ -277,6 +279,8 @@ export function SearchPanel({ files, onOpenFile, onClose, onReplaceInFile, onRep
               onClick={() => setShowReplace((v) => !v)}
               className={`text-text-tertiary hover:text-text-primary ${showReplace ? "text-amber-400" : ""}`}
               title={t('searchPanel.toggleReplace')}
+              aria-label={t('searchPanel.toggleReplace')}
+              aria-expanded={showReplace}
             >
               <Replace size={10} />
             </button>
@@ -307,6 +311,7 @@ export function SearchPanel({ files, onOpenFile, onClose, onReplaceInFile, onRep
               value={replaceText}
               onChange={(e) => setReplaceText(e.target.value)}
               placeholder={t('searchPanel.replaceWith')}
+              aria-label={t('searchPanel.replaceWith')}
               className="flex-1 bg-transparent text-xs outline-none text-text-primary placeholder:text-text-tertiary"
             />
             <button

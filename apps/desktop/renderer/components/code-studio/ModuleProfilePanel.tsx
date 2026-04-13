@@ -95,6 +95,7 @@ export function ModuleProfilePanel() {
   }, []);
 
   const handleDelete = useCallback((id: string) => {
+    if (!window.confirm("Delete this module profile? This cannot be undone.")) return;
     deleteProfile(id);
     reload();
   }, [reload]);

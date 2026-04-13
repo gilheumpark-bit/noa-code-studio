@@ -11,6 +11,8 @@ import {
   Clock, BarChart3, Zap, Trophy, AlertTriangle,
   Loader2, Gauge, CheckCircle, XCircle
 } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { L4 } from "@/lib/i18n";
 import type { StressReport } from "@eh/quill-engine/pipeline/stress-test";
 import type { VerificationResult } from "@eh/quill-engine/pipeline/verification-loop";
 
@@ -170,6 +172,7 @@ function ScoreBar({ score, grade }: { score: number; grade: string }) {
 // ============================================================
 
 export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClose, stressReport, onRunStress, isStressTesting, verificationScore, onRunVerification, isVerifying, verificationResult, currentVerifyRound }: Props) {
+  const { lang } = useLang();
   const timeAgo = useTimeAgo();
   const [sessionStats, setSessionStats] = useState(() => loadSessionStats());
   const [recentActions, setRecentActions] = useState<RecentAction[]>(() => loadRecentActions());
@@ -204,10 +207,10 @@ export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClos
           <div className="p-1.5 rounded-md bg-blue-500/10 border border-blue-500/20">
             <Activity size={14} className="text-blue-500" />
           </div>
-          Progress Dashboard
+          {L4(lang, { ko: "진행 대시보드", en: "Progress Dashboard" })}
         </span>
         {onClose && (
-          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-bg-tertiary/60 text-text-tertiary hover:text-text-primary transition-colors" title="Close" aria-label="닫기"><X size={14} /></button>
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-bg-tertiary/60 text-text-tertiary hover:text-text-primary transition-colors" title={L4(lang, { ko: "닫기", en: "Close" })} aria-label={L4(lang, { ko: "닫기", en: "Close" })}><X size={14} /></button>
         )}
       </div>
 
@@ -218,7 +221,7 @@ export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClos
         {teams && teams.length > 0 && (
           <section className="space-y-3">
             <h3 className="flex items-center gap-2 font-semibold text-text-primary">
-              <BarChart3 size={14} className="text-amber-500" /> Pipeline Progress
+              <BarChart3 size={14} className="text-amber-500" /> {L4(lang, { ko: "파이프라인 진행", en: "Pipeline Progress" })}
             </h3>
             <div className="space-y-1.5 mb-3 bg-bg-primary/40 rounded-xl p-3 border border-border/30 shadow-sm">
               <div className="flex items-center justify-between text-[11px] font-medium text-text-secondary">
@@ -244,7 +247,7 @@ export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClos
         {pipelineScore != null && (
           <section className="space-y-3">
             <h3 className="flex items-center gap-2 font-semibold text-text-primary">
-              <TrendingUp size={14} className="text-green-500" /> Code Quality
+              <TrendingUp size={14} className="text-green-500" /> {L4(lang, { ko: "코드 품질", en: "Code Quality" })}
             </h3>
             <div className="flex items-center gap-4 p-4 rounded-xl bg-bg-primary/40 border border-border/30 shadow-sm">
               <div className="text-center shrink-0">
@@ -273,23 +276,23 @@ export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClos
         {/* Session Stats */}
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 font-semibold text-text-primary">
-            <Zap size={14} className="text-accent-amber" /> Session Stats
+            <Zap size={14} className="text-accent-amber" /> {L4(lang, { ko: "세션 통계", en: "Session Stats" })}
           </h3>
           <div className="grid grid-cols-3 gap-3">
-            <StatCard label="File Edits" value={`${sessionStats.fileEdits}`} icon={<FileText size={14} className="text-blue-500" />} />
-            <StatCard label="LLM Calls" value={`${sessionStats.aiCalls}`} icon={<Brain size={14} className="text-purple-500" />} />
-            <StatCard label="Tokens" value={formatTokens(sessionStats.tokens)} icon={<Trophy size={14} className="text-amber-500" />} />
+            <StatCard label={L4(lang, { ko: "파일 편집", en: "File Edits" })} value={`${sessionStats.fileEdits}`} icon={<FileText size={14} className="text-blue-500" />} />
+            <StatCard label={L4(lang, { ko: "LLM 호출", en: "LLM Calls" })} value={`${sessionStats.aiCalls}`} icon={<Brain size={14} className="text-purple-500" />} />
+            <StatCard label={L4(lang, { ko: "토큰", en: "Tokens" })} value={formatTokens(sessionStats.tokens)} icon={<Trophy size={14} className="text-amber-500" />} />
           </div>
         </section>
 
         {/* Recent Activity */}
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 font-semibold text-text-primary">
-            <Clock size={14} className="text-text-tertiary" /> Recent Activity
+            <Clock size={14} className="text-text-tertiary" /> {L4(lang, { ko: "최근 활동", en: "Recent Activity" })}
           </h3>
           <div className="space-y-1.5 p-1">
             {recentActions.length === 0 ? (
-              <div className="text-text-tertiary/70 text-center py-6 bg-bg-primary/20 rounded-xl border border-border/20">No recent activity</div>
+              <div className="text-text-tertiary/70 text-center py-6 bg-bg-primary/20 rounded-xl border border-border/20">{L4(lang, { ko: "최근 활동 없음", en: "No recent activity" })}</div>
             ) : (
               recentActions.map((action, i) => (
                 <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-bg-tertiary/40 transition-colors">
@@ -307,7 +310,7 @@ export function ProgressDashboard({ teams, pipelineScore, pipelineStatus, onClos
         {/* Engine-Predicted Performance Analysis */}
         <section className="space-y-3">
           <h3 className="flex items-center gap-2 font-semibold text-text-primary">
-            <Gauge size={14} className="text-orange-500" /> Engine-Predicted Performance
+            <Gauge size={14} className="text-orange-500" /> {L4(lang, { ko: "엔진 예측 성능", en: "Engine-Predicted Performance" })}
           </h3>
 
           {onRunStress && (

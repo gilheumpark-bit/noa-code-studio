@@ -112,6 +112,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
       <span className="flex-1 font-mono text-[12px] font-medium text-text-primary">{item.message}</span>
       <button
         onClick={handleManualDismiss}
+        aria-label="Dismiss notification"
         className="shrink-0 p-1 rounded-lg text-text-tertiary transition-colors hover:text-text-primary hover:bg-white/5 active:scale-95"
       >
         <X className="h-3.5 w-3.5" />
@@ -159,13 +160,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ toast }}>
       {children}
       {/* Toast container — fixed bottom-right */}
-      {toasts.length > 0 && (
-        <div className="fixed bottom-4 right-4 z-50 flex flex-col-reverse gap-2" style={{ maxWidth: 360 }}>
-          {toasts.map((item) => (
-            <ToastCard key={item.id} item={item} onDismiss={dismiss} />
-          ))}
-        </div>
-      )}
+      <div
+        className="fixed bottom-4 right-4 z-50 flex flex-col-reverse gap-2"
+        style={{ maxWidth: 360 }}
+        role="status"
+        aria-live="polite"
+        aria-atomic="false"
+      >
+        {toasts.map((item) => (
+          <ToastCard key={item.id} item={item} onDismiss={dismiss} />
+        ))}
+      </div>
     </ToastContext.Provider>
   );
 }

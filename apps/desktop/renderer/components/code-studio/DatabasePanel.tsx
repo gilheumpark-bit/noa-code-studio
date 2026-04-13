@@ -575,13 +575,15 @@ function ResultsTable({
 
   return (
     <div className="h-full overflow-auto">
-      <table className="w-full border-collapse text-xs">
-        <thead className="sticky top-0 bg-bg-primary">
-          <tr>
+      <table className="w-full border-collapse text-xs" role="grid" aria-label="Query results">
+        <thead className="sticky top-0 bg-bg-primary" style={{ zIndex: 1 }}>
+          <tr role="row">
             {result.columns.map((col) => (
               <th
                 key={col}
-                className="border-b border-border px-3 py-1.5 text-left font-medium text-text-secondary"
+                role="columnheader"
+                scope="col"
+                className="border-b border-border px-3 py-1.5 text-left font-medium text-text-secondary whitespace-nowrap"
               >
                 {col}
               </th>
@@ -590,7 +592,7 @@ function ResultsTable({
         </thead>
         <tbody>
           {result.rows.map((row, ri) => (
-            <tr key={ri} className="hover:bg-bg-secondary/60 group">
+            <tr key={ri} className="hover:bg-bg-secondary/60 group" role="row">
               {result.columns.map((col) => {
                 const isEditing =
                   editingCell?.row === ri && editingCell?.col === col;
@@ -598,6 +600,7 @@ function ResultsTable({
                 return (
                   <td
                     key={col}
+                    role="gridcell"
                     className="border-b border-border px-3 py-1 text-text-primary relative"
                     onDoubleClick={() => db && tableName && startEdit(ri, col, row[col])}
                   >
@@ -644,7 +647,7 @@ function ResultsTable({
       <div className="border-t border-border px-3 py-1 text-[10px] text-text-tertiary">
         {result.rowCount} rows returned in {result.executionTime}ms
         {db && tableName && (
-          <span className="ml-2 text-accent-purple">(double-click to edit)</span>
+          <span className="ml-2 text-accent-purple">(double-click to edit | Enter to save, Esc to cancel)</span>
         )}
       </div>
     </div>
@@ -792,10 +795,13 @@ function VisualQueryBuilder({
       <div className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
         <Eye size={12} /> Visual Query Builder
       </div>
+      <p className="text-[9px] text-text-tertiary leading-relaxed">
+        Build SQL queries visually. Select a table, pick columns, add filters, then click Generate & Run.
+      </p>
 
       {/* Table selection */}
       <div>
-        <label className="text-[10px] text-text-tertiary">FROM</label>
+        <label className="text-[10px] text-text-tertiary">FROM (required)</label>
         <select
           value={selectedTable}
           onChange={(e) => setSelectedTable(e.target.value)}

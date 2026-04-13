@@ -98,7 +98,7 @@ function ToolbarButton({ icon, label, active, onClick, accent = "purple" }: {
     blue: "bg-accent-purple/15 text-accent-purple",
   };
   return (
-    <button onClick={onClick} title={label}
+    <button onClick={onClick} title={label} aria-label={label} aria-pressed={active}
       className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${active ? colors[accent] : "text-text-secondary hover:bg-bg-secondary/60 hover:text-text-primary"}`}>
       {icon}<span className="hidden sm:inline">{label}</span>
     </button>

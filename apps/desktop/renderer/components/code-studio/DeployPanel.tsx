@@ -125,6 +125,19 @@ interface BuildExecutorProps {
   files: FileNode[];
 }
 
+interface BuildStepProgress {
+  label: string;
+  status: 'pending' | 'running' | 'done' | 'error';
+}
+
+const BUILD_STEP_LABELS = [
+  'Compiling...',
+  'Bundling...',
+  'Optimizing...',
+  'Finalizing...',
+  'Done',
+];
+
 function BuildExecutor({ files }: BuildExecutorProps) {
   const [logs, setLogs] = useState<BuildLog[]>([]);
   const [isRunning, setIsRunning] = useState(false);
@@ -133,6 +146,7 @@ function BuildExecutor({ files }: BuildExecutorProps) {
   const [customCommand, setCustomCommand] = useState("");
   const [artifacts, setArtifacts] = useState<BuildArtifact[]>([]);
   const [presets] = useState<BuildPreset[]>(DEFAULT_PRESETS);
+  const [buildSteps, setBuildSteps] = useState<BuildStepProgress[]>([]);
   const logEndRef = useRef<HTMLDivElement>(null);
   const shellIdRef = useRef<string | null>(null);
 
@@ -150,6 +164,7 @@ function BuildExecutor({ files }: BuildExecutorProps) {
     setLogs([]);
     setExitCode(null);
     setArtifacts([]);
+    setBuildSteps(BUILD_STEP_LABELS.slice(0, -1).map(label => ({ label, status: 'pending' })));
 
     const preset = presets.find((p) => p.id === selectedPreset);
     const command = customCommand.trim() || preset?.command || "npm run build";
@@ -223,12 +238,29 @@ function BuildExecutor({ files }: BuildExecutorProps) {
     const projectType = detectProjectType(flatFiles);
     const verifications = await runBuildVerification(flatFiles, projectType);
 
-    for (const v of verifications) {
+    const stepLabels = BUILD_STEP_LABELS.slice(0, -1);
+    for (let i = 0; i < verifications.length; i++) {
+      const v = verifications[i];
+      // Advance build step progress
+      const stepIdx = Math.min(i, stepLabels.length - 1);
+      setBuildSteps(prev => prev.map((s, j) =>
+        j < stepIdx ? { ...s, status: 'done' }
+        : j === stepIdx ? { ...s, status: 'running' }
+        : s
+      ));
+
       await new Promise((r) => setTimeout(r, STEP_DELAY_MS));
       addLog(`[${v.passed ? "PASS" : "FAIL"}] ${v.step}: ${v.details}`, v.passed ? "stdout" : "stderr");
     }
 
     const allPassed = verifications.every((v) => v.passed);
+
+    // Finalize all steps
+    setBuildSteps(prev => prev.map(s => ({
+      ...s,
+      status: allPassed ? 'done' : (s.status === 'running' ? 'error' : s.status)
+    })));
+
     setExitCode(allPassed ? 0 : 1);
     setIsRunning(false);
     addLog(
@@ -289,6 +321,30 @@ function BuildExecutor({ files }: BuildExecutorProps) {
           placeholder="e.g. pnpm build --mode production"
           className="rounded border border-border bg-bg-secondary/40 px-2 py-1.5 text-xs text-text-primary outline-none focus:border-accent-green/50"
         />
+      )}
+
+      {/* Build step progress */}
+      {isRunning && buildSteps.length > 0 && (
+        <div className="flex items-center gap-1 px-1">
+          {buildSteps.map((step, i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <div className={`flex items-center gap-1 text-[10px] font-medium ${
+                step.status === 'done' ? 'text-accent-green' :
+                step.status === 'running' ? 'text-accent-amber' :
+                step.status === 'error' ? 'text-accent-red' :
+                'text-text-tertiary/50'
+              }`}>
+                {step.status === 'done' && <CheckCircle size={10} />}
+                {step.status === 'running' && <Loader2 size={10} className="animate-spin" />}
+                {step.status === 'error' && <AlertTriangle size={10} />}
+                <span>{step.label}</span>
+              </div>
+              {i < buildSteps.length - 1 && (
+                <div className={`w-4 h-px ${step.status === 'done' ? 'bg-accent-green/50' : 'bg-border/30'}`} />
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Terminal output */}

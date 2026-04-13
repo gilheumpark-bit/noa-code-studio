@@ -162,6 +162,102 @@ function findByPathInTree(nodes: FileNode[], path: string): FileNode | null {
 // IDENTITY_SEAL: PART-2 | role=MentionResolver | inputs=content,tree | outputs=resolvedContent
 
 // ============================================================
+// PART 2.5 — Error Categorization
+// ============================================================
+
+function categorizeStreamError(err: unknown): string {
+  const e = err as { status?: number; code?: string; message?: string; name?: string };
+  const status = e?.status ?? 0;
+  const message = e?.message ?? '';
+  const code = e?.code ?? '';
+
+  // Network errors
+  if (code === 'ECONNREFUSED' || code === 'ENOTFOUND' || code === 'ERR_NETWORK'
+      || message.includes('fetch') || message.includes('network') || message.includes('Failed to fetch')
+      || message.includes('NetworkError') || !navigator.onLine) {
+    return '[Error] Connection lost. Check your internet and try again.\n' +
+           '[오류] 연결이 끊어졌습니다. 인터넷 연결을 확인하고 다시 시도하세요.';
+  }
+
+  // Auth errors
+  if (status === 401 || status === 403 || message.includes('Unauthorized') || message.includes('Forbidden')
+      || message.includes('invalid_api_key') || message.includes('API key')) {
+    return '[Error] Invalid API key. Check Settings > AI > API Keys.\n' +
+           '[오류] API 키가 유효하지 않습니다. 설정 > AI > API 키를 확인하세요.';
+  }
+
+  // Rate limit
+  if (status === 429 || message.includes('rate limit') || message.includes('Too Many Requests')
+      || message.includes('quota')) {
+    return '[Error] Rate limit reached. Wait a moment and try again.\n' +
+           '[오류] 요청 한도에 도달했습니다. 잠시 후 다시 시도하세요.';
+  }
+
+  // Server errors
+  if (status >= 500 || message.includes('Internal Server Error') || message.includes('502')
+      || message.includes('503') || message.includes('Bad Gateway')) {
+    return '[Error] AI service error. Try a different provider.\n' +
+           '[오류] AI 서비스 오류입니다. 다른 제공자를 시도해 보세요.';
+  }
+
+  // Timeout
+  if (code === 'ETIMEDOUT' || message.includes('timeout') || message.includes('Timeout')
+      || message.includes('timed out') || message.includes('deadline')) {
+    return '[Error] Request timed out. Try a shorter message.\n' +
+           '[오류] 요청 시간이 초과되었습니다. 더 짧은 메시지를 시도하세요.';
+  }
+
+  // Generic fallback
+  return '[Error] Something went wrong. Try again.\n' +
+         '[오류] 문제가 발생했습니다. 다시 시도해 주세요.';
+}
+
+/**
+ * Compute a confidence score (0.5-0.95) based on content signals.
+ * - Hedging phrases lower confidence
+ * - Code blocks raise confidence
+ * - Structured responses (headers, lists) raise confidence
+ */
+function computeConfidenceScore(content: string): number {
+  const MIN_SCORE = 0.5;
+  const MAX_SCORE = 0.95;
+  let score = 0.75; // base
+
+  // Hedging phrases lower score
+  const hedgingPatterns = [
+    /\bI think\b/i, /\bmight\b/i, /\bpossibly\b/i, /\bperhaps\b/i,
+    /\bprobably\b/i, /\bnot sure\b/i, /\bmaybe\b/i, /\bcould be\b/i,
+    /확실하지/i, /아마/i, /것 같/i, /모르겠/i, /추측/i,
+  ];
+  let hedgeCount = 0;
+  for (const pat of hedgingPatterns) {
+    if (pat.test(content)) hedgeCount++;
+  }
+  score -= hedgeCount * 0.04;
+
+  // Code blocks raise score
+  const codeBlockCount = (content.match(/```[\s\S]*?```/g) ?? []).length;
+  if (codeBlockCount > 0) {
+    score += Math.min(0.12, codeBlockCount * 0.04);
+  }
+
+  // Structured response (headers, bullet lists) raise score
+  const hasHeaders = /^#{1,4}\s/m.test(content);
+  const hasBullets = /^[\-\*]\s/m.test(content);
+  const hasNumberedList = /^\d+\.\s/m.test(content);
+  if (hasHeaders) score += 0.03;
+  if (hasBullets || hasNumberedList) score += 0.03;
+
+  // Longer substantive responses slightly raise score
+  if (content.length > 500) score += 0.02;
+  if (content.length > 1500) score += 0.02;
+
+  return Math.max(MIN_SCORE, Math.min(MAX_SCORE, score));
+}
+
+// IDENTITY_SEAL: PART-2.5 | role=ErrorCategorizer+ConfidenceScorer | inputs=error,content | outputs=userMessage,score
+
+// ============================================================
 // PART 3 — Core Hook Implementation
 // ============================================================
 
@@ -308,7 +404,7 @@ export function useCodeStudioChat(options: UseCodeStudioChatOptions = {}): UseCo
       setMessages(current => {
         const last = current[current.length - 1];
         if (last && last.role === 'assistant') {
-           last.confidence = Math.min(1, 0.7 + (last.content.length / 2000));
+           last.confidence = computeConfidenceScore(last.content);
            // Notify host of code blocks for apply-to-editor
            if (onCodeApply && /```[\s\S]+```/.test(last.content)) {
              const codeMatch = last.content.match(/```(?:\w+)?\n([\s\S]+?)```/);
@@ -322,13 +418,16 @@ export function useCodeStudioChat(options: UseCodeStudioChatOptions = {}): UseCo
     } catch (err) {
       if (err.name === 'AbortError') return;
       logger.error('code-studio/chat', 'streamFail', err);
+
+      const errorMessage = categorizeStreamError(err);
+
       setMessages(prev => {
         const last = prev[prev.length - 1];
         if (last) {
-          return [...prev.slice(0, -1), { 
-            ...last, 
-            content: last.content + `\n\n[Error] ${err.message || 'Stream interrupted.'}`,
-            isError: true 
+          return [...prev.slice(0, -1), {
+            ...last,
+            content: last.content + `\n\n${errorMessage}`,
+            isError: true
           }];
         }
         return prev;

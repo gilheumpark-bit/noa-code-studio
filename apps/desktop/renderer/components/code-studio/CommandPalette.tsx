@@ -111,14 +111,13 @@ export default function CommandPalette({
     });
   }, []);
 
-  // -- Reset state when opened (groups default collapsed) --
+  // -- Reset state when opened (groups expanded by default for discoverability) --
   useEffect(() => {
     if (open) {
       setQuery("");
       setActiveIndex(0);
-      // Default all groups collapsed — users expand what they need
-      const allCats = new Set(commands.map((c) => c.category ?? "General"));
-      setCollapsedGroups(allCats);
+      // Expand all groups by default so users can discover commands
+      setCollapsedGroups(new Set());
       // Small delay so the DOM is mounted before focus
       const t = setTimeout(() => inputRef.current?.focus(), 16);
       return () => clearTimeout(t);
@@ -245,6 +244,11 @@ export default function CommandPalette({
               if (e.target.value) setCollapsedGroups(new Set()); // 검색 시 모든 그룹 펼침
             }}
             placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
+            role="combobox"
+            aria-expanded={grouped.size > 0}
+            aria-controls="command-palette-listbox"
+            aria-autocomplete="list"
             className="w-full bg-transparent font-mono text-[13px] text-text-primary placeholder-text-tertiary outline-none"
             spellCheck={false}
             autoComplete="off"
@@ -259,6 +263,7 @@ export default function CommandPalette({
         {/* Command list */}
         <div
           ref={listRef}
+          id="command-palette-listbox"
           className="max-h-[340px] overflow-y-auto overscroll-contain py-1"
           role="listbox"
         >

@@ -84,13 +84,15 @@ export function StatusBar({
 
   return (
     <div
-      className="hidden sm:flex items-center justify-between px-3 bg-accent-purple text-[11px] leading-[11px] select-none overflow-x-auto shrink-0"
-      style={{ height: 24, color: '#fff' }}
+      className="hidden sm:flex items-center justify-between px-3 bg-accent-purple text-xs leading-[12px] select-none overflow-x-auto shrink-0"
+      style={{ height: 26, color: '#fff', fontSize: 12 }}
+      role="status"
+      aria-label="Status Bar"
     >
       {/* ---- Left Section ---- */}
       <div className="flex items-center gap-3 shrink-0">
         {/* Git branch */}
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1" aria-label={`Git branch: ${branch}`}>
           <GitBranch size={12} /> {branch}
         </span>
 
@@ -100,7 +102,7 @@ export function StatusBar({
         <button
           onClick={onSwitchProvider}
           className={`flex items-center gap-1 ${CLICKABLE}`}
-          title={L4(lang || "ko", { ko: "LLM 엔진 설정", en: "Configure LLM Engine", ja: "AIモデルを変更", zh: "更改 AI 模型" })}
+          title={L4(lang || "ko", { ko: "AI 모델과 API 키를 변경합니다. 클릭하여 LLM 엔진을 설정하세요.", en: "Change AI model and API key. Click to configure the LLM engine.", ja: "AIモデルとAPIキーを変更します", zh: "更改 AI 模型和 API 密钥" })}
           aria-label={L4(lang || "ko", { ko: "LLM 엔진 설정", en: "Configure LLM Engine", ja: "AIモデルを変更", zh: "更改 AI 模型" })}
         >
           <Cpu size={10} />
@@ -126,8 +128,8 @@ export function StatusBar({
         {SEPARATOR}
 
         {/* Save indicator */}
-        <div className="flex items-center gap-1">
-          <span className={`w-1.5 h-1.5 rounded-full ${isDirty ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} />
+        <div className="flex items-center gap-1" role="status" aria-live="polite" aria-atomic="true" aria-label={isDirty ? L4(lang || "ko", { ko: "미저장 변경사항", en: "Unsaved changes" }) : L4(lang || "ko", { ko: "모든 변경사항 저장됨", en: "All changes saved" })}>
+          <span className={`w-1.5 h-1.5 rounded-full ${isDirty ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} aria-hidden="true" />
           <span className="text-[10px]">
             {isDirty
               ? L4(lang || "ko", { ko: "미저장", en: "Unsaved", ja: "未保存", zh: "未保存" })
@@ -163,6 +165,11 @@ export function StatusBar({
 
       {/* ---- Right Section ---- */}
       <div className="flex items-center gap-3 shrink-0">
+        <span className="hidden lg:flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-default" title={L4(lang || "ko", { ko: "명령 팔레트 열기", en: "Open Command Palette" })}>
+          <kbd className="rounded border border-white/20 bg-white/[0.08] px-1 py-0.5 font-mono text-[9px] leading-none">Ctrl+Shift+P</kbd>
+          <span className="text-[9px]">{L4(lang || "ko", { ko: "명령", en: "Commands" })}</span>
+        </span>
+        {SEPARATOR}
         <LanguageSwitch compact />
         {SEPARATOR}
 

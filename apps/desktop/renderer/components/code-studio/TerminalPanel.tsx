@@ -45,6 +45,8 @@ import {
   Copy,
   Lock,
   Unlock,
+  X,
+  AlertTriangle,
 } from "lucide-react";
 import {
   executeCommand,
@@ -206,8 +208,10 @@ function TerminalPanelEmulated({
   const [autocompleteOptions, setAutocompleteOptions] = useState<string[]>([]);
   const [autocompleteIdx, setAutocompleteIdx] = useState(-1);
   const [cwd, setCwd] = useState("~/project");
+  const [simBannerDismissed, setSimBannerDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasDesktopBridge = typeof window !== "undefined" && !!(window as any).cs?.shell;
 
   const handleCopyOutput = useCallback(() => {
     const text = lines.map((l) => l.text).join("\n");
@@ -625,6 +629,40 @@ function TerminalPanelEmulated({
       className="h-48 border-t border-white/8 bg-bg-primary flex flex-col"
       onClick={() => inputRef.current?.focus()}
     >
+      {/* Simulation mode banner */}
+      {!simBannerDismissed && wcInstance && !wcInstance.isAvailable && !wcBooting && (
+        <div
+          className="flex items-center justify-between gap-2 px-3 py-1.5 text-[11px] shrink-0"
+          style={{ backgroundColor: "rgba(210, 153, 34, 0.15)", borderBottom: "1px solid rgba(210, 153, 34, 0.3)" }}
+          role="alert"
+        >
+          <span className="flex items-center gap-1.5 text-yellow-300">
+            <AlertTriangle size={12} className="shrink-0" />
+            <span>Simulated Terminal — Some commands may not work as expected</span>
+          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            {hasDesktopBridge && (
+              <button
+                onClick={() => {
+                  // Trigger native terminal by reloading with shell bridge
+                  window.location.reload();
+                }}
+                className="text-[10px] text-accent-blue hover:underline"
+              >
+                Switch to Native Terminal
+              </button>
+            )}
+            <button
+              onClick={() => setSimBannerDismissed(true)}
+              className="text-text-tertiary hover:text-text-primary"
+              aria-label="Dismiss banner"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header bar */}
       <div className="flex items-center justify-between px-3 py-1 bg-bg-secondary border-b border-white/8">
         <span className="flex items-center gap-1 text-xs text-text-secondary">

@@ -140,13 +140,20 @@ export function SettingsPanel({ settings: settingsProp, onChange: onChangeProp, 
   }, [settings, onChange]);
 
   const reset = useCallback(() => {
+    const confirmed = typeof window !== "undefined"
+      ? window.confirm(L4(lang, {
+          ko: "모든 설정을 기본값으로 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+          en: "Reset all settings to defaults? This action cannot be undone.",
+        }))
+      : true;
+    if (!confirmed) return;
     onChange(DEFAULT_SETTINGS);
     saveIDESettings(DEFAULT_SETTINGS);
-  }, [onChange]);
+  }, [onChange, lang]);
 
   const tabs: { id: SettingsTab; label: string }[] = [
     { id: "editor", label: L4(lang, { ko: "에디터", en: "Editor" }) },
-    { id: "ai", label: "EH 기능" },
+    { id: "ai", label: L4(lang, { ko: "EH 기능", en: "EH Features" }) },
     { id: "pipeline", label: L4(lang, { ko: "파이프라인", en: "Pipeline" }) },
   ];
 
@@ -213,9 +220,9 @@ export function SettingsPanel({ settings: settingsProp, onChange: onChangeProp, 
               <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">Action Approval</span>
               <div className="flex gap-1.5 mt-2">
                 {([
-                  { mode: "easy" as const, icon: ShieldCheck, label: "Easy", desc: "모든 작업 승인 필요", color: "accent-green" },
-                  { mode: "normal" as const, icon: Shield, label: "Normal", desc: "위험 명령만 승인", color: "accent-amber" },
-                  { mode: "pro" as const, icon: ShieldOff, label: "Pro", desc: "완전 자율 실행", color: "accent-red" },
+                  { mode: "easy" as const, icon: ShieldCheck, label: "Easy", desc: L4(lang, { ko: "모든 작업 승인 필요", en: "All actions need approval" }), color: "accent-green" },
+                  { mode: "normal" as const, icon: Shield, label: "Normal", desc: L4(lang, { ko: "위험 명령만 승인", en: "Only risky commands need approval" }), color: "accent-amber" },
+                  { mode: "pro" as const, icon: ShieldOff, label: "Pro", desc: L4(lang, { ko: "완전 자율 실행", en: "Fully autonomous execution" }), color: "accent-red" },
                 ]).map(({ mode, icon: ModeIcon, label, desc, color }) => (
                   <button
                     key={mode}
@@ -245,9 +252,12 @@ export function SettingsPanel({ settings: settingsProp, onChange: onChangeProp, 
                   <div className="flex items-start gap-2">
                     <AlertTriangle size={16} className="text-accent-red shrink-0 mt-0.5" />
                     <div className="flex-1 space-y-2">
-                      <p className="text-[10px] font-bold text-accent-red">Pro 모드 경고</p>
+                      <p className="text-[10px] font-bold text-accent-red">{L4(lang, { ko: "Pro 모드 경고", en: "Pro Mode Warning" })}</p>
                       <p className="text-[9px] text-text-secondary leading-relaxed">
-                        활성화 시 EH 엔진이 <span className="text-accent-red font-semibold">승인 없이</span> 터미널 명령어, 파일 덮어쓰기, 패키지 설치 등을 즉시 실행합니다. 예기치 않은 시스템 변경이 발생할 수 있습니다.
+                        {L4(lang, {
+                          ko: "활성화 시 EH 엔진이 승인 없이 터미널 명령어, 파일 덮어쓰기, 패키지 설치 등을 즉시 실행합니다. 예기치 않은 시스템 변경이 발생할 수 있습니다.",
+                          en: "When enabled, the EH engine will immediately execute terminal commands, file overwrites, and package installs without approval. Unexpected system changes may occur."
+                        })}
                       </p>
                       <div className="flex gap-1.5 pt-1">
                         <button
@@ -256,14 +266,14 @@ export function SettingsPanel({ settings: settingsProp, onChange: onChangeProp, 
                           className="flex-1 flex items-center justify-center gap-1 rounded-md border border-accent-red/50 bg-accent-red/15 px-2 py-1.5 text-[9px] font-bold text-accent-red transition-all duration-200 hover:bg-accent-red/25 hover:scale-[1.02] active:scale-95"
                         >
                           <ShieldOff size={10} />
-                          위험 감수 — 활성화
+                          {L4(lang, { ko: "위험 감수 — 활성화", en: "Accept Risk — Enable" })}
                         </button>
                         <button
                           type="button"
                           onClick={() => setShowProConfirm(false)}
                           className="flex-1 rounded-md border border-border bg-bg-secondary/50 px-2 py-1.5 text-[9px] font-medium text-text-secondary transition-all duration-200 hover:text-text-primary hover:scale-[1.02] active:scale-95"
                         >
-                          취소
+                          {L4(lang, { ko: "취소", en: "Cancel" })}
                         </button>
                       </div>
                     </div>
@@ -276,9 +286,9 @@ export function SettingsPanel({ settings: settingsProp, onChange: onChangeProp, 
               <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary">Coding Mode</span>
               <div className="flex gap-1.5 mt-2">
                 {([
-                  { mode: "standard" as const, icon: Code2, label: "Standard", desc: "정석 코딩", color: "accent-blue" },
-                  { mode: "office" as const, icon: Briefcase, label: "직장인", desc: "복붙 실전 모드", color: "accent-amber" },
-                  { mode: "architect" as const, icon: Landmark, label: "Architect", desc: "설계 중심", color: "accent-purple" },
+                  { mode: "standard" as const, icon: Code2, label: "Standard", desc: L4(lang, { ko: "정석 코딩", en: "Standard coding" }), color: "accent-blue" },
+                  { mode: "office" as const, icon: Briefcase, label: L4(lang, { ko: "직장인", en: "Office" }), desc: L4(lang, { ko: "복붙 실전 모드", en: "Copy-paste practical mode" }), color: "accent-amber" },
+                  { mode: "architect" as const, icon: Landmark, label: "Architect", desc: L4(lang, { ko: "설계 중심", en: "Design-focused" }), color: "accent-purple" },
                 ]).map(({ mode, icon: ModeIcon, label, desc, color }) => (
                   <button
                     key={mode}

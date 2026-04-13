@@ -212,7 +212,7 @@ export function ActivityBar({ activeView, onChangeView }: ActivityBarProps) {
   return (
     <nav
       ref={containerRef}
-      aria-label="활동 바"
+      aria-label={L4(lang, { ko: "활동 바", en: "Activity Bar", ja: "アクティビティバー", zh: "活动栏" })}
       className="flex shrink-0 w-12 flex-col items-center gap-1 border-r border-white/8 bg-bg-primary pb-10 pt-4"
       onKeyDown={handleKeyDown}
     >

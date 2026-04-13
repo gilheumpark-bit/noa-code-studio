@@ -19,6 +19,7 @@ import {
   Check,
   FileText,
   Plus,
+  Loader2,
 } from "lucide-react";
 import type { FileNode, OpenFile } from "@eh/quill-engine/types";
 import {
@@ -300,6 +301,8 @@ export default function GitPanel({
   const [branchCommits, setBranchCommits] = useState<Record<string, CommitEntry[]>>({ main: [] });
   const [showNewBranch, setShowNewBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
+  const [gitBusy, setGitBusy] = useState(false);
+  const [gitBusyLabel, setGitBusyLabel] = useState("");
 
   // Real git integration state
   const [gitAvailable, setGitAvailable] = useState(false);
@@ -499,7 +502,9 @@ export default function GitPanel({
 
   // Branch: switch to existing branch
   const handleSwitchBranch = useCallback(async (branch: string) => {
-    if (branch === currentBranch) return;
+    if (branch === currentBranch || gitBusy) return;
+    setGitBusy(true);
+    setGitBusyLabel(L4(lang, { ko: '브랜치 전환 중...', en: 'Switching branch...' }));
 
     if (isoGitReady && isoGitRef.current) {
       try {
@@ -528,10 +533,14 @@ export default function GitPanel({
     setCurrentBranch(branch);
     setCommits(branchCommits[branch] ?? []);
     setExpandedHash(null);
-  }, [currentBranch, commits, branchCommits, gitAvailable, syncGitWorkspace, isoGitReady]);
+    setGitBusy(false);
+    setGitBusyLabel("");
+  }, [currentBranch, commits, branchCommits, gitAvailable, syncGitWorkspace, isoGitReady, gitBusy, lang]);
 
   const handleCommit = useCallback(async () => {
-    if (dirtyFiles.length === 0) return;
+    if (dirtyFiles.length === 0 || gitBusy) return;
+    setGitBusy(true);
+    setGitBusyLabel(L4(lang, { ko: '커밋 중...', en: 'Committing...' }));
 
     const commitMessage = buildCommitMessage(dirtyFiles.map((f) => f.name));
 
@@ -611,8 +620,10 @@ export default function GitPanel({
       [currentBranch]: [entry, ...(bc[currentBranch] || [])].slice(0, MAX_HISTORY),
     }));
     setActiveTab("history");
+    setGitBusy(false);
+    setGitBusyLabel("");
     onClearDirty?.();
-  }, [dirtyFiles, flatFileMap, currentBranch, onClearDirty, gitAvailable, syncGitWorkspace, isoGitReady]);
+  }, [dirtyFiles, flatFileMap, currentBranch, onClearDirty, gitAvailable, syncGitWorkspace, isoGitReady, gitBusy, lang]);
 
   const handleRestore = useCallback(
     (commit: CommitEntry) => {
@@ -721,6 +732,14 @@ export default function GitPanel({
           </button>
         ))}
       </div>
+
+      {/* Git busy indicator */}
+      {gitBusy && (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-accent-amber/10 border-b border-accent-amber/20">
+          <Loader2 size={12} className="animate-spin text-accent-amber" />
+          <span className="text-[11px] font-medium text-accent-amber">{gitBusyLabel}</span>
+        </div>
+      )}
 
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto p-2">

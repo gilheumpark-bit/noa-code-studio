@@ -292,10 +292,12 @@ const ActivityBar = memo(function ActivityBar({
             onSetRightPanel(rightPanel === item.id ? null : (item.id as RightPanel));
           }
         }}
-        className={`relative w-10 h-10 flex shrink-0 items-center justify-center rounded-lg transition-all duration-150 hover:bg-white/6 group cursor-grab active:cursor-grabbing ${
+        className={`relative flex shrink-0 flex-col items-center justify-center rounded-lg transition-all duration-150 hover:bg-white/6 group cursor-grab active:cursor-grabbing ${
           draggedId === item.id ? "opacity-50" : ""
         } ${isDrop ? "ring-2 ring-accent-purple/60 ring-offset-1 ring-offset-bg-primary rounded-lg" : ""}`}
-        title={`${titleBase} — ${reorderHint}`}
+        style={{ minWidth: 44, minHeight: 44, width: widthPx > 56 ? widthPx - 8 : 44 }}
+        title={titleBase}
+        aria-label={displayLabel}
       >
         <span className={`pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-[2px] rounded-r bg-accent-purple transition-all duration-200 ${
           rightPanel === item.id ? "h-5 opacity-100" : "h-0 opacity-0"
@@ -303,6 +305,9 @@ const ActivityBar = memo(function ActivityBar({
         <item.icon className={`pointer-events-none h-[18px] w-[18px] transition-colors ${
           rightPanel === item.id ? "text-text-primary" : "text-text-tertiary group-hover:text-text-secondary"
         }`} />
+        <span className={`pointer-events-none mt-0.5 text-[8px] leading-tight truncate max-w-[36px] transition-colors ${
+          rightPanel === item.id ? "text-text-primary" : "text-text-tertiary group-hover:text-text-secondary"
+        }`}>{displayLabel.length > 4 ? displayLabel.slice(0, 4) : displayLabel}</span>
         {item.id === "pipeline" && bugReports.length > 0 && (
           <span className="pointer-events-none absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-accent-red text-[8px] text-white flex items-center justify-center">{bugReports.length}</span>
         )}
@@ -330,12 +335,18 @@ const ActivityBar = memo(function ActivityBar({
           .map(p => {
             const Icon = LUCIDE_MAP[p.icon];
             const lbl = L4(lang, { ko: p.labelKo, en: p.label });
+            const shortLbl = lbl.length > 4 ? lbl.slice(0, 4) : lbl;
             return (
               <button key={p.id} onClick={() => onSetRightPanel(rightPanel === p.id ? null : p.id as RightPanel)}
-                className="relative w-10 h-10 flex shrink-0 items-center justify-center rounded-lg transition-all duration-150 hover:bg-white/6 group"
-                title={lbl}>
+                className="relative flex shrink-0 flex-col items-center justify-center rounded-lg transition-all duration-150 hover:bg-white/6 group"
+                style={{ minWidth: 44, minHeight: 44 }}
+                title={lbl}
+                aria-label={lbl}>
                 <span className={`pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-[2px] rounded-r bg-accent-purple transition-all duration-200 ${rightPanel === p.id ? "h-5 opacity-100" : "h-0 opacity-0"}`} />
                 {Icon ? <Icon className={`pointer-events-none h-[18px] w-[18px] transition-colors ${rightPanel === p.id ? "text-text-primary" : "text-text-tertiary group-hover:text-text-secondary"}`} /> : <span className="pointer-events-none text-[10px] text-text-tertiary">{p.label.substring(0,2)}</span>}
+                <span className={`pointer-events-none mt-0.5 text-[8px] leading-tight truncate max-w-[36px] transition-colors ${
+                  rightPanel === p.id ? "text-text-primary" : "text-text-tertiary group-hover:text-text-secondary"
+                }`}>{shortLbl}</span>
               </button>
             );
           })}
@@ -345,18 +356,24 @@ const ActivityBar = memo(function ActivityBar({
 
       {/* System Category */}
       <div className="flex flex-wrap justify-center gap-1 w-full px-1 shrink-0 pb-1">
-        <div className="w-10 h-10 flex shrink-0 items-center justify-center rounded-lg hover:bg-white/6">
+        <div className="flex shrink-0 items-center justify-center rounded-lg hover:bg-white/6" style={{ minWidth: 44, minHeight: 44 }}>
           <ThemeToggle
             variant="icon-only"
             className="text-text-tertiary hover:text-text-secondary w-full h-full rounded-lg"
           />
         </div>
         <button onClick={onToggleAdvancedPanels}
-          className="w-10 h-10 flex shrink-0 items-center justify-center rounded-lg transition-all hover:bg-white/6"
-          title={showAdvancedPanels ? L4(lang, { ko: "확장 패널 숨기기", en: "Hide advanced panels" }) : L4(lang, { ko: "모든 패널 보기", en: "Show all panels" })}>
+          className="flex shrink-0 items-center justify-center rounded-lg transition-all hover:bg-white/6"
+          style={{ minWidth: 44, minHeight: 44 }}
+          title={showAdvancedPanels ? L4(lang, { ko: "확장 패널 숨기기", en: "Hide advanced panels" }) : L4(lang, { ko: "모든 패널 보기", en: "Show all panels" })}
+          aria-label={showAdvancedPanels ? L4(lang, { ko: "확장 패널 숨기기", en: "Hide advanced panels" }) : L4(lang, { ko: "모든 패널 보기", en: "Show all panels" })}>
           <ChevronRight className={`h-[18px] w-[18px] text-text-tertiary transition-transform ${showAdvancedPanels ? "rotate-180" : ""}`} />
         </button>
-        <button onClick={onToggleSettings} className="w-10 h-10 flex shrink-0 items-center justify-center rounded-lg transition-all hover:bg-white/6" title={L4(lang, { ko: "설정", en: "Settings" })}>
+        <button onClick={onToggleSettings}
+          className="flex shrink-0 items-center justify-center rounded-lg transition-all hover:bg-white/6"
+          style={{ minWidth: 44, minHeight: 44 }}
+          title={L4(lang, { ko: "설정", en: "Settings" })}
+          aria-label={L4(lang, { ko: "설정", en: "Settings" })}>
           <Settings className={`h-[18px] w-[18px] ${showSettings ? "text-accent-amber" : "text-text-tertiary hover:text-text-secondary"}`} />
         </button>
       </div>
@@ -769,6 +786,9 @@ const RightPanelContent = memo(function RightPanelContent(props: ScopePanelManag
 // PART 4 — Bottom Panels
 // ============================================================
 
+const BOTTOM_PANEL_MIN_H = 100;
+const BOTTOM_PANEL_MAX_VH = 60;
+
 const BottomPanels = memo(function BottomPanels({
   showTerminal, showProblems, showPipelineBottom,
   onToggleTerminal, onToggleProblems, onTogglePipelineBottom,
@@ -792,6 +812,37 @@ const BottomPanels = memo(function BottomPanels({
     [bugReports],
   );
 
+  const [panelHeight, setPanelHeight] = useState(320);
+  const isDragging = useRef(false);
+  const startY = useRef(0);
+  const startH = useRef(0);
+
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    startY.current = e.clientY;
+    startH.current = panelHeight;
+
+    const onMove = (ev: MouseEvent) => {
+      if (!isDragging.current) return;
+      const delta = startY.current - ev.clientY;
+      const maxH = Math.round(window.innerHeight * BOTTOM_PANEL_MAX_VH / 100);
+      const next = Math.min(maxH, Math.max(BOTTOM_PANEL_MIN_H, startH.current + delta));
+      setPanelHeight(next);
+    };
+    const onUp = () => {
+      isDragging.current = false;
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  }, [panelHeight]);
+
   if (!showTerminal && !showProblems && !showPipelineBottom) return null;
 
   return (
@@ -801,8 +852,20 @@ const BottomPanels = memo(function BottomPanels({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 8 }}
         transition={{ duration: 0.1 }}
-        className="shrink-0 border-t border-border flex max-h-[min(520px,55vh)] min-h-0 w-full flex-col overflow-hidden bg-bg-primary"
+        className="shrink-0 flex w-full flex-col overflow-hidden bg-bg-primary"
+        style={{ height: panelHeight }}
       >
+        {/* Drag resize handle */}
+        <div
+          onMouseDown={handleResizeStart}
+          className="h-1 w-full shrink-0 border-t border-border hover:bg-accent-purple/30 active:bg-accent-purple/50 transition-colors"
+          style={{ cursor: "row-resize" }}
+          role="separator"
+          aria-orientation="horizontal"
+          aria-label={L4(lang, { ko: "패널 크기 조절", en: "Resize panel" })}
+          aria-valuenow={panelHeight}
+          aria-valuemin={BOTTOM_PANEL_MIN_H}
+        />
         <div className="flex shrink-0 items-center gap-1 border-b border-white/8 bg-bg-secondary px-2 py-1">
           <button onClick={onToggleTerminal} title={tcs.consoleTooltip || L4(lang, { ko: "터미널 목록", en: "Terminal List" })} className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors duration-150 ${showTerminal ? "text-accent-green bg-accent-green/10" : "text-text-tertiary hover:text-text-secondary"}`}>{tcs.console || L4(lang, { ko: "터미널", en: "Terminal" })}</button>
           <button onClick={onToggleProblems} className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors duration-150 ${showProblems ? "text-accent-red bg-accent-red/10" : "text-text-tertiary hover:text-text-secondary"}`}>{L4(lang, { ko: "문제", en: "Problems" })} {bugReports.length > 0 ? `(${bugReports.length})` : ""}</button>
@@ -810,17 +873,17 @@ const BottomPanels = memo(function BottomPanels({
           <button onClick={onCloseAllBottom} aria-label={L4(lang, { ko: "하단 패널 닫기", en: "Close bottom panel" })} className="ml-auto rounded p-0.5 text-text-tertiary hover:text-text-primary transition-colors duration-150"><X className="h-3 w-3" /></button>
         </div>
         {showTerminal && (
-          <div className="min-h-[min(320px,42vh)] h-[min(400px,48vh)] w-full bg-bg-primary dark:bg-[#0d0d0d]">
-            <div ref={termRef} className="h-full min-h-[inherit] w-full" />
+          <div className="flex-1 min-h-0 w-full bg-bg-primary dark:bg-[#0d0d0d]">
+            <div ref={termRef} className="h-full w-full" />
           </div>
         )}
         {showProblems && (
-          <div className="min-h-[min(240px,35vh)] max-h-[min(360px,45vh)] w-full overflow-auto">
+          <div className="flex-1 min-h-0 w-full overflow-auto">
             <PI.ProblemsPanelComponent findings={problemFindings} />
           </div>
         )}
         {showPipelineBottom && pipelineStages.length > 0 && (
-          <div className="min-h-[min(200px,30vh)] max-h-[min(320px,40vh)] w-full overflow-auto p-2">
+          <div className="flex-1 min-h-0 w-full overflow-auto p-2">
             {pipelineStages.map((s) => (
               <div key={s.name} className="flex items-center gap-2 py-1 text-[11px] font-mono">
                 <span className={`w-2 h-2 rounded-full ${s.status === "pass" ? "bg-accent-green" : s.status === "warn" ? "bg-accent-amber" : s.status === "fail" ? "bg-accent-red" : "bg-white/20"}`} />

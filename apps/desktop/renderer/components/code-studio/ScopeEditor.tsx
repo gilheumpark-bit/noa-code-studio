@@ -182,6 +182,30 @@ export function ScopeEditor(props: ScopeEditorProps) {
     selection?: MonacoNS.Selection;
   } | null>(null);
 
+  // Ghost text hint bar state
+  const [ghostHintVisible, setGhostHintVisible] = useState(false);
+  const ghostHintTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showGhostHint = useCallback(() => {
+    setGhostHintVisible(true);
+    if (ghostHintTimerRef.current) clearTimeout(ghostHintTimerRef.current);
+    ghostHintTimerRef.current = setTimeout(() => setGhostHintVisible(false), 3000);
+  }, []);
+
+  const hideGhostHint = useCallback(() => {
+    setGhostHintVisible(false);
+    if (ghostHintTimerRef.current) {
+      clearTimeout(ghostHintTimerRef.current);
+      ghostHintTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (ghostHintTimerRef.current) clearTimeout(ghostHintTimerRef.current);
+    };
+  }, []);
+
   // Cleanup cross-file disposable on unmount
   useEffect(() => {
     return () => {
@@ -207,7 +231,14 @@ export function ScopeEditor(props: ScopeEditorProps) {
            });
         }
      } else {
-        ed.trigger('keyboard', 'type', { text: "bg-bg-primary text-text-primary border-border focus-visible:ring-2 active:scale-95 transition-all duration-150" });
+        // No selection: show a brief inline hint instead of inserting debug text
+        const contrib = ed.getContribution?.('editor.contrib.messageController');
+        if (contrib && typeof (contrib as { showMessage: unknown }).showMessage === 'function') {
+          (contrib as { showMessage: (msg: { value: string }, pos: unknown) => void }).showMessage(
+            { value: lang === 'ko' ? '인라인 편집: 먼저 코드를 선택하세요' : 'Select code first to edit inline (Cmd+I)' },
+            ed.getPosition()
+          );
+        }
      }
   }, [activeFile?.language]);
 
@@ -295,6 +326,21 @@ export function ScopeEditor(props: ScopeEditorProps) {
     });
     (editor as { onDidChangeCursorPosition: (cb: (e: { position: { lineNumber: number; column: number } }) => void) => void }).onDidChangeCursorPosition((e) => {
       onCursorChange(e.position.lineNumber, e.position.column);
+    });
+
+    // Ghost text hint: show when inline suggestion appears, hide on keypress
+    const ghostSuggestDisposable = ed.onDidChangeModelContent(() => {
+      // Check if ghost text (inline suggestion) widget is visible in DOM
+      const ghostWidget = (ed.getDomNode() as HTMLElement | null)?.querySelector('.ghost-text-decoration, .suggest-preview-text, [class*="ghost"]');
+      if (ghostWidget) {
+        showGhostHint();
+      }
+    });
+    ed.onKeyDown(() => {
+      hideGhostHint();
+    });
+    (editor as { onDidDispose: (cb: () => void) => void }).onDidDispose(() => {
+      ghostSuggestDisposable?.dispose?.();
     });
     
     // Register Cmd+I
@@ -549,6 +595,27 @@ export function ScopeEditor(props: ScopeEditorProps) {
           )}
 
           <LocalDesktopStatus />
+
+          {/* Ghost text hint bar */}
+          <AnimatePresence>
+            {ghostHintVisible && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.15 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 rounded-full bg-bg-secondary/80 backdrop-blur-md border border-border/40 shadow-lg"
+              >
+                <span className="text-[11px] text-text-tertiary font-medium tracking-wide">
+                  <kbd className="px-1.5 py-0.5 rounded bg-bg-primary/60 border border-border/30 text-text-secondary text-[10px] font-mono mr-1">Tab</kbd>
+                  {lang === 'ko' ? '수락' : 'to accept'}
+                  <span className="mx-2 text-border">|</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-bg-primary/60 border border-border/30 text-text-secondary text-[10px] font-mono mr-1">Esc</kbd>
+                  {lang === 'ko' ? '닫기' : 'to dismiss'}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Right panel slot — injected via children from Shell */}

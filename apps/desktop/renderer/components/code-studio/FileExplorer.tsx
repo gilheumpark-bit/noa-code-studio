@@ -202,6 +202,7 @@ function TreeNode({
         {isRenaming ? (
           <input
             autoFocus
+            aria-label={L4(lang, { ko: "파일 이름 변경", en: "Rename file" })}
             className="flex-1 bg-bg-primary border border-amber-600/45 rounded px-1 text-xs outline-none"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
@@ -383,6 +384,7 @@ export function FileExplorer({
             onClick={() => setCollapseAllTrigger((v) => v + 1)}
             className="p-0.5 hover:bg-white/5 rounded text-text-tertiary hover:text-text-primary"
             title={L4(lang, { ko: "모두 접기", en: "Collapse all" })}
+            aria-label={L4(lang, { ko: "모두 접기", en: "Collapse all" })}
           >
             <FoldVertical size={12} />
           </button>
@@ -390,6 +392,7 @@ export function FileExplorer({
             onClick={() => setDialog({ type: "new-file", parentId: null })}
             className="p-0.5 hover:bg-white/5 rounded text-text-tertiary hover:text-text-primary"
             title={L4(lang, { ko: "새 파일", en: "New file" })}
+            aria-label={L4(lang, { ko: "새 파일", en: "New file" })}
           >
             <Plus size={12} />
           </button>

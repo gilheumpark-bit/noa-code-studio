@@ -8,7 +8,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import {
   Send, Square, AtSign, History, Plus, Check, Zap, Stethoscope,
-  FileJson, FileCode, FileText, Type, Loader2
+  FileJson, FileCode, FileText, Type, Loader2, Clipboard, CheckCheck
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCodeStudioChat } from "@/hooks/useCodeStudioChat";
@@ -217,11 +217,45 @@ ${mcpToolsDoc}`;
   });
 
   const [input, setInput] = useState("");
+  const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
   const [showMentions, setShowMentions] = useState(false);
-  const [_mentionQuery, _setMentionQuery] = useState("");
+  const [mentionQuery, setMentionQuery] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // ---- @mention: collect file names from tree ----
+  const allFileNamesFromTree = useMemo(() => {
+    const result: string[] = [];
+    function walk(nodes?: FileNode[]) {
+      if (!nodes) return;
+      for (const n of nodes) {
+        if (n.type === "file") result.push(n.name);
+        if (n.children) walk(n.children);
+      }
+    }
+    walk(tree);
+    return result;
+  }, [tree]);
+
+  const filteredFiles = useMemo(() => {
+    const fileList = allFileNamesFromTree.length > 0 ? allFileNamesFromTree : (_allFileNames ?? []);
+    if (!mentionQuery) return fileList.slice(0, 20);
+    const q = mentionQuery.toLowerCase();
+    return fileList.filter((f) => f.toLowerCase().includes(q)).slice(0, 20);
+  }, [allFileNamesFromTree, _allFileNames, mentionQuery]);
+
+  const handleMentionSelect = useCallback((mention: string) => {
+    const atIdx = input.lastIndexOf("@");
+    if (atIdx >= 0) {
+      setInput(input.slice(0, atIdx) + mention + " ");
+    } else {
+      setInput(input + mention + " ");
+    }
+    setShowMentions(false);
+    setMentionQuery("");
+    inputRef.current?.focus();
+  }, [input]);
 
   useEffect(() => {
     if (!isMounted) return;
@@ -274,7 +308,10 @@ ${mcpToolsDoc}`;
               {activeTier.split('-')[0].toUpperCase()}
             </div>
             <span className="text-xs font-bold text-text-primary capitalize tracking-tight flex items-center gap-2">
-              {TIER_REGISTRY[activeTier].role.replace('_', ' ')}
+              {ko
+                ? { 't1-auditor': '코드 리뷰', 't2-composer': '코드 작성', 't3-patcher': '버그 수정', 't4-predictor': '자동완성' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
+                : { 't1-auditor': 'Code Review', 't2-composer': 'Code Writer', 't3-patcher': 'Bug Fixer', 't4-predictor': 'Autocomplete' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
+              }
               {stressLevel > 0.6 && <Zap size={10} className="text-accent-red animate-pulse" title="High Stress Tuned" />}
             </span>
           </button>
@@ -282,26 +319,28 @@ ${mcpToolsDoc}`;
           {showRoleSelector && (
             <div className="absolute top-full left-0 mt-2.5 w-64 bg-bg-secondary/80 backdrop-blur-3xl border border-border/40 rounded-2xl shadow-2xl z-[var(--z-dropdown)] p-2 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="grid grid-cols-1 gap-1">
-                <div className="px-3 py-1.5 text-[9px] font-bold text-text-tertiary uppercase tracking-widest opacity-60">AI Engine Tiers</div>
+                <div className="px-3 py-1.5 text-[9px] font-bold text-text-tertiary uppercase tracking-widest opacity-60">{L4(lang, { ko: 'AI 모드 선택', en: 'AI Mode' })}</div>
                 {(Object.keys(TIER_REGISTRY) as AITier[]).map(tier => {
-                  const names = {
-                    't1-auditor': 'Auditor (AST/Schema)',
-                    't2-composer': 'Composer (Architecture)',
-                    't3-patcher': 'Patcher (Buffer Mutator)',
-                    't4-predictor': 'Predictor (FIM Node)'
+                  const tierDisplay: Record<string, { name: string; nameKo: string; desc: string; descKo: string; icon: string }> = {
+                    't1-auditor': { name: 'Code Review', nameKo: '코드 리뷰', desc: 'Analyze code for bugs, security issues, and best practices', descKo: '버그, 보안 이슈, 모범 사례 분석', icon: 'T1' },
+                    't2-composer': { name: 'Code Writer', nameKo: '코드 작성', desc: 'Generate new code, features, and components', descKo: '새 코드, 기능, 컴포넌트 생성', icon: 'T2' },
+                    't3-patcher': { name: 'Bug Fixer', nameKo: '버그 수정', desc: 'Fix errors and patch existing code', descKo: '오류 수정 및 기존 코드 패치', icon: 'T3' },
+                    't4-predictor': { name: 'Autocomplete', nameKo: '자동완성', desc: 'Predict and complete code as you type', descKo: '타이핑하면서 코드 예측 및 완성', icon: 'T4' },
                   };
+                  const display = tierDisplay[tier] ?? { name: tier, nameKo: tier, desc: '', descKo: '', icon: tier.split('-')[0].toUpperCase() };
                   return (
-                    <button 
+                    <button
                       key={tier}
                       onClick={() => { setActiveTier(tier); setShowRoleSelector(false); }}
                       className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors ${activeTier === tier ? 'bg-blue-500/15 text-blue-500 shadow-inner' : 'hover:bg-bg-tertiary/50 text-text-secondary'}`}
+                      title={ko ? display.descKo : display.desc}
                     >
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold border shadow-sm ${activeTier === tier ? 'bg-blue-500/20 border-blue-500/40 text-blue-500' : 'bg-bg-primary border-border/40 text-text-tertiary'}`}>
-                        {tier.split('-')[0].toUpperCase()}
+                        {display.icon}
                       </div>
                       <div>
-                        <p className="text-[12px] font-bold">{names[tier as keyof typeof names]}</p>
-                        <p className="text-[9px] text-text-tertiary opacity-80 mt-0.5">{TIER_REGISTRY[tier].role}</p>
+                        <p className="text-[12px] font-bold">{ko ? display.nameKo : display.name}</p>
+                        <p className="text-[9px] text-text-tertiary opacity-80 mt-0.5">{ko ? display.descKo : display.desc}</p>
                       </div>
                     </button>
                   );
@@ -336,7 +375,7 @@ ${mcpToolsDoc}`;
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-5 space-y-8 scroll-smooth custom-scrollbar pb-10">
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-5 space-y-8 scroll-smooth custom-scrollbar pb-10" role="log" aria-live="polite" aria-relevant="additions">
         {chat.messages.length === 0 && !chat.isStreaming && (
           <div className="flex flex-col items-center justify-center py-24 px-8 text-center animate-in zoom-in-95 duration-700 ease-out">
             <MascotQuill state="greeting" />
@@ -417,13 +456,29 @@ ${mcpToolsDoc}`;
                             <span className="text-[11px] font-semibold text-text-secondary flex items-center gap-2 tracking-tight">
                               {getFileIcon(block.fileName || 'file.ts')} {block.fileName || 'Suggested code'}
                             </span>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                               {lint.score < 100 && (
                                 <span className="text-[10px] uppercase tracking-widest font-bold text-accent-red flex items-center gap-1.5">
                                   <Stethoscope size={12} /> {L4(lang, { ko: '디자인 이슈', en: 'Design Issues' })}
                                 </span>
                               )}
-                              <button 
+                              <button
+                                onClick={() => {
+                                  const copyId = `${msg.id}-${idx}`;
+                                  navigator.clipboard.writeText(block.code).then(() => {
+                                    setCopiedBlockId(copyId);
+                                    setTimeout(() => setCopiedBlockId(null), 2000);
+                                  }).catch(() => {});
+                                }}
+                                className="px-2.5 py-1.5 rounded-lg bg-bg-primary/60 border border-border/40 text-text-secondary text-[10px] font-bold hover:bg-bg-tertiary/80 active:scale-95 transition-all flex items-center gap-1.5"
+                              >
+                                {copiedBlockId === `${msg.id}-${idx}` ? (
+                                  <><CheckCheck size={11} className="text-accent-green" /> {L4(lang, { ko: '복사됨!', en: 'Copied!' })}</>
+                                ) : (
+                                  <><Clipboard size={11} /> {L4(lang, { ko: '복사', en: 'Copy' })}</>
+                                )}
+                              </button>
+                              <button
                                 onClick={() => onApplyCode?.(block.code, block.fileName)}
                                 className="px-3 py-1.5 rounded-lg bg-accent-blue text-white text-[10px] font-bold hover:scale-105 active:scale-95 transition-all shadow-sm shadow-accent-blue/20"
                               >
@@ -446,18 +501,26 @@ ${mcpToolsDoc}`;
         })}
 
         {chat.isStreaming && (
-          <div className="flex items-center gap-4 pl-3 mt-4 animate-in fade-in duration-500">
+          <div className="flex items-start gap-4 pl-3 mt-4 animate-in fade-in duration-500">
             <MascotQuill state="thinking" />
-            <div className="space-y-1.5">
+            <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-extrabold text-text-primary uppercase tracking-widest">
-                  {`${TIER_REGISTRY[activeTier].role.replace('_', ' ')} ${L4(lang, { ko: '처리 중', en: 'Processing' })}`}
+                  {ko
+                    ? { 't1-auditor': '코드 리뷰', 't2-composer': '코드 작성', 't3-patcher': '버그 수정', 't4-predictor': '자동완성' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
+                    : { 't1-auditor': 'Code Review', 't2-composer': 'Code Writer', 't3-patcher': 'Bug Fixer', 't4-predictor': 'Autocomplete' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
+                  }
+                  {' '}{L4(lang, { ko: '처리 중', en: 'Processing' })}
                 </span>
-                <div className="flex gap-1 ml-1 text-amber-500">
-                   <Loader2 size={12} className="animate-spin" />
-                </div>
+                <Loader2 size={12} className="animate-spin text-amber-500" />
               </div>
               <p className="text-[10px] font-medium text-text-tertiary">{L4(lang, { ko: '컨텍스트를 디코딩하고 합성하는 중...', en: 'Decoding context and synthesizing...' })}</p>
+              {/* Typing skeleton */}
+              <div className="space-y-2 pt-1">
+                <div className="h-3 w-4/5 rounded-full bg-bg-tertiary/40 animate-pulse" />
+                <div className="h-3 w-3/5 rounded-full bg-bg-tertiary/30 animate-pulse" style={{ animationDelay: '150ms' }} />
+                <div className="h-3 w-2/5 rounded-full bg-bg-tertiary/20 animate-pulse" style={{ animationDelay: '300ms' }} />
+              </div>
             </div>
           </div>
         )}
@@ -503,7 +566,21 @@ ${mcpToolsDoc}`;
               ref={inputRef} 
               value={input} 
               onChange={(e) => {
-                setInput(e.target.value);
+                const val = e.target.value;
+                setInput(val);
+                // @mention detection
+                const atIdx = val.lastIndexOf("@");
+                if (atIdx >= 0 && (atIdx === 0 || val[atIdx - 1] === " ")) {
+                  const query = val.slice(atIdx + 1);
+                  if (!query.includes(" ")) {
+                    setShowMentions(true);
+                    setMentionQuery(query);
+                  } else {
+                    setShowMentions(false);
+                  }
+                } else {
+                  setShowMentions(false);
+                }
                 keystrokeCount.current += 1;
                 if (keystrokeCount.current > 20) {
                   setStressLevel(prev => Math.min(1.0, prev + 0.15));
@@ -520,17 +597,19 @@ ${mcpToolsDoc}`;
                 } 
               }}
               placeholder={ko ? "명령을 입력하세요... (@를 눌러 컨텍스트 멘션)" : "Type your query... (use @ for context)"}
+              aria-label={L4(lang, { ko: "채팅 메시지 입력", en: "Chat message input" })}
               className="flex-1 bg-transparent text-[14px] outline-none text-text-primary font-medium placeholder:text-text-tertiary/50 placeholder:font-normal"
             />
             <div className="flex items-center gap-2 shrink-0">
               {chat.isStreaming ? (
-                <button onClick={() => chat.abort()} className="p-3 rounded-2xl bg-accent-red/15 text-accent-red hover:bg-accent-red hover:text-white transition-all shadow-sm shadow-accent-red/10 active:scale-95">
+                <button onClick={() => chat.abort()} aria-label={L4(lang, { ko: "생성 중단", en: "Stop generation" })} className="p-3 rounded-2xl bg-accent-red/15 text-accent-red hover:bg-accent-red hover:text-white transition-all shadow-sm shadow-accent-red/10 active:scale-95">
                   <Square size={18} fill="currentColor" />
                 </button>
               ) : (
-                <button 
-                   onClick={handleSend} 
-                   disabled={!input.trim()} 
+                <button
+                   onClick={handleSend}
+                   disabled={!input.trim()}
+                   aria-label={L4(lang, { ko: "메시지 전송", en: "Send message" })}
                    className="p-3 rounded-2xl bg-accent-blue text-white disabled:bg-bg-tertiary/50 disabled:text-text-tertiary shadow-lg shadow-accent-blue/20 transition-all hover:scale-105 active:scale-95 hover:shadow-accent-blue/40 disabled:shadow-none"
                 >
                   <Send size={18} className="translate-x-[1px] translate-y-[1px]" />
