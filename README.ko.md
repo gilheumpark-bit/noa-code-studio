@@ -1,15 +1,18 @@
 <div align="center">
 
+<img src=".github/icon.png" alt="NOA Code Studio" width="128" />
+
 # NOA Code Studio
 
-### AI 기반 데스크톱 IDE — 검증 파이프라인 내장
+**AI 기반 데스크톱 IDE — 검증 파이프라인 내장**
 
 로컬 우선. 당신의 키. 당신의 파일. 당신의 머신.
 
-![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)
-![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
+[![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)](LICENSE)
+[![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)](#기술-스택)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](#기술-스택)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](#기술-스택)
+![Version](https://img.shields.io/badge/version-0.2.0--beta-green?style=flat-square)
 
 [English](README.md) | [한국어](#빠른-시작)
 

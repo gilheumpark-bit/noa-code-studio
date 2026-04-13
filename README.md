@@ -1,17 +1,20 @@
 <div align="center">
 
+<img src=".github/icon.png" alt="NOA Code Studio" width="128" />
+
 # NOA Code Studio
 
-### AI-Powered Desktop IDE with Verification Pipeline
+**AI-Powered Desktop IDE with Verification Pipeline**
 
 Local-first. Your keys. Your files. Your machine.
 
-![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)
-![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Status](https://img.shields.io/badge/status-beta_0.2.0-green?style=flat-square)
+[![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)](LICENSE)
+[![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)](#tech-stack)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](#tech-stack)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](#tech-stack)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](#tech-stack)
+![Version](https://img.shields.io/badge/version-0.2.0--beta-green?style=flat-square)
+[![GitHub](https://img.shields.io/github/stars/gilheumpark-bit/noa-code-studio?style=flat-square)](https://github.com/gilheumpark-bit/noa-code-studio)
 
 [English](#quick-start) | [한국어](README.ko.md)
 
