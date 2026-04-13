@@ -63,7 +63,7 @@
     "electron-builder": "^26.8.1",
     "electron-packager": "^17.1.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
+    "eslint-config-next": "16.2.3",
     "isomorphic-git": "^1.37.5",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
