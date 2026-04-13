@@ -44,7 +44,7 @@
     "@eh/quill-cli": "workspace:*",
     "@eh/quill-engine": "workspace:*",
     "@eh/shared-types": "workspace:*",
-    "@google/genai": "^1.47.0",
+    "@google/genai": "^1.49.0",
     "@isomorphic-git/lightning-fs": "^4.6.2",
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/postcss": "^4",
