@@ -27,10 +27,10 @@ cd noa-code-studio
 pnpm install
 
 # Development (hot reload)
-pnpm --filter eh-code-studio-desktop run dev:electron
+pnpm --filter noa-code-studio run dev:electron
 
 # Production build (Windows)
-pnpm --filter eh-code-studio-desktop run build:electron
+pnpm --filter noa-code-studio run build:electron
 # Output: dist/desktop/*.exe, *.zip
 ```
 
@@ -247,19 +247,19 @@ pnpm --version   # 9+
 pnpm install
 
 # Dev mode with hot reload
-pnpm --filter eh-code-studio-desktop run dev:electron
+pnpm --filter noa-code-studio run dev:electron
 
 # Type check
-pnpm --filter eh-code-studio-desktop run verify:static
+pnpm --filter noa-code-studio run verify:static
 
 # Unit tests
-pnpm --filter eh-code-studio-desktop run test
+pnpm --filter noa-code-studio run test
 
 # E2E tests (requires built app)
-pnpm --filter eh-code-studio-desktop run test:e2e
+pnpm --filter noa-code-studio run test:e2e
 
 # Production build
-pnpm --filter eh-code-studio-desktop run build:electron
+pnpm --filter noa-code-studio run build:electron
 ```
 
 ### Project Scripts

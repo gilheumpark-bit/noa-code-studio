@@ -21,16 +21,16 @@ pnpm install
 
 ```bash
 # Run in dev mode with hot reload
-pnpm --filter eh-code-studio-desktop run dev:electron
+pnpm --filter noa-code-studio run dev:electron
 
 # Type check + lint
-pnpm --filter eh-code-studio-desktop run verify:static
+pnpm --filter noa-code-studio run verify:static
 
 # Unit tests
-pnpm --filter eh-code-studio-desktop run test
+pnpm --filter noa-code-studio run test
 
 # E2E tests (requires built app)
-pnpm --filter eh-code-studio-desktop run test:e2e
+pnpm --filter noa-code-studio run test:e2e
 ```
 
 ## Code Standards

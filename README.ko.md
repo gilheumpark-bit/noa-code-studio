@@ -25,10 +25,10 @@ cd noa-code-studio
 pnpm install
 
 # 개발 모드 (핫 리로드)
-pnpm --filter eh-code-studio-desktop run dev:electron
+pnpm --filter noa-code-studio run dev:electron
 
 # 프로덕션 빌드
-pnpm --filter eh-code-studio-desktop run build:electron
+pnpm --filter noa-code-studio run build:electron
 ```
 
 **요구사항:** Node.js 20+, pnpm 9+, Git
@@ -63,10 +63,10 @@ Electron 41 | Next.js 16 | React 19 | Tailwind 4 | Monaco Editor | xterm.js | Zu
 ## 개발
 
 ```bash
-pnpm --filter eh-code-studio-desktop run dev:electron   # 개발
-pnpm --filter eh-code-studio-desktop run verify:static  # 타입+린트
-pnpm --filter eh-code-studio-desktop run test            # 테스트
-pnpm --filter eh-code-studio-desktop run build:electron  # 빌드
+pnpm --filter noa-code-studio run dev:electron   # 개발
+pnpm --filter noa-code-studio run verify:static  # 타입+린트
+pnpm --filter noa-code-studio run test            # 테스트
+pnpm --filter noa-code-studio run build:electron  # 빌드
 ```
 
 ## 라이선스

@@ -12,7 +12,7 @@
 
 **Do NOT open a public issue for security vulnerabilities.**
 
-Email: dev@eh-universe.com
+Email: gilheumpark.bit@gmail.com
 Or: Open a [GitHub Security Advisory](https://github.com/gilheumpark-bit/noa-code-studio/security/advisories/new)
 
 We will respond within 72 hours and provide a fix timeline.
