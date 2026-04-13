@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'EH Code Studio',
+    title: 'NOA Code Studio',
   },
   formatDetection: {
     telephone: false,
@@ -70,27 +70,27 @@ export const metadata: Metadata = {
     'mobile-web-app-capable': 'yes',
   },
   title: {
-    default: "EH Code Studio — Agentic Coding Engine",
-    template: "EH Code Studio | %s",
+    default: "NOA Code Studio — AI-Powered Desktop IDE",
+    template: "NOA Code Studio | %s",
   },
   description:
-    "Next-generation Agentic Coding Engine. AI-integrated development environment for EH-Universe.",
-  metadataBase: new URL("https://eh-universe.com"),
+    "AI-powered desktop IDE with verification pipeline, local Ollama models, and MCP tool protocol.",
+  metadataBase: new URL("https://github.com/gilheumpark-bit/noa-code-studio"),
   alternates: {
-    canonical: "https://eh-universe.com",
+    canonical: "https://github.com/gilheumpark-bit/noa-code-studio",
   },
   openGraph: {
-    title: "EH Code Studio — Agentic Coding Engine",
+    title: "NOA Code Studio — AI-Powered Desktop IDE",
     description:
-      "Next-generation Agentic Coding Engine. AI-integrated development environment for EH-Universe.",
+      "AI-powered desktop IDE with verification pipeline, local Ollama models, and MCP tool protocol.",
     type: "website",
-    url: "https://eh-universe.com",
-    images: [{ url: "/images/hero-mina.jpg", width: 1200, height: 630, alt: "EH Code Studio" }],
+    url: "https://github.com/gilheumpark-bit/noa-code-studio",
+    images: [{ url: "/images/quill.png", width: 1200, height: 630, alt: "NOA Code Studio" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "EH Code Studio — Agentic Coding Engine",
-    description: "Next-generation Agentic Coding Engine. AI-integrated development environment.",
+    title: "NOA Code Studio — AI-Powered Desktop IDE",
+    description: "AI-powered desktop IDE with verification pipeline and local AI models.",
     images: ["/images/hero-mina.jpg"],
   },
   robots: {
@@ -159,7 +159,7 @@ export default function RootLayout({
         {/* Noscript fallback */}
         <noscript>
           <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
-            <h1>EH Code Studio</h1>
+            <h1>NOA Code Studio</h1>
             <p>이 사이트는 JavaScript가 필요합니다. 브라우저 설정에서 JavaScript를 활성화해주세요.</p>
             <p>This site requires JavaScript. Please enable JavaScript in your browser settings.</p>
           </div>

@@ -1,11 +1,10 @@
 # apps/desktop/electron-builder.yml
 #
-# 3-OS packaging configuration for EH Code Studio.
-# Used by `pnpm --filter @eh/desktop exec electron-builder`.
+# 3-OS packaging configuration for NOA Code Studio.
 
-appId: com.eh.codestudio
-productName: EH Code Studio
-copyright: Copyright © 2026 EH Universe
+appId: com.noa.codestudio
+productName: NOA Code Studio
+copyright: Copyright © 2026 gilheumpark-bit
 artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 
 # ============================================================
@@ -46,7 +45,7 @@ mac:
   category: public.app-category.developer-tools
   hardenedRuntime: true
   gatekeeperAssess: false
-  notarize: true              # Requires APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID in env
+  notarize: true
   target:
     - target: dmg
       arch: [x64, arm64]
@@ -79,17 +78,18 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  runAfterFinish: false
+  runAfterFinish: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: EH Code Studio
+  shortcutName: NOA Code Studio
+  uninstallDisplayName: NOA Code Studio
 
 linux:
   category: Development
   desktop:
     entry:
-      Name: EH Code Studio
-      Comment: Verified Coding Studio
+      Name: NOA Code Studio
+      Comment: AI-Powered Desktop IDE
       Categories: Development;IDE;
   target:
     - target: AppImage
@@ -106,12 +106,12 @@ linux:
 
 publish:
   provider: github
-  owner: eh-universe
-  repo: code-studio
+  owner: gilheumpark-bit
+  repo: noa-code-studio
   releaseType: release
 
 # ============================================================
-# Build hooks (sign / notarize / etc.)
+# Build hooks
 # ============================================================
 
 forceCodeSigning: false

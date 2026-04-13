@@ -1,8 +1,8 @@
 {
-  "name": "eh-code-studio-desktop",
-  "version": "0.1.0-beta",
-  "description": "EH Code Studio — Agentic Coding Engine with verification pipeline",
-  "author": "EH Universe <dev@eh-universe.com>",
+  "name": "noa-code-studio",
+  "version": "0.2.0-beta",
+  "description": "NOA Code Studio — AI-Powered Desktop IDE with Verification Pipeline",
+  "author": "gilheumpark-bit",
   "license": "CC-BY-NC-4.0",
   "private": true,
   "main": "app/main.js",
@@ -19,7 +19,8 @@
     "cs": "ts-node --project tsconfig.cli.json renderer/cli/bin/cs.ts",
     "cs:build": "tsc --project tsconfig.cli.json",
     "dev:electron": "nextron",
-    "build:electron": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/prep-wincodesign-cache.ps1 && cross-env NODE_ENV=production nextron build --config electron-builder.yml --win --x64",
+    "build:electron": "cross-env NODE_ENV=production nextron build --config electron-builder.yml --win --x64",
+    "build:electron:all": "cross-env NODE_ENV=production nextron build --config electron-builder.yml",
     "electron:rebuild": "electron-builder install-app-deps"
   },
   "bin": {

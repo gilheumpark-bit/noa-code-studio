@@ -381,8 +381,8 @@ function buildMenu(): void {
       label: 'Help',
       submenu: [
         {
-          label: 'EH Code Studio Website',
-          click: () => shell.openExternal('https://github.com/eh-universe/code-studio'),
+          label: 'NOA Code Studio Website',
+          click: () => shell.openExternal('https://github.com/gilheumpark-bit/noa-code-studio'),
         },
       ],
     },
