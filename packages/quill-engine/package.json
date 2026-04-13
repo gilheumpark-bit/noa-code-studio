@@ -23,7 +23,7 @@
     "jest": "^30.3.0",
     "ts-jest": "^29.4.6",
     "ts-morph": "^23.0.0",
-    "typescript": "^5"
+    "typescript": "^6"
   },
   "exports": {
     ".": {
