@@ -1,19 +1,36 @@
 ---
-name: Feature request
-about: Suggest an idea for NOA Code Studio
+name: Feature Request
+about: Suggest a feature for NOA Code Studio
 title: "[FEATURE] "
 labels: enhancement
 assignees: ''
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Problem
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+<!-- What problem does this solve? -->
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## Proposed Solution
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+<!-- How should it work? -->
+
+## Alternatives Considered
+
+<!-- Other approaches you thought of -->
+
+## Affected Area
+
+- [ ] Editor (Monaco, tabs, inline edit)
+- [ ] AI / Chat (providers, FIM, agents)
+- [ ] Terminal / Shell
+- [ ] Git integration
+- [ ] MCP / Tools
+- [ ] Verification (Quill)
+- [ ] GitHub integration
+- [ ] UI / UX / Design system
+- [ ] Build / Packaging / CI
+- [ ] Other: ___
+
+## Additional Context
+
+<!-- Mockups, references, examples -->

@@ -9,6 +9,28 @@ updates:
       - dependencies
     commit-message:
       prefix: "deps"
+    ignore:
+      - dependency-name: "electron"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: npm
+    directory: /apps/desktop
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "deps(desktop)"
+
+  - package-ecosystem: npm
+    directory: /packages/quill-engine
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "deps(quill)"
 
   - package-ecosystem: github-actions
     directory: /

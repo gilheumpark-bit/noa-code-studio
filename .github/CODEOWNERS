@@ -4,7 +4,9 @@
 # Security-critical paths
 .github/workflows/ @gilheumpark-bit
 apps/desktop/main/ipc/keystore.ts @gilheumpark-bit
-apps/desktop/main/ipc/ai.ts @gilheumpark-bit
-apps/desktop/main/services/mcp-stdio.ts @gilheumpark-bit
-apps/desktop/main/preload.ts @gilheumpark-bit
-packages/shared-types/ @gilheumpark-bit
+apps/desktop/main/services/providers.ts @gilheumpark-bit
+apps/desktop/main/services/crash-reporter.ts @gilheumpark-bit
+apps/desktop/main/ipc/fs.ts @gilheumpark-bit
+
+# Packaging
+apps/desktop/electron-builder.yml @gilheumpark-bit

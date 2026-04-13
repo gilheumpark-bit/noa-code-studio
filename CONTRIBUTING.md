@@ -1,97 +1,108 @@
-# Contributing to EH Code Studio
+# Contributing to NOA Code Studio
 
-Thank you for your interest. This document explains how to set up, develop, and submit changes.
+Thank you for your interest in contributing.
 
 ## Prerequisites
 
 - Node.js 20+
 - pnpm 9+
 - Git
-- (Optional) Ollama for local model testing
+- (Optional) Ollama for local AI testing
 
 ## Setup
 
 ```bash
-git clone https://github.com/gilheumpark-bit/local-code-studio.git
-cd local-code-studio
+git clone https://github.com/gilheumpark-bit/noa-code-studio.git
+cd noa-code-studio
 pnpm install
 ```
 
 ## Development
 
 ```bash
-# Electron dev mode (Next.js hot reload + Electron)
+# Run in dev mode with hot reload
 pnpm --filter eh-code-studio-desktop run dev:electron
 
-# Run tests
+# Type check + lint
+pnpm --filter eh-code-studio-desktop run verify:static
+
+# Unit tests
 pnpm --filter eh-code-studio-desktop run test
 
-# Lint
-pnpm --filter eh-code-studio-desktop run lint
-
-# Type check (strict)
-pnpm --filter eh-code-studio-desktop run verify:static
+# E2E tests (requires built app)
+pnpm --filter eh-code-studio-desktop run test:e2e
 ```
 
-## Build
+## Code Standards
 
-```bash
-# Full production build (renderer export + Electron packaging)
-pnpm --filter eh-code-studio-desktop run build:electron
+### Architecture Rules
+
+1. **IPC Security** — Renderer NEVER accesses Node.js directly. All privileged ops go through `window.cs` preload bridge.
+2. **Keystore** — API keys stored via `electron.safeStorage`. Preload exposes `set/has/list/delete` but NEVER `get`.
+3. **Panel Registry** — All panels registered in `core/panel-registry.ts`. No hardcoding panel imports.
+4. **PART Structure** — Files over 100 lines must use PART-based sections with clear separation headers.
+
+### Design System (v8.0)
+
+- **Semantic tokens only** — `bg-bg-primary`, `text-text-primary`, not raw Tailwind
+- **Z-index variables** — `var(--z-dropdown)`, `var(--z-modal)`, not numbers
+- **4px grid** — `--sp-xs`(4px) through `--sp-2xl`(32px)
+- **Touch targets** — Minimum 44px
+- **Focus** — `focus-visible:ring-2 ring-accent-blue`, never `outline: none` alone
+- **State indicators** — Color + icon + text (minimum 2 of 3)
+
+### Code Quality
+
+- TypeScript strict mode (`noEmit --strict`)
+- No `@ts-ignore` without explanation comment
+- All IPC handlers must have try/catch with structured error returns
+- No `eval()`, `exec()`, `__import__()`, `os.system()`, `new Function()` in production code
+
+## Pull Request Process
+
+1. Fork the repository
+2. Create a feature branch: `feat/your-feature` or `fix/your-fix`
+3. Ensure `verify:static` passes with 0 errors
+4. Ensure tests pass
+5. Submit PR using the template
+6. Wait for review
+
+### Commit Convention
+
+```
+type(scope): description
+
+Types: feat, fix, refactor, docs, test, chore, perf
+Scopes: desktop, renderer, ipc, quill, ai, git, mcp, docs
+```
+
+Examples:
+```
+feat(ipc): add request cancellation to AI streaming
+fix(renderer): prevent hydration mismatch in ScopeShell
+docs: update ARCHITECTURE.md for worker pool
 ```
 
 ## Project Structure
 
 ```
 apps/desktop/
-  main/          # Electron main process (Node.js)
-    ipc/         # IPC handlers (one file per domain)
-    services/    # Business logic (ai-service, mcp-stdio, updater)
-  renderer/      # Next.js frontend (React)
-    components/  # UI components (51-panel system)
-    hooks/       # React hooks
-    lib/         # Core logic, AI providers, features
+  main/           # Electron main (Node.js)
+    ipc/          # IPC handlers (one file per domain)
+    services/     # Business logic
+    workers/      # worker_threads
+  renderer/       # Next.js 16 (React 19)
+    components/   # UI components
+    hooks/        # Custom hooks
+    lib/          # Feature libraries
 packages/
-  quill-engine/  # Verification engine
-  quill-cli/     # CLI tool
-  shared-types/  # Shared TypeScript types
+  quill-engine/   # Verification engine
+  quill-cli/      # CLI tool
+  shared-types/   # Shared types
 ```
 
-## Coding Standards
+## Reporting Issues
 
-### Architecture Rules
-
-- **Panel registry**: All panels must be registered in `panel-registry.ts` and imported via `PanelImports.tsx`. No hardcoded panels.
-- **IPC security**: API keys never leave the main process. Renderer calls `keystore.set()` / `keystore.has()` but never `get()`.
-- **Semantic tokens**: Use Design System v8.0 tokens (`bg-bg-primary`, `text-text-primary`). No raw Tailwind colors.
-- **z-index variables**: Use `var(--z-dropdown)` etc. No hardcoded z-index numbers.
-
-### Code Quality
-
-- Verification-first: All code changes should pass `pnpm run verify:static`
-- No `eval()`, `exec()`, `os.system()`, `__import__()`
-- `typeof window` guard on all browser APIs used at module scope
-- Empty catch blocks must have a comment explaining why
-
-## Pull Request Process
-
-1. Fork and create a branch from `feat/desktop-only-migration`
-2. Make changes, ensure `verify:static` passes
-3. Write a clear PR description with what changed and why
-4. If adding a new IPC channel, update `preload.ts` + `cs-bridge.d.ts`
-5. If adding a new panel, register in `panel-registry.ts` + `PanelImports.tsx`
-
-## Commit Convention
-
-```
-type(scope): description
-
-# Examples:
-feat(desktop): add Ollama local model integration
-fix(code-studio): resolve hydration mismatch
-chore: update dependencies
-```
-
-## License
-
-By contributing, you agree that your contributions will be licensed under [CC BY-NC 4.0](LICENSE).
+- **Bugs:** Use the [Bug Report](https://github.com/gilheumpark-bit/noa-code-studio/issues/new?template=bug_report.md) template
+- **Features:** Use the [Feature Request](https://github.com/gilheumpark-bit/noa-code-studio/issues/new?template=feature_request.md) template
+- **Security:** See [SECURITY.md](SECURITY.md) for responsible disclosure

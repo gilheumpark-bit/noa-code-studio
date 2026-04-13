@@ -1,31 +1,44 @@
 ---
-name: Bug report
-about: Create a report to help us improve NOA Code Studio
+name: Bug Report
+about: Report a bug in NOA Code Studio
 title: "[BUG] "
 labels: bug
-assignees: ''
+assignees: gilheumpark-bit
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Description
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+<!-- Clear description of the bug -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Steps to Reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+1.
+2.
+3.
 
-**Environment (please complete the following information):**
- - OS: [e.g. Windows, Mac, Linux]
- - Install Form: [e.g. Desktop App, Web CLI, WebContainer]
- - Version [e.g. 0.1.0-alpha]
+## Expected Behavior
 
-**Additional context**
-Add any other context about the problem here.
+<!-- What should happen -->
+
+## Actual Behavior
+
+<!-- What actually happens -->
+
+## Environment
+
+- **OS:** Windows 11 / macOS 15 / Ubuntu 24.04
+- **App Version:** 0.2.0-beta
+- **Node.js:** 20.x
+- **Electron:** 41.x
+
+## Screenshots / Logs
+
+<!-- Paste crash logs from: Help > Open Crash Logs, or attach screenshots -->
+
+```
+Paste error output here
+```
+
+## Additional Context
+
+<!-- Ollama version, MCP server config, AI provider, etc. -->

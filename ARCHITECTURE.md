@@ -1,93 +1,124 @@
-# EH Universe Web -- Architecture
+# NOA Code Studio — Architecture
 
 ## Overview
 
-EH Universe Web is a Next.js 15 monorepo (App Router, Turbopack) deployed on Vercel ICN.
-It hosts five applications under a single domain with shared auth, i18n, and design system infrastructure.
+NOA Code Studio is an Electron 41 desktop IDE built on Next.js 16 (static export) via Nextron.
+The renderer runs in a sandboxed BrowserWindow; all privileged operations (file I/O, git, shell, API keys) happen in the main process via IPC.
 
-## Applications
+## Process Model
 
-| App | Route | Purpose |
-|-----|-------|---------|
-| Universe Portal | `/`, `/archive`, `/codex`, `/reference`, `/rulebook`, `/tools/*` | Lore archive, codex, reference tools |
-| Code Studio | `/code-studio` | Verified code generation studio with 8-team pipeline |
-| EH Network | `/network` | Community platform -- posts, reports, and network interactions |
+```
+┌────────────────────────────────┐
+│        Electron Main           │
+│  (Node.js — full OS access)    │
+│                                │
+│  ipc/fs.ts      — file I/O    │
+│  ipc/git.ts     — git CLI     │
+│  ipc/ai.ts      — AI stream   │
+│  ipc/shell.ts   — PTY         │
+│  ipc/quill.ts   — verify      │
+│  ipc/keystore   — OS keychain │
+│  ipc/ollama.ts  — local AI    │
+│  ipc/mcp.ts     — MCP servers │
+│  ipc/github.ts  — GitHub API  │
+│  workers/       — thread pool │
+│  services/      — business    │
+├────────────────────────────────┤
+│        Preload Bridge          │
+│  window.cs.{fs,ai,git,...}     │
+│  contextIsolation: true        │
+│  nodeIntegration: false        │
+├────────────────────────────────┤
+│        Renderer (Next.js)      │
+│  React 19 + Tailwind 4         │
+│  Monaco Editor + xterm.js      │
+│  51-panel UI + 18 hooks        │
+│  IndexedDB state persistence   │
+│  Static export (no SSR)        │
+└────────────────────────────────┘
+```
 
 ## Directory Structure
 
 ```
-src/
-  app/                  # Next.js App Router pages + API routes
-    api/                # 22 API routes (chat, translate, agent-search, etc.)
-    (universe)/         # Universe Portal pages
-    code-studio/        # Code Studio
-    network/            # EH Network
-  components/           # Shared React components
-  lib/                  # Core libraries
-    code-studio/        # Code Studio engine (6 dirs: core, ai, pipeline, editor, features, audit)
-    server-ai/          # Server-side AI provider abstraction
-  services/             # AI provider integrations
+apps/desktop/
+├── main/                       # Electron main process
+│   ├── main.ts                 # App entry, window creation, menu
+│   ├── preload.ts              # IPC bridge (window.cs)
+│   ├── ipc/                    # Domain-specific IPC handlers
+│   │   ├── ai.ts               # AI streaming + ARI circuit breaker
+│   │   ├── fs.ts               # File operations + chokidar watch
+│   │   ├── git.ts              # Git CLI wrapper
+│   │   ├── shell.ts            # PTY (node-pty / child_process)
+│   │   ├── quill.ts            # Verification with worker pool
+│   │   ├── keystore.ts         # OS keychain (safeStorage)
+│   │   ├── ollama.ts           # Ollama model management
+│   │   ├── mcp.ts              # MCP server lifecycle
+│   │   ├── github.ts           # GitHub REST API
+│   │   └── system.ts           # System info
+│   ├── services/               # Business logic
+│   │   ├── ai-service.ts       # Token budget, NOA gate, routing
+│   │   ├── providers.ts        # Provider streaming + security gate
+│   │   ├── mcp-stdio.ts        # MCP JSON-RPC process manager
+│   │   ├── crash-reporter.ts   # Structured error logging
+│   │   ├── updater.ts          # electron-updater
+│   │   └── cli-installer.ts    # CLI symlink/copy
+│   └── workers/
+│       └── quill-worker.ts     # worker_threads verification
+├── renderer/                   # Next.js 16 frontend
+│   ├── app/                    # Next.js App Router pages
+│   ├── components/code-studio/ # 51 panel components
+│   ├── hooks/                  # 18 custom hooks
+│   ├── lib/code-studio/        # Feature libraries
+│   │   ├── ai/                 # Ghost text, FIM, agents, MCP bridge
+│   │   ├── core/               # Store, registry, dependency analyzer
+│   │   ├── editor/             # Monaco setup, intellisense
+│   │   ├── features/           # Terminal, git, collaboration
+│   │   └── pipeline/           # Verification loop, autopilot
+│   └── types/                  # TypeScript declarations
+├── e2e/                        # Playwright Electron E2E tests
+└── electron-builder.yml        # Packaging config (3 OS)
+
+packages/
+├── quill-engine/               # Verification engine (300+ rules)
+├── quill-cli/                  # CLI tool (cs verify/suggest/audit)
+└── shared-types/               # Cross-package types
 ```
 
-## Code Studio Pipeline (8 Teams)
+## Security Model
 
-The Code Studio uses a simulated 8-team development pipeline:
+1. **Context Isolation** — `contextIsolation: true`, renderer cannot access Node.js
+2. **Preload Bridge** — Only whitelisted IPC channels exposed via `window.cs`
+3. **Keystore** — `electron.safeStorage` encrypts API keys; renderer can SET but never GET
+4. **NOA Gate** — 3-layer scanner (prompt injection, code injection, PII) before every AI request
+5. **Path Validation** — Null byte + system path blocking on all file operations
+6. **COEP/COOP** — Cross-Origin headers in production builds
+7. **MCP Sandboxing** — Each MCP server runs as isolated child process
 
-1. **PM** -- Requirements analysis and task decomposition
-2. **Architect** -- System design and component structure
-3. **Frontend** -- UI implementation with Design System v8.0
-4. **Backend** -- API and data layer generation
-5. **QA** -- Automated test generation
-6. **Security** -- Vulnerability scanning (436-rule dual catalog)
-7. **DevOps** -- Build verification and deployment prep
-8. **Tech Lead** -- Final review, scoring, and approval gate
+## Data Flow
 
-Each team runs in sequence within a Gen-Verify-Fix loop (adaptive 5-round, convergence detection).
-Pipeline scoring: goodBoost 20, filterBonus 15, teamHealthBonus 5.
+```
+User types in Chat
+  → useCodeStudioChat (hook)
+    → @mention context resolution
+    → system instruction + design preset injection
+  → window.cs.ai.chatStream (preload IPC)
+    → main/ipc/ai.ts
+      → NOA security gate (providers.ts:runNoa)
+      → token budget check (ai-service.ts)
+      → ARI circuit breaker state check
+      → fetch() to provider API (with AbortController)
+      → stream chunks via webContents.send()
+    → renderer receives chunks
+    → code block extraction + apply workflow
+```
 
-## Panel Registry (51 Panels)
+## Design System (v8.0)
 
-Code Studio panels are managed through a centralized registry (`core/panel-registry.ts` + `PanelImports.ts`).
-All panels use dynamic imports -- hardcoded panel references are prohibited.
-
-Key panels include: EditorPanel, TerminalPanel, ChatPanel, DatabasePanel (sql.js WebAssembly),
-GitPanel (isomorphic-git), DeployPanel (build verify + ZIP export), SecurityPanel, TestPanel,
-CollabPanel (CRDT engine with BroadcastChannel), and 42 more. 7 panels are simulated (JSDoc-documented).
-
-LUCIDE_MAP provides icon mappings for all 51 panels.
-
-## AI Integration
-
-- **Multi-provider**: Gemini, OpenAI, Claude, Groq, Mistral, DeepSeek, Ollama, LM Studio
-- **Server proxy**: All AI calls route through `/api/chat` (SSE streaming) to prevent key exposure
-- **BYOK + hosted**: Server env keys or user-provided keys
-- **Structured generation**: `/api/structured-generate` (provider-agnostic JSON schema output)
-- **Agent Builder**: Vertex AI Discovery Engine for semantic search across code repositories
-
-## CLI Integration
-
-- **Harness 3-Core**: Spy (6 API intercepts), Mutation (11 operators), Feedback loop
-- **Gate protocol**: GATE-SPY, GATE-FUZZ, GATE-MUT, GATE-AST, GATE-BUILD, GATE-TEST
-- **Fail-Fast pipeline**: Gate1 (static 0.1s) -> Gate2 (linter 0.2s) -> Gate3 (dynamic 3s)
-- **Autopilot**: `/api/code/autopilot` for headless Gemini-powered code generation
-
-## Design System v8.0
-
-Three-tier token system (FULL ~3K / COMPACT ~800 / MINIMAL ~100 tokens).
-16-rule runtime linter (`runDesignLint`), 5 presets, 4 UI primitives (Tooltip, Dropdown, Accordion, ProgressBar).
-Semantic tokens required (`bg-bg-primary`, `text-text-primary`); raw Tailwind values prohibited.
-
-## Infrastructure
-
-- **Auth**: Firebase Google Sign-In + Firestore security rules + Stripe subscription tiers
-- **Storage**: IndexedDB primary, localStorage fallback, Google Drive sync
-- **i18n**: 4 languages (KO, EN, JP, CN) via LangContext with type-safe switching
-- **Security**: CSP headers via `next.config.ts headers()`, CSRF origin checks, rate limiting (sliding window per IP)
-- **CI/CD**: GitHub Actions + Playwright E2E, Vercel deployment with Turbopack
-- **Cron**: `/api/cron/universe-daily` for automated content generation
-
-## Quality Catalog
-
-436-rule dual catalog: 224 bad patterns (anti-patterns, vulnerabilities) + 212 good patterns.
-Good pattern detector runs 40 regex rules. Context-aware, memoized for pipeline performance.
-Wired to both generation (prompt injection) and verification (scoring) stages.
+- **Semantic tokens** — `bg-bg-primary`, `text-text-primary`, `border-border`
+- **Z-index** — 7 layers via CSS variables (`--z-dropdown` through `--z-tooltip`)
+- **Spacing** — 4px grid (`--sp-xs` through `--sp-2xl`)
+- **Typography** — IBM Plex Sans + JetBrains Mono + Noto Sans KR
+- **Touch targets** — Minimum 44px
+- **Focus** — `focus-visible:ring-2 ring-accent-blue`
+- **Transitions** — Conditional theme animation (80ms fast / 150ms normal / 250ms slow)

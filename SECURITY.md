@@ -4,58 +4,83 @@
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x-beta | Yes |
-| < 0.1 | No |
+| 0.2.x-beta | Yes |
+| 0.1.x-beta | Security fixes only |
+| < 0.1.0 | No |
 
 ## Reporting a Vulnerability
 
-**Do not open a public issue.** Report via GitHub private vulnerability reporting or email the maintainer directly.
+**Do NOT open a public issue for security vulnerabilities.**
 
-- Acknowledgment within 48 hours
-- Timeline for fix provided within 1 week
-- Attribution in security advisories for verified reports
+Email: dev@eh-universe.com
+Or: Open a [GitHub Security Advisory](https://github.com/gilheumpark-bit/noa-code-studio/security/advisories/new)
+
+We will respond within 72 hours and provide a fix timeline.
 
 ## Security Architecture
 
-### API Key Protection
-
-- Keys stored in OS keychain via `electron.safeStorage` (DPAPI on Windows, Keychain on macOS, libsecret on Linux)
-- Renderer process can SET/HAS/LIST/DELETE keys but **never GET**
-- `window.cs.keystore` exposes no decryption to the renderer
-- XSS cannot exfiltrate API keys by design
-
 ### Process Isolation
 
-- `contextIsolation: true` — renderer has no access to Node.js APIs
-- `nodeIntegration: false` — no `require()` in renderer
-- All privileged operations go through the preload bridge (`window.cs`)
-- Preload exposes only typed, narrow methods
+| Layer | Access | Restrictions |
+|-------|--------|-------------|
+| Main process | Full OS | Handles all privileged operations |
+| Preload bridge | IPC only | `contextIsolation: true`, whitelisted channels only |
+| Renderer | Web sandbox | `nodeIntegration: false`, no direct Node.js access |
 
-### Content Security
+### API Key Protection
 
-- Production builds: `Cross-Origin-Embedder-Policy: require-corp` + `Cross-Origin-Opener-Policy: same-origin`
-- External links open in default browser (not in-app)
-- No `eval()`, `new Function()` in application code
-- Design transpiler has FORBIDDEN_PATTERN blocklist
+- Keys stored via `electron.safeStorage` (DPAPI on Windows, Keychain on macOS, libsecret on Linux)
+- Preload exposes `keystore.set()`, `keystore.has()`, `keystore.list()`, `keystore.delete()`
+- **No `keystore.get()` exists** — keys never leave the main process
+- Keys injected into HTTP headers at request time, never sent to renderer
+
+### NOA Security Gate
+
+Every AI request passes through a 3-layer scanner before reaching any provider:
+
+| Gate | Patterns | What It Blocks |
+|------|----------|---------------|
+| Prompt Injection | 17 | System prompt override, jailbreak, DAN mode, role-play exploits |
+| Code Injection | 11 | eval(), exec(), subprocess, new Function(), destructive fs ops |
+| PII Leakage | 10 | SSN, credit card numbers, API keys (OpenAI/Google/Anthropic/GitHub/AWS/Slack) |
+
+Sensitivity configurable: `strict` / `normal` (default) / `permissive`
+
+### File System Security
+
+- **Path traversal protection** — `validatePath()` blocks null bytes, `../` chains, and sensitive system paths (`/etc/shadow`, `System32`, `SAM`)
+- **Watcher isolation** — chokidar ignores `node_modules`, `.git`, `.next`, `dist`, `coverage`
+- **Size limits** — Quill verification skips files > 1MB
+
+### Network Security
+
+- **COEP/COOP headers** in production builds
+- **CSP headers** in development
+- **15-second timeout** on all GitHub API requests
+- **30-second timeout** on AI streaming requests
+- **ETag caching** with 5-minute hard TTL (no stale data)
 
 ### MCP Server Security
 
-- MCP servers run as child processes with inherited env only
-- No automatic execution of tools — user must configure servers explicitly
-- Server configs stored in `userData/mcp-servers.json` (not in renderer localStorage)
-- Max 3 auto-restarts before marking server as failed
+- Each MCP server runs as an isolated child process
+- SIGTERM with 5-second SIGKILL fallback on stop
+- Maximum 3 auto-restart attempts before marking as error
+- Config persistence to `userData/mcp-servers.json` (not in project directory)
 
-### Severity Classification
+### Known Limitations
 
-| Severity | Description |
-|----------|-------------|
-| P0 Critical | Context isolation bypass, main process compromise, key exfiltration |
-| P1 High | Arbitrary file write outside project scope, remote code execution in renderer |
-| P2 Medium | Information disclosure, denial of service, sandbox escape |
-| P3 Low | UI redressing, non-exploitable edge cases |
+| Item | Status | Mitigation |
+|------|--------|-----------|
+| `sandbox: false` in preload | Required for chokidar + node-pty | contextIsolation still enforced |
+| `forceCodeSigning: false` | Beta release | Will enforce before v1.0 |
+| Ollama HTTP unencrypted | localhost only | Document in settings UI |
+| No CSP in production renderer | Static export limitation | COEP/COOP compensate |
 
-## Known Limitations
+## Severity Classification
 
-- `sandbox: false` on renderer window (required for preload Node APIs like chokidar)
-- `forceCodeSigning: false` in electron-builder (no code signing certificate yet)
-- Local Ollama connections are unencrypted HTTP (localhost only)
+| Level | Description | Response Time |
+|-------|-------------|--------------|
+| P0 — Critical | Remote code execution, key exfiltration | 24 hours |
+| P1 — High | Path traversal, auth bypass, data loss | 72 hours |
+| P2 — Medium | XSS in renderer, info disclosure | 1 week |
+| P3 — Low | UI spoofing, minor info leak | Next release |
