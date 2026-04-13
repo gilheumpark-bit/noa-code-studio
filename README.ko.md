@@ -8,7 +8,8 @@
 
 로컬 우선. 당신의 키. 당신의 파일. 당신의 머신.
 
-[![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)](LICENSE)
+[![Code License](https://img.shields.io/badge/Code-MIT-green?style=flat-square)](LICENSE)
+[![Content License](https://img.shields.io/badge/Content-CC--BY--NC--4.0-blue?style=flat-square)](LICENSE.content)
 [![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)](#기술-스택)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](#기술-스택)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](#기술-스택)
@@ -74,6 +75,7 @@ pnpm --filter noa-code-studio run build:electron  # 빌드
 
 ## 라이선스
 
-[CC BY-NC 4.0](LICENSE) — 저작자표시-비영리.
+- **소스코드** — [MIT](LICENSE)
+- **창작 콘텐츠** (세계관, 캐릭터, 아트워크) — [CC BY-NC 4.0](LICENSE.content)
 
 자세한 내용은 [README.md](README.md) (English) 참조.

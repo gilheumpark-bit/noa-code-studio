@@ -8,7 +8,8 @@
 
 Local-first. Your keys. Your files. Your machine.
 
-[![License](https://img.shields.io/badge/CC--BY--NC--4.0-blue?style=flat-square)](LICENSE)
+[![Code License](https://img.shields.io/badge/Code-MIT-green?style=flat-square)](LICENSE)
+[![Content License](https://img.shields.io/badge/Content-CC--BY--NC--4.0-blue?style=flat-square)](LICENSE.content)
 [![Electron](https://img.shields.io/badge/Electron-41-47848F?style=flat-square&logo=electron&logoColor=white)](#tech-stack)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](#tech-stack)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](#tech-stack)
@@ -341,7 +342,8 @@ git tag v0.2.0-beta && git push --tags
 
 ## License
 
-[CC BY-NC 4.0](LICENSE) — Attribution-NonCommercial.
+- **Source code** — [MIT](LICENSE)
+- **Creative content** (lore, characters, artwork) — [CC BY-NC 4.0](LICENSE.content)
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
