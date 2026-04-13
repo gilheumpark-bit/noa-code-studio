@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.29.2",
-    "chokidar": "^3.6.0",
+    "chokidar": "^5.0.0",
     "electron-serve": "^3.0.1",
     "electron-updater": "^6.3.9",
     "jszip": "^3.10.1",
