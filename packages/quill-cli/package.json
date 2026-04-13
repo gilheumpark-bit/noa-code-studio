@@ -15,7 +15,7 @@
   "dependencies": {
     "@eh/quill-engine": "workspace:*",
     "@eh/shared-types": "workspace:*",
-    "commander": "^12.1.0"
+    "commander": "^14.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",
