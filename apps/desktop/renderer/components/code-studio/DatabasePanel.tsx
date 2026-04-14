@@ -23,6 +23,7 @@
 // ============================================================
 
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { logger } from "@/lib/logger";
 import {
   Database,
   Play,
@@ -144,7 +145,7 @@ function loadSqlJs(): Promise<SqlJsStatic | null> {
       });
       return SQL;
     } catch {
-      console.warn("[DatabasePanel] sql.js unavailable, using simulation fallback");
+      logger.warn("DatabasePanel", "sql.js unavailable, using simulation fallback");
       return null;
     }
   })();
@@ -547,7 +548,7 @@ function ResultsTable({
       db.run(sql);
       onRefresh();
     } catch (err) {
-      console.error("[DatabasePanel] Inline edit failed:", err);
+      logger.error("DatabasePanel", "Inline edit failed:", err);
     }
     setEditingCell(null);
   }, [editingCell, editValue, db, tableName, result, onRefresh]);

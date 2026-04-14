@@ -48,8 +48,7 @@ export async function createWebContainer(): Promise<WebContainerInstance> {
 // ============================================================
 
 async function bootRealContainer(): Promise<WebContainerInstance | null> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let api: any;
+  let api: { WebContainer?: { boot: () => Promise<unknown> } };
   try {
     // SECURITY: dynamic import of a hardcoded module name only — no eval/new Function.
     // The module name is a constant to prevent any injection vector.

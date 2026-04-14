@@ -297,7 +297,7 @@ export default function CodeCreatorPanel({ onMerge, onClose }: CodeCreatorPanelP
           <FileCode2 size={14} className="text-amber-400" />
           Code Creator
         </span>
-        <button onClick={onClose} aria-label="닫기" className="p-1 rounded hover:bg-white/5 text-text-secondary"><X size={14} /></button>
+        <button onClick={onClose} aria-label="닫기" className="p-1 rounded hover:bg-white/5 text-text-secondary focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><X size={14} /></button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
@@ -313,12 +313,12 @@ export default function CodeCreatorPanel({ onMerge, onClose }: CodeCreatorPanelP
             <div className="flex gap-2">
               {!running ? (
                 <button onClick={handleStart} disabled={!prompt.trim()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-amber-800 text-stone-100 hover:bg-amber-800 disabled:opacity-40">
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-amber-800 text-stone-100 hover:bg-amber-800 disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                   <Play size={12} /> Start Creation
                 </button>
               ) : (
                 <button onClick={handleStop}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-red-600 text-white hover:bg-red-500">
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-red-600 text-white hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                   <Square size={12} /> Stop
                 </button>
               )}
@@ -399,9 +399,9 @@ export default function CodeCreatorPanel({ onMerge, onClose }: CodeCreatorPanelP
                       {decision === "approved" ? "Approved" : decision === "rejected" ? "Rejected" : "Pending"}
                     </span>
                     <button onClick={(e) => { e.stopPropagation(); handleFileApprove(file.path); }}
-                      className="p-0.5 rounded hover:bg-green-500/20"><CheckCircle size={12} className="text-green-500" /></button>
+                      className="p-0.5 rounded hover:bg-green-500/20 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><CheckCircle size={12} className="text-green-500" /></button>
                     <button onClick={(e) => { e.stopPropagation(); handleFileReject(file.path); }}
-                      className="p-0.5 rounded hover:bg-red-500/20"><XCircle size={12} className="text-red-500" /></button>
+                      className="p-0.5 rounded hover:bg-red-500/20 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><XCircle size={12} className="text-red-500" /></button>
                   </div>
                   {isExpanded && (
                     <div className="border-t border-white/8 p-2">
@@ -425,10 +425,10 @@ export default function CodeCreatorPanel({ onMerge, onClose }: CodeCreatorPanelP
             </div>
             <p className="text-xs text-text-secondary mb-2">Some verification steps did not pass. Merging may introduce issues.</p>
             <div className="flex gap-2">
-              <button onClick={handleForceMerge} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded bg-red-600 text-white hover:bg-red-500">
+              <button onClick={handleForceMerge} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded bg-red-600 text-white hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                 <AlertTriangle size={12} /> Force Merge
               </button>
-              <button onClick={() => setShowMergeWarning(false)} className="px-3 py-1.5 text-xs rounded bg-white/5 text-text-primary hover:bg-white/10">
+              <button onClick={() => setShowMergeWarning(false)} className="px-3 py-1.5 text-xs rounded bg-white/5 text-text-primary hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                 Cancel
               </button>
             </div>
@@ -444,17 +444,17 @@ export default function CodeCreatorPanel({ onMerge, onClose }: CodeCreatorPanelP
                 placeholder="Revision feedback..."
                 className="flex-1 px-2 py-1 text-xs bg-[#0a0e17] border border-white/10 rounded focus:outline-none focus:border-amber-700/45" />
               <button type="button" disabled={!feedback.trim() || running} onClick={() => void handleRevise()}
-                className="flex items-center gap-1 px-2 py-1 text-[11px] rounded bg-amber-500 text-black hover:bg-amber-400 disabled:opacity-40">
+                className="flex items-center gap-1 px-2 py-1 text-[11px] rounded bg-amber-500 text-black hover:bg-amber-400 disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                 <RefreshCw size={10} /> Revise
               </button>
             </div>
             <div className="flex gap-2">
               <button onClick={handleMerge}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded bg-green-600 text-white hover:bg-green-500">
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded bg-green-600 text-white hover:bg-green-500 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                 <GitMerge size={14} /> Merge to Main
               </button>
               <button onClick={handleDiscard}
-                className="flex items-center gap-1 px-3 py-2 text-xs rounded bg-white/5 text-red-400 hover:bg-red-500/10">
+                className="flex items-center gap-1 px-3 py-2 text-xs rounded bg-white/5 text-red-400 hover:bg-red-500/10 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                 <Trash2 size={12} /> Discard
               </button>
             </div>

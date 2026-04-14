@@ -173,12 +173,12 @@ export function Toolbar({
           { label: L4(lang, { ko: "버그 파인더", en: "Bug Finder", ja: "バグファインダー", zh: "查找 Bug" }), action: onRunBugFinder },
         ]} />
         <div className="w-px h-4 bg-border mx-1" />
-        <button onClick={onUndo} title={L4(lang, { ko: "실행 취소 (Ctrl+Z)", en: "Undo (Ctrl+Z)", ja: "元に戻す (Ctrl+Z)", zh: "撤销 (Ctrl+Z)" })} aria-label={L4(lang, { ko: "실행 취소", en: "Undo", ja: "元に戻す", zh: "撤销" })} className="p-1.5 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><Undo2 size={14} /></button>
-        <button onClick={onRedo} title={L4(lang, { ko: "다시 실행 (Ctrl+Y)", en: "Redo (Ctrl+Y)", ja: "やり直し (Ctrl+Y)", zh: "重做 (Ctrl+Y)" })} aria-label={L4(lang, { ko: "다시 실행", en: "Redo", ja: "やり直し", zh: "重做" })} className="p-1.5 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><Redo2 size={14} /></button>
+        <button onClick={onUndo} title={L4(lang, { ko: "실행 취소 (Ctrl+Z)", en: "Undo (Ctrl+Z)", ja: "元に戻す (Ctrl+Z)", zh: "撤销 (Ctrl+Z)" })} aria-label={L4(lang, { ko: "실행 취소", en: "Undo", ja: "元に戻す", zh: "撤销" })} className="p-2 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><Undo2 size={14} /></button>
+        <button onClick={onRedo} title={L4(lang, { ko: "다시 실행 (Ctrl+Y)", en: "Redo (Ctrl+Y)", ja: "やり直し (Ctrl+Y)", zh: "重做 (Ctrl+Y)" })} aria-label={L4(lang, { ko: "다시 실행", en: "Redo", ja: "やり直し", zh: "重做" })} className="p-2 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><Redo2 size={14} /></button>
         <div className="w-px h-4 bg-border mx-1" />
-        <button onClick={onZoomOut} title={L4(lang, { ko: "축소 (Ctrl+-)", en: "Zoom Out (Ctrl+-)", ja: "縮小 (Ctrl+-)", zh: "缩小 (Ctrl+-)" })} aria-label={L4(lang, { ko: "축소", en: "Zoom Out", ja: "縮小", zh: "缩小" })} className="p-1.5 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><ZoomOut size={14} /></button>
+        <button onClick={onZoomOut} title={L4(lang, { ko: "축소 (Ctrl+-)", en: "Zoom Out (Ctrl+-)", ja: "縮小 (Ctrl+-)", zh: "缩小 (Ctrl+-)" })} aria-label={L4(lang, { ko: "축소", en: "Zoom Out", ja: "縮小", zh: "缩小" })} className="p-2 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><ZoomOut size={14} /></button>
         {fontSize != null && <button onClick={onZoomReset} title={L4(lang, { ko: "글꼴 크기 초기화", en: "Reset zoom", ja: "ズームリセット", zh: "重置缩放" })} aria-label={L4(lang, { ko: "글꼴 크기 초기화", en: "Reset zoom", ja: "ズームリセット", zh: "重置缩放" })} className="px-1.5 text-[10px] text-text-tertiary hover:bg-bg-secondary/60 rounded transition-colors">{fontSize}px</button>}
-        <button onClick={onZoomIn} title={L4(lang, { ko: "확대 (Ctrl+=)", en: "Zoom In (Ctrl+=)", ja: "拡大 (Ctrl+=)", zh: "放大 (Ctrl+=)" })} aria-label={L4(lang, { ko: "확대", en: "Zoom In", ja: "拡大", zh: "放大" })} className="p-1.5 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><ZoomIn size={14} /></button>
+        <button onClick={onZoomIn} title={L4(lang, { ko: "확대 (Ctrl+=)", en: "Zoom In (Ctrl+=)", ja: "拡大 (Ctrl+=)", zh: "放大 (Ctrl+=)" })} aria-label={L4(lang, { ko: "확대", en: "Zoom In", ja: "拡大", zh: "放大" })} className="p-2 rounded hover:bg-bg-secondary/60 text-text-secondary transition-colors"><ZoomIn size={14} /></button>
       </div>
       <div className="flex items-center gap-1">
         <ToolbarButton icon={<Search size={14} />} label={L4(lang, { ko: "검색", en: "Search", ja: "検索", zh: "搜索" })} active={false} onClick={() => onToggleSearch?.()} />
@@ -192,7 +192,7 @@ export function Toolbar({
         <ToolbarButton icon={<Columns2 size={14} />} label={L4(lang, { ko: "분할", en: "Split", ja: "分割", zh: "分屏" })} active={false} onClick={() => onToggleSplit?.()} />
         <ToolbarButton icon={<Rocket size={14} />} label={L4(lang, { ko: "배포", en: "Deploy", ja: "デプロイ", zh: "部署" })} active={false} onClick={() => onDeploy?.()} accent="green" />
         <div className="w-px h-4 bg-border mx-1" />
-        <button onClick={onOpenSettings} aria-label={L4(lang, { ko: "설정 열기", en: "Open Settings", ja: "設定を開く", zh: "打开设置" })} className="p-1.5 rounded hover:bg-bg-secondary/60 text-text-secondary"><Settings size={14} /></button>
+        <button onClick={onOpenSettings} aria-label={L4(lang, { ko: "설정 열기", en: "Open Settings", ja: "設定を開く", zh: "打开设置" })} className="p-2 rounded hover:bg-bg-secondary/60 text-text-secondary"><Settings size={14} /></button>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@
 // Zero React/UI dependencies.
 
 import type { FileNode } from "@noa/quill-engine/types";
+import { logger } from "@/lib/logger";
 
 // ============================================================
 // PART 1 — Types & Constants
@@ -176,10 +177,8 @@ export function loadIsomorphicGit(): Promise<IsomorphicGitEngine | null> {
   if (_isoGitPromise) return _isoGitPromise;
   _isoGitPromise = (async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const git = (await import("isomorphic-git" as any)) as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const LightningFS = ((await import("@isomorphic-git/lightning-fs" as any)) as any).default;
+      const git = await import(/* webpackIgnore: true */ "isomorphic-git" as string) as { default?: IsomorphicGitEngine['git'] } & IsomorphicGitEngine['git'];
+      const LightningFS = ((await import(/* webpackIgnore: true */ "@isomorphic-git/lightning-fs" as string)) as { default: new (name: string) => { promises: { writeFile: (path: string, data: string, enc: string) => Promise<void>; mkdir: (path: string) => Promise<void> } } }).default;
 
       const fs = new LightningFS("eh-git-fs");
       const pfs = fs.promises;
@@ -193,7 +192,7 @@ export function loadIsomorphicGit(): Promise<IsomorphicGitEngine | null> {
 
       return { fs, git: git.default ?? git, writeFile, mkdirp, ready: true };
     } catch {
-      console.warn("[GitPanel] isomorphic-git unavailable, using simulation fallback");
+      logger.warn("GitPanel", "isomorphic-git unavailable, using simulation fallback");
       return null;
     }
   })();

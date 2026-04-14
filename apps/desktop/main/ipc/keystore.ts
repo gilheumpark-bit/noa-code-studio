@@ -44,7 +44,8 @@ async function load(): Promise<KeystoreFile> {
     const parsed = JSON.parse(raw) as KeystoreFile;
     if (parsed.version !== 1) throw new Error('keystore version mismatch');
     cache = parsed;
-  } catch {
+  } catch (err) {
+    console.warn('[keystore]', 'load failed, initializing fresh store:', err);
     cache = { version: 1, entries: {} };
   }
   return cache;
@@ -110,7 +111,8 @@ export async function getKey(provider: AIProvider | string): Promise<string | nu
   try {
     const buf = Buffer.from(encoded, 'base64');
     return safeStorage.decryptString(buf);
-  } catch {
+  } catch (err) {
+    console.warn('[keystore]', `decryptString failed for provider "${provider}":`, err);
     return null;
   }
 }

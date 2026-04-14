@@ -131,7 +131,11 @@ function FileGroup({
             <span className="flex-1 truncate text-text-primary">{r.snippet}</span>
             {showReplace && r.line && (
               <span
+                role="button"
+                tabIndex={0}
+                aria-label={t('searchPanel.replace')}
                 onClick={(e) => { e.stopPropagation(); onReplace?.(r.fileName, r.line); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onReplace?.(r.fileName, r.line); } }}
                 className="text-[8px] px-1 py-0.5 rounded bg-amber-900/30 text-amber-400 opacity-0 group-hover:opacity-100 ml-1 shrink-0 cursor-pointer hover:bg-amber-900/35"
               >
                 {t('searchPanel.replace')}</span>

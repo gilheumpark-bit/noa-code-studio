@@ -364,11 +364,11 @@ ${mcpToolsDoc}`;
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <button onClick={() => setShowHistory(!showHistory)} className={`p-2 rounded-full hover:bg-bg-tertiary/60 transition-all ${showHistory ? 'text-accent-blue bg-accent-blue/10 shadow-inner' : 'text-text-tertiary hover:text-text-primary'}`}>
+          <button onClick={() => setShowHistory(!showHistory)} aria-label={L4(lang, { ko: "대화 히스토리", en: "Chat history" })} className={`p-2 rounded-full hover:bg-bg-tertiary/60 transition-all ${showHistory ? 'text-accent-blue bg-accent-blue/10 shadow-inner' : 'text-text-tertiary hover:text-text-primary'}`}>
             <History size={16} />
           </button>
           <div className="w-px h-5 bg-border/40 mx-1" />
-          <button onClick={() => chat.createNewSession()} className="p-2 rounded-full hover:bg-bg-tertiary/60 text-text-tertiary hover:text-text-primary transition-all">
+          <button onClick={() => chat.createNewSession()} aria-label={L4(lang, { ko: "새 세션", en: "New session" })} className="p-2 rounded-full hover:bg-bg-tertiary/60 text-text-tertiary hover:text-text-primary transition-all">
             <Plus size={16} />
           </button>
         </div>

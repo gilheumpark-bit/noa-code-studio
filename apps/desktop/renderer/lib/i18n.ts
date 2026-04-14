@@ -29,8 +29,7 @@ export function createT(language: AppLanguage) {
     const parts = key.split('.');
     
     for (const dict of dicts) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let cur: any = dict;
+      let cur: Record<string, unknown> = dict as Record<string, unknown>;
       let found = true;
       for (const p of parts) {
         if (cur == null || typeof cur !== 'object') {

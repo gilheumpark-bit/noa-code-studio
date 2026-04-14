@@ -113,6 +113,7 @@ export function NativeTerminal({ cwd }: NativeTerminalProps) {
         resizeObserverRef.current = ro;
       })
       .catch((err) => {
+        console.warn('[NativeTerminal] PTY start:', err);
         if (active) {
           term.writeln(`\r\n\x1b[31mError starting PTY: ${err.message}\x1b[0m`);
           setError(err.message);

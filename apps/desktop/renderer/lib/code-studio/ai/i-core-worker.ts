@@ -4,8 +4,13 @@
 
 export interface ICoreRequest {
   type: 'INDEX_FILE' | 'SEARCH_CONTEXT' | 'CLEAR_INDEX';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload: any;
+  payload: {
+    filePath?: string;
+    codeSnippet?: string;
+    metadata?: Record<string, unknown>;
+    query?: string;
+    topK?: number;
+  };
   reqId?: number;
 }
 
@@ -47,10 +52,11 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
 // ============================================================
 // PART 3 — Transformers.js Pipeline Loader (Mocked for safety)
 // ============================================================
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let pipelineExtractor: any = null;
+type ExtractorResult = { tolist: () => number[][] };
+type PipelineExtractor = (text: string, opts?: { pooling?: string; normalize?: boolean }) => Promise<ExtractorResult> | ExtractorResult;
+let pipelineExtractor: PipelineExtractor | null = null;
 
-async function initExtractor() {
+async function initExtractor(): Promise<PipelineExtractor> {
   if (pipelineExtractor) return pipelineExtractor;
   
   // @xenova/transformers 로드 (동적 로딩 시뮬레이션)
@@ -74,7 +80,7 @@ async function initExtractor() {
     console.warn("[I-Core] transformers.js load failed, using mock extractor", error);
     pipelineExtractor = async (_text: string) => ({ tolist: () => new Array(VECTOR_DIMENSIONS).fill(Math.random()) });
   }
-  return pipelineExtractor;
+  return pipelineExtractor!;
 }
 
 // ============================================================
@@ -87,13 +93,13 @@ self.onmessage = async (e: MessageEvent<ICoreRequest>) => {
   try {
     if (type === 'INDEX_FILE') {
       const extractor = await initExtractor();
-      const output = await extractor(payload.codeSnippet, { pooling: 'mean', normalize: true });
+      const output = await extractor(payload.codeSnippet!, { pooling: 'mean', normalize: true });
       const embedding = output.tolist()[0];
-      
+
       vectordb.push({
-        filePath: payload.filePath,
+        filePath: payload.filePath!,
         chunkId: `${payload.filePath}-${Date.now()}`,
-        codeSnippet: payload.codeSnippet,
+        codeSnippet: payload.codeSnippet!,
         embedding,
         metadata: payload.metadata
       });
@@ -102,7 +108,7 @@ self.onmessage = async (e: MessageEvent<ICoreRequest>) => {
     } 
     else if (type === 'SEARCH_CONTEXT') {
       const extractor = await initExtractor();
-      const output = await extractor(payload.query, { pooling: 'mean', normalize: true });
+      const output = await extractor(payload.query!, { pooling: 'mean', normalize: true });
       const queryEmbedding = output.tolist()[0];
       
       // Compute similarities

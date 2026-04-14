@@ -136,7 +136,7 @@ export function ProjectSwitcher({ currentProjectId, onProjectSwitch, onProjectCr
                     </div>
                     {project.id !== currentProjectId && (
                       <div className="hidden group-hover:flex items-center gap-0.5 shrink-0">
-                        <span role="button" onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(project.id); }} className="p-1 rounded hover:bg-red-500/20">
+                        <span role="button" tabIndex={0} aria-label="프로젝트 삭제" onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(project.id); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setConfirmDeleteId(project.id); } }} className="p-2 rounded hover:bg-red-500/20">
                           <Trash2 className="w-3 h-3 text-red-400" />
                         </span>
                       </div>

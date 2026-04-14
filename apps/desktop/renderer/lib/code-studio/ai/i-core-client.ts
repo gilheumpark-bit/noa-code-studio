@@ -8,8 +8,7 @@ import { createICoreWorker } from '@/lib/code-studio/ai/worker-loader';
 class ICoreClient {
   private worker: Worker | null = null;
   private reqIdCounter = 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private pendingRequests: Map<number, { resolve: (res: any) => void; reject: (err: any) => void }> = new Map();
+  private pendingRequests: Map<number, { resolve: (res: unknown) => void; reject: (err: unknown) => void }> = new Map();
 
   // Lazy initialize the worker
   private getWorker(): Worker {
@@ -41,7 +40,10 @@ class ICoreClient {
   private sendRequest<T>(req: Omit<ICoreRequest, 'reqId'>): Promise<T> {
     return new Promise((resolve, reject) => {
       const reqId = ++this.reqIdCounter;
-      this.pendingRequests.set(reqId, { resolve, reject });
+      this.pendingRequests.set(reqId, {
+        resolve: resolve as (res: unknown) => void,
+        reject: reject as (err: unknown) => void,
+      });
       try {
         this.getWorker().postMessage({ ...req, reqId });
       } catch (err) {

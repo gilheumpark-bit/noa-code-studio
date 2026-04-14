@@ -134,7 +134,7 @@ export function ADRPanel({ files = [] }: Props) {
           </button>
           <button
             onClick={() => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(!showForm); setActiveTab('list'); }}
-            className="p-1 rounded hover:bg-bg-tertiary transition-colors"
+            className="p-2 rounded hover:bg-bg-tertiary transition-colors"
             aria-label={L4(lang, { ko: "ADR 추가", en: "Add ADR" })}
           >
             <Plus className="w-4 h-4" />
@@ -173,7 +173,7 @@ export function ADRPanel({ files = [] }: Props) {
           <textarea value={form.consequences} onChange={(e) => setField('consequences', e.target.value)} placeholder={L4(lang, { ko: "결과: 트레이드오프는?", en: "Consequences: Trade-offs?" })} aria-label={L4(lang, { ko: "결과", en: "Consequences" })} rows={2} className="w-full px-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs resize-none focus-visible:ring-2 ring-accent-blue" />
           <input value={form.relatedFiles} onChange={(e) => setField('relatedFiles', e.target.value)} placeholder={L4(lang, { ko: "관련 파일 (쉼표로 구분)", en: "Related files (comma-separated)" })} aria-label={L4(lang, { ko: "관련 파일", en: "Related files" })} className="w-full px-2 py-1 rounded bg-bg-tertiary border border-border text-text-primary text-xs focus-visible:ring-2 ring-accent-blue" />
           <div className="flex justify-end gap-1">
-            <button onClick={() => setShowForm(false)} className="p-1 rounded hover:bg-bg-tertiary" aria-label={L4(lang, { ko: "취소", en: "Cancel" })}><X className="w-4 h-4" /></button>
+            <button onClick={() => setShowForm(false)} className="p-2 rounded hover:bg-bg-tertiary" aria-label={L4(lang, { ko: "취소", en: "Cancel" })}><X className="w-4 h-4" /></button>
             <button onClick={handleSave} className="px-2 py-1 rounded bg-accent-blue text-white text-xs hover:opacity-90" aria-label={L4(lang, { ko: "저장", en: "Save" })}>
               <Save className="w-3 h-3 inline mr-1" />{editingId ? L4(lang, { ko: "수정", en: "Update" }) : L4(lang, { ko: "생성", en: "Create" })}
             </button>

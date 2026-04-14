@@ -250,8 +250,8 @@ export function NamingDictPanel({ activeFileContent = "" }: Props) {
                   <div className="flex items-start justify-between">
                     <span className="text-[14px] font-medium text-text-primary">{rule.term}</span>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => startEditTerm(realIdx)} className="p-1 rounded hover:bg-white/10 text-text-tertiary hover:text-text-secondary"><Edit2 className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => removeTerm(realIdx)} className="p-1 rounded hover:bg-red-500/20 text-text-tertiary hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => startEditTerm(realIdx)} className="p-2 rounded hover:bg-white/10 text-text-tertiary hover:text-text-secondary" aria-label="Edit rule"><Edit2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => removeTerm(realIdx)} className="p-2 rounded hover:bg-red-500/20 text-text-tertiary hover:text-red-400" aria-label="Delete rule"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                   <span className="text-[13px] text-accent-cyan/90">{rule.convention}</span>
@@ -276,7 +276,7 @@ export function NamingDictPanel({ activeFileContent = "" }: Props) {
               <div key={i} className="group relative flex flex-col gap-1 p-3 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all">
                 <div className="flex items-start justify-between">
                   <span className="text-[14px] font-medium text-text-primary">{rule.pattern}</span>
-                  <button onClick={() => removePattern(i)} className="p-1 rounded hover:bg-red-500/20 text-text-tertiary hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => removePattern(i)} className="p-2 rounded hover:bg-red-500/20 text-text-tertiary hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Delete pattern"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
                 <span className="text-[13px] text-accent-cyan/90">{rule.convention}</span>
               </div>

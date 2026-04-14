@@ -6,6 +6,7 @@
 // Zero React/UI dependencies.
 
 import type { FileNode } from "@noa/quill-engine/types";
+import { logger } from "@/lib/logger";
 
 // ============================================================
 // PART 1 — Types & Constants
@@ -377,7 +378,7 @@ export async function createZipBlob(
     return await zip.generateAsync({ type: "blob" });
   } catch {
     // JSZip not available or failed — automatic JSON bundle fallback
-    console.warn("[DeployPanel] JSZip failed, creating JSON bundle fallback");
+    logger.warn("DeployPanel", "JSZip failed, creating JSON bundle fallback");
     return createJsonBundleFallback(files);
   }
 }

@@ -27,6 +27,7 @@ import { LocalDesktopStatus } from "@/components/code-studio/LocalDesktopStatus"
 import { ContextMenu, buildEditorSurfaceMenu } from "@/components/code-studio/ContextMenu";
 import { InlineEditWidget } from "@/components/code-studio/InlineEditWidget";
 import * as PI from "@/components/code-studio/PanelImports";
+import { logger } from "@/lib/logger";
 import type * as MonacoNS from "monaco-editor";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
@@ -168,7 +169,7 @@ export function ScopeEditor(props: ScopeEditorProps) {
   const handleIndexFile = useCallback((fileId: string, content: string, filePath: string) => {
     if (indexingTimerRef.current) clearTimeout(indexingTimerRef.current);
     indexingTimerRef.current = setTimeout(() => {
-      iCoreClient.indexFile(filePath, content).catch(err => console.warn("I-Core index error:", err));
+      iCoreClient.indexFile(filePath, content).catch(err => logger.warn("I-Core", "index error:", err));
     }, 2000); // 2s debounce
   }, []);
   

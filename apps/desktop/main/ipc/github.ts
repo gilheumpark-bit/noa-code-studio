@@ -210,7 +210,9 @@ function extractPageFromUrl(url: string): number | null {
     const u = new URL(url);
     const page = u.searchParams.get('page');
     return page ? parseInt(page, 10) : null;
-  } catch {
+  } catch (err) {
+    /* intentional: invalid URL — return null as fallback */
+    console.warn('[github]', 'extractPageFromUrl parse failed:', err);
     return null;
   }
 }
@@ -219,7 +221,9 @@ function extractCursorFromUrl(url: string): string | null {
   try {
     const u = new URL(url);
     return u.searchParams.get('after') ?? u.searchParams.get('cursor') ?? null;
-  } catch {
+  } catch (err) {
+    /* intentional: invalid URL — return null as fallback */
+    console.warn('[github]', 'extractCursorFromUrl parse failed:', err);
     return null;
   }
 }
@@ -275,8 +279,9 @@ async function ghFetch(path: string, options: RequestInit = {}): Promise<Respons
       const data = await cloned.json();
       etagCache.set(cacheKey, { etag, data, cachedAt: Date.now() });
       pruneCache();
-    } catch {
-      // Non-JSON or clone failed — skip caching
+    } catch (err) {
+      /* intentional: non-JSON or clone failed — skip caching */
+      console.warn('[github]', 'ETag cache store skipped:', err);
     }
   }
 

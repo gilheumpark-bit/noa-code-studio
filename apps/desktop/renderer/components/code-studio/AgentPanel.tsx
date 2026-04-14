@@ -75,7 +75,7 @@ const StepRow = memo(function StepRow({ step, expanded, onToggle }: { step: Agen
 
   return (
     <div className="border-l-2 border-[#30363d] pl-3 ml-1">
-      <button onClick={onToggle} className="flex items-center gap-2 w-full text-left py-1 hover:bg-[#21262d]/50 rounded px-1 -ml-1">
+      <button onClick={onToggle} className="flex items-center gap-2 w-full text-left py-1 hover:bg-[#21262d]/50 rounded px-1 -ml-1 focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
         {statusIcon}
         <span className="text-[#8b949e]">{icon}</span>
         <span className="text-xs flex-1 truncate text-[#e6edf3]">{step.label}</span>
@@ -300,8 +300,8 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
     setApplyGuardMessages([]);
     // Wake Lock + 알림 준비
     const browser = await import('@/lib/browser');
-    browser.acquireWakeLock().catch(() => {});
-    browser.requestNotificationPermission().catch(() => {});
+    browser.acquireWakeLock().catch(() => {} /* optional browser API */);
+    browser.requestNotificationPermission().catch(() => {} /* optional browser API */);
     try {
       const ctx = `File: ${fileName}\nLanguage: ${language}\n\n${code}`;
       const result = await agent.run(input.trim(), ctx, agentPreset ?? undefined);
@@ -313,12 +313,12 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
       browser.notifyCodeVerifyComplete(result.messages.length, confidence);
       browser.incrementBadge();
       // AI 캐시에 검증 결과 저장 (같은 코드 재검증 시 캐시 히트)
-      browser.cacheResponse('agents', 'verify', [{ role: 'user', content: input.trim() }], 0.2, result.messages.map((m: { content: string }) => m.content).join('\n---\n')).catch(() => {});
+      browser.cacheResponse('agents', 'verify', [{ role: 'user', content: input.trim() }], 0.2, result.messages.map((m: { content: string }) => m.content).join('\n---\n')).catch((err) => console.warn('[AgentPanel] cacheResponse:', err));
     } catch {
       setMode("error");
       setSummary(L4(lang, { ko: "에이전트 파이프라인 실패", en: "Agent pipeline failed" }));
     } finally {
-      browser.releaseWakeLock().catch(() => {});
+      browser.releaseWakeLock().catch(() => {} /* optional browser API */);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input, agent, fileName, language, code, lang]);
@@ -512,10 +512,10 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
         </span>
         <div className="flex items-center gap-1">
           {mode === "executing" && (
-            <button onClick={() => { agent.abort(); setMode("paused"); }} aria-label="일시정지" className="p-1 hover:bg-[#21262d] rounded"><Pause size={12} className="text-accent-amber" /></button>
+            <button onClick={() => { agent.abort(); setMode("paused"); }} aria-label="일시정지" className="p-1 hover:bg-[#21262d] rounded focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><Pause size={12} className="text-accent-amber" /></button>
           )}
           {(mode === "complete" || mode === "error" || mode === "applied" || mode === "staged") && (
-            <button onClick={handleReset} aria-label="초기화" className="p-1 hover:bg-[#21262d] rounded"><Square size={12} className="text-[#8b949e]" /></button>
+            <button onClick={handleReset} aria-label="초기화" className="p-1 hover:bg-[#21262d] rounded focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><Square size={12} className="text-[#8b949e]" /></button>
           )}
         </div>
       </div>
@@ -573,7 +573,7 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
             {steps.length > 10 && !expandedSteps.has('__show_all__') && (
               <button
                 onClick={() => toggleStep('__show_all__')}
-                className="w-full text-center py-1 text-[9px] text-text-tertiary hover:text-accent-purple transition-colors"
+                className="w-full text-center py-1 text-[9px] text-text-tertiary hover:text-accent-purple transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"
               >
                 {L4(lang, { ko: `+${steps.length - 10}개 이전 스텝 보기`, en: `Show ${steps.length - 10} earlier steps` })}
               </button>
@@ -613,14 +613,14 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
                   {applyGuardBlocked && (
                     <button
                       onClick={handleRerunWithCalc}
-                      className="flex-1 rounded bg-accent-amber/20 px-3 py-1.5 text-xs text-accent-amber hover:bg-accent-amber/30 transition-colors font-medium"
+                      className="flex-1 rounded bg-accent-amber/20 px-3 py-1.5 text-xs text-accent-amber hover:bg-accent-amber/30 transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none font-medium"
                     >
                       {L4(lang, { ko: "재생성(<calc>)", en: "Re-run (<calc>)" })}
                     </button>
                   )}
                   <button
                     onClick={() => handleApply(applyGuardBlocked)}
-                    className="flex-1 rounded bg-blue-600 px-3 py-1.5 text-xs text-white hover:bg-blue-500 transition-colors font-medium"
+                    className="flex-1 rounded bg-blue-600 px-3 py-1.5 text-xs text-white hover:bg-blue-500 transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none font-medium"
                   >
                     {applyGuardBlocked
                       ? L4(lang, { ko: "강제 적용 (Override Apply)", en: "Override Apply" })
@@ -628,7 +628,7 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
                   </button>
                   <button
                     onClick={handleRollback}
-                    className="flex-1 rounded bg-[#21262d] border border-red-500/20 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+                    className="flex-1 rounded bg-[#21262d] border border-red-500/20 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"
                   >
                     {L4(lang, { ko: "폐기 (Rollback)", en: "Discard (Rollback)" })}
                   </button>
@@ -655,7 +655,7 @@ export function AgentPanel({ code, language, fileName, onApplyCode, onOpenPrevie
             disabled={agent.running || mode === 'staged'}
           />
           <button onClick={handleRun} disabled={!input.trim() || agent.running || mode === 'staged'} aria-label="Run agent" title="Run"
-            className="text-green-400 hover:text-white disabled:opacity-30 transition-colors">
+            className="text-green-400 hover:text-white disabled:opacity-30 transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
             <Play size={14} />
           </button>
         </div>

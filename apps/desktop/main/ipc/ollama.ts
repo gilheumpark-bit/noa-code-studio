@@ -33,8 +33,9 @@ async function getBaseUrl(): Promise<string> {
   try {
     const stored = await getKey('ollama');
     if (stored) return stored.replace(/\/+$/, '');
-  } catch {
-    // keystore may not be ready
+  } catch (err) {
+    /* intentional: keystore may not be ready at startup */
+    console.warn('[ollama]', 'keystore read failed, using default endpoint:', err);
   }
   return 'http://localhost:11434';
 }
@@ -67,7 +68,8 @@ async function healthCheck(
     if (!res.ok) return { ok: false };
     const data = (await res.json()) as { version?: string };
     return { ok: true, version: data.version };
-  } catch {
+  } catch (err) {
+    console.warn('[ollama]', 'healthCheck failed:', err);
     return { ok: false };
   }
 }
@@ -85,7 +87,8 @@ async function modelInfo(
     });
     if (!res.ok) return null;
     return (await res.json()) as Record<string, unknown>;
-  } catch {
+  } catch (err) {
+    console.warn('[ollama]', 'modelInfo fetch failed:', err);
     return null;
   }
 }
@@ -169,8 +172,9 @@ async function pullModel(
           if (!sender.isDestroyed()) {
             sender.send(`ollama:pull-progress:${requestId}`, progress);
           }
-        } catch {
-          // Malformed JSON line — skip
+        } catch (err) {
+          /* intentional: malformed JSON line — skip */
+          console.warn('[ollama]', 'pull-progress JSON parse skipped:', err);
         }
       }
     }
@@ -321,8 +325,9 @@ function detectOllamaProcess(): ProcessDetectionResult {
       const pid = parseInt(output.trim(), 10);
       if (pid > 0) return { running: true, pid };
     }
-  } catch {
-    // Command failed — assume not running
+  } catch (err) {
+    /* intentional: command failed — assume not running */
+    console.warn('[ollama]', 'process detection command failed:', err);
   }
 
   const startCmd = os === 'win32'

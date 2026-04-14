@@ -1003,7 +1003,7 @@ export function registerSecurityLinter(monaco: typeof Monaco, editor: Monaco.edi
     (window as any).__securityLinterRegistered = true;
     
     // Using a debounced model change listener.
-    let debounceTimer: any;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     
     editor.onDidChangeModelContent(() => {
       const model = editor.getModel();

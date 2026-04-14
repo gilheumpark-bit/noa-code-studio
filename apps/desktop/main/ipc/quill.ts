@@ -208,8 +208,9 @@ async function verifyFile(req: VerifyFileRequest): Promise<VerifyResult> {
         skipReason: `File too large (${Math.round(stat.size / 1024)}KB > ${Math.round(MAX_FILE_SIZE_BYTES / 1024)}KB limit)`,
       };
     }
-  } catch {
-    // Stat failed — continue to read and let it fail there
+  } catch (err) {
+    /* intentional: stat failed — continue to read and let it fail there */
+    console.warn('[quill]', 'stat check failed, proceeding to read:', err);
   }
 
   // Load file content
@@ -435,7 +436,8 @@ async function collectFiles(dir: string, results: string[] = []): Promise<string
   let entries;
   try {
     entries = await fs.readdir(dir, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn('[quill]', `collectFiles readdir failed for ${dir}:`, err);
     return results;
   }
 

@@ -22,7 +22,8 @@ async function loadConfigs(): Promise<MCPServerConfig[]> {
   try {
     const raw = await fs.readFile(configPath(), 'utf-8');
     return JSON.parse(raw) as MCPServerConfig[];
-  } catch {
+  } catch (err) {
+    console.warn('[mcp]', 'loadConfigs failed, returning empty list:', err);
     return [];
   }
 }

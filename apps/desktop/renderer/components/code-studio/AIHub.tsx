@@ -56,7 +56,7 @@ function ProviderCard({
       </div>
       <span className={`h-2 w-2 rounded-full ${hasKey ? "bg-green-400" : "bg-gray-600"}`} />
       {onConfigure && (
-        <button onClick={onConfigure} className="p-1 text-gray-500 hover:text-text-primary transition-colors">
+        <button onClick={onConfigure} className="p-2 text-gray-500 hover:text-text-primary transition-colors" aria-label={L4(lang, { ko: "제공자 설정", en: "Configure provider" })}>
           <Settings size={12} />
         </button>
       )}
@@ -101,7 +101,7 @@ function FeatureCard({
           </span>
         )}
       </div>
-      <button onClick={onToggle} className="shrink-0 mt-0.5">
+      <button onClick={onToggle} className="shrink-0 mt-0.5" aria-label={L4(lang, { ko: feature.enabled ? "기능 비활성화" : "기능 활성화", en: feature.enabled ? "Disable feature" : "Enable feature" })} aria-pressed={feature.enabled}>
         {feature.enabled ? (
           <ToggleRight size={20} className="text-green-400" />
         ) : (

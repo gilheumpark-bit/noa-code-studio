@@ -342,9 +342,9 @@ export function AutopilotPanel({ code, language, fileName, onComplete, onClose }
           {result && !result.success && <span className="px-1.5 py-0.5 rounded text-[10px] bg-red-500/15 text-red-400">BELOW</span>}
         </span>
         <div className="flex items-center gap-1">
-          {running && <button onClick={() => { abortRef.current?.abort(); setRunning(false); }} aria-label="중지" className="p-1 hover:bg-[#21262d] rounded"><Square size={12} className="text-accent-amber" /></button>}
-          {result && <button onClick={handleReset} aria-label="초기화" className="p-1 hover:bg-[#21262d] rounded"><RotateCcw size={12} className="text-[#8b949e]" /></button>}
-          <button onClick={onClose} aria-label="닫기" className="p-1 hover:bg-[#21262d] rounded"><XCircle size={12} className="text-[#8b949e]" /></button>
+          {running && <button onClick={() => { abortRef.current?.abort(); setRunning(false); }} aria-label="중지" className="p-2 hover:bg-[#21262d] rounded focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><Square size={12} className="text-accent-amber" /></button>}
+          {result && <button onClick={handleReset} aria-label="초기화" className="p-2 hover:bg-[#21262d] rounded focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><RotateCcw size={12} className="text-[#8b949e]" /></button>}
+          <button onClick={onClose} aria-label="닫기" className="p-2 hover:bg-[#21262d] rounded focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none"><XCircle size={12} className="text-[#8b949e]" /></button>
         </div>
       </div>
 
@@ -359,12 +359,12 @@ export function AutopilotPanel({ code, language, fileName, onComplete, onClose }
             />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowConfig(!showConfig)} className="flex items-center gap-1 text-[10px] text-[#8b949e] hover:text-[#e6edf3]">
+                <button onClick={() => setShowConfig(!showConfig)} className="flex items-center gap-1 text-[10px] text-[#8b949e] hover:text-[#e6edf3] focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                   <Settings size={10} /> {showConfig ? L4(lang, { ko: "설정 숨기기", en: "Hide Config" }) : L4(lang, { ko: "설정", en: "Config" })} {showConfig ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                 </button>
                 <button
                   onClick={() => setMode(mode === "autopilot" ? "gen-verify-fix" : "autopilot")}
-                  className={`flex items-center gap-1 px-2 py-1 text-[10px] rounded-md border transition-colors ${
+                  className={`flex items-center gap-1 px-2 py-1 text-[10px] rounded-md border transition-colors focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none ${
                     mode === "gen-verify-fix"
                       ? "border-blue-500 bg-blue-500/15 text-blue-400"
                       : "border-[#30363d] text-[#8b949e] hover:text-[#e6edf3]"
@@ -375,11 +375,11 @@ export function AutopilotPanel({ code, language, fileName, onComplete, onClose }
                 </button>
               </div>
               {mode === "autopilot" ? (
-                <button onClick={handleStart} disabled={!prompt.trim()} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 text-stone-100 hover:opacity-90 active:scale-95 disabled:opacity-40 transition-all shadow-[0_0_15px_rgba(217,119,6,0.3)] border border-amber-500/20">
+                <button onClick={handleStart} disabled={!prompt.trim()} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 text-stone-100 hover:opacity-90 active:scale-95 disabled:opacity-40 transition-all focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none shadow-[0_0_15px_rgba(217,119,6,0.3)] border border-amber-500/20">
                   <Play size={12} /> {L4(lang, { ko: "오토파일럿 시작", en: "Start Autopilot" })}
                 </button>
               ) : (
-                <button onClick={handleStartGVF} disabled={!prompt.trim()} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-stone-100 hover:opacity-90 active:scale-95 disabled:opacity-40 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] border border-blue-500/20">
+                <button onClick={handleStartGVF} disabled={!prompt.trim()} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-stone-100 hover:opacity-90 active:scale-95 disabled:opacity-40 transition-all focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none shadow-[0_0_15px_rgba(37,99,235,0.3)] border border-blue-500/20">
                   <RefreshCw size={12} /> {L4(lang, { ko: "생성+검증+수정 시작", en: "Start GVF Loop" })}
                 </button>
               )}
@@ -473,7 +473,7 @@ export function AutopilotPanel({ code, language, fileName, onComplete, onClose }
             {result.files.length > 0 && (
               <div className="bg-[#010409] rounded-lg border border-[#30363d]">
                 <button onClick={() => setExpandedFiles(!expandedFiles)}
-                  className="flex items-center gap-2 w-full px-2 py-1.5 text-[10px] text-[#e6edf3] hover:bg-[#21262d]">
+                  className="flex items-center gap-2 w-full px-2 py-1.5 text-[10px] text-[#e6edf3] hover:bg-[#21262d] focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                   {expandedFiles ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                   {result.files.length} {L4(lang, { ko: "개 파일 변경됨", en: "file(s) changed" })}
                 </button>
@@ -505,16 +505,16 @@ export function AutopilotPanel({ code, language, fileName, onComplete, onClose }
             <div className="flex items-center gap-2 mt-4">
               <button 
                 onClick={() => onComplete(result)} 
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-green-500 to-green-700 text-white hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)] border border-green-500/20"
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-green-500 to-green-700 text-white hover:opacity-90 active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none shadow-[0_0_15px_rgba(34,197,94,0.3)] border border-green-500/20"
               >
                 <CheckCircle size={14} /> {L4(lang, { ko: "자동 승인 (일괄 적용)", en: "Auto-Approve (Apply All)" })}
               </button>
               {result.documentation && (
-                <button onClick={() => setShowReport(!showReport)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-[#30363d] text-[#e6edf3] hover:bg-[#21262d]">
+                <button onClick={() => setShowReport(!showReport)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-[#30363d] text-[#e6edf3] hover:bg-[#21262d] focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none">
                   <BookOpen size={12} /> {showReport ? L4(lang, { ko: "숨기기", en: "Hide" }) : L4(lang, { ko: "보고서", en: "Report" })}
                 </button>
               )}
-              <button onClick={handleCopyReport} className="p-1.5 rounded-lg border border-[#30363d] text-[#8b949e] hover:bg-[#21262d]" title={L4(lang, { ko: "보고서 복사", en: "Copy report" })} aria-label={L4(lang, { ko: "보고서 복사", en: "Copy report" })}><Clipboard size={12} /></button>
+              <button onClick={handleCopyReport} className="p-1.5 rounded-lg border border-[#30363d] text-[#8b949e] hover:bg-[#21262d] focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:outline-none" title={L4(lang, { ko: "보고서 복사", en: "Copy report" })} aria-label={L4(lang, { ko: "보고서 복사", en: "Copy report" })}><Clipboard size={12} /></button>
               <div className="flex-1" />
               <span className="text-[9px] text-[#8b949e]">{formatMs(result.totalTimeMs)} | {result.files.length} {L4(lang, { ko: "개 파일", en: "files" })} | {result.iterations} {L4(lang, { ko: "회 반복", en: "iter" })}</span>
             </div>

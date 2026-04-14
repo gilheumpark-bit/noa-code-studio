@@ -29,6 +29,7 @@ import type { AppLanguage } from "@noa/shared-types";
 import { TRANSLATIONS } from "@/lib/studio-translations";
 
 import { infiniteContext } from "@/lib/code-studio/features/infinite-context";
+import { logger } from "@/lib/logger";
 
 type CodeStudioRuntimeStrings = {
   savedLocally: string;
@@ -474,7 +475,7 @@ function ScopeShellInner() {
         if (!cancelled && savedSettings) setSettings(savedSettings);
       } catch (e) {
          
-        console.error("[code-studio] initial load failed", e);
+        logger.error("code-studio", "initial load failed", e);
       } finally {
         if (!cancelled) setLoaded(true);
       }
