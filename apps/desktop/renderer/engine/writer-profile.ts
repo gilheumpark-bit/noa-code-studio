@@ -1,4 +1,3 @@
-// @ts-nocheck
 export function updateProfile(_p: unknown): unknown {
   return {};
 }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 /**
@@ -745,7 +744,7 @@ export default function GitPanel({
       <div className="flex-1 overflow-y-auto p-2">
         {activeTab === "changes" ? (
           <MemoizedChangesTab
-            dirtyFiles={dirtyFiles}
+            dirtyFiles={dirtyFiles.map(f => ({ ...f, language: f.language ?? 'plaintext', isDirty: f.isDirty ?? false }))}
             selectedFileId={selectedFileId}
             onSelectFile={setSelectedFileId}
             onCommit={handleCommit}

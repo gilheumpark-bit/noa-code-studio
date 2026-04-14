@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -42,6 +41,7 @@ import {
 import { explainCode, lintCode, generateDocstring } from "@/lib/code-studio/ai/ai-features";
 import { runApplyGuard } from "@/lib/code-studio/diff-guard/apply-guard";
 import type { Finding } from "@noa/quill-engine/pipeline/pipeline-teams";
+import type { ProblemFinding } from "@/components/code-studio/ProblemsPanel";
 
 function findFileNodeByName(nodes: FileNode[], name: string): FileNode | null {
   const basename = name.includes("/") ? name.split("/").pop() : name;
@@ -461,7 +461,7 @@ function renderRightPanel(
       return <PI.PipelinePanelComponent result={pipelineResult} />;
     })();
     case "git":
-      return <PI.GitPanelComponent files={files} openFiles={openFiles} onRestore={(fid: string, content: string) => {
+      return <PI.GitPanelComponent files={files} openFiles={openFiles.map(f => ({ ...f, isDirty: f.isDirty ?? false }))} onRestore={(fid: string, content: string) => {
       onSetOpenFiles((prev) => prev.map((f) => f.id === fid ? { ...f, content, isDirty: true } : f));
       fsUpdateContent(fid, content);
     }} onClearDirty={() => onSetOpenFiles((prev) => prev.map((f) => ({ ...f, isDirty: false })))} />;

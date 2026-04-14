@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for speed-optimizations — debounce, throttle, memoize
  */

@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio — Agent Hook
 // Run agent pipeline, track progress, abort, get results,

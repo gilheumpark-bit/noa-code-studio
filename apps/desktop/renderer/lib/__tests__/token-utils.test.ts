@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for src/lib/token-utils.ts
  * Covers: estimateTokens, getContextLimit, getMaxOutputTokens, truncateMessages, HISTORY_LIMITS

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   PROVIDERS,
   PROVIDER_LIST,
@@ -44,7 +43,7 @@ describe('getActiveProvider + storage', () => {
   });
 
   it('setActiveProvider rejects unknown id via normalization', () => {
-    setActiveProvider(/** @type {any} */ ('anthropic'));
+    setActiveProvider('anthropic' as unknown as Parameters<typeof setActiveProvider>[0]);
     expect(localStorage.getItem('noa_active_provider')).toBe('claude');
   });
 

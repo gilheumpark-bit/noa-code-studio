@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -101,7 +100,7 @@ export function ActivityBar({ activeView, onChangeView }: ActivityBarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { lang } = useLang();
 
-  const { groups, settingsItem, allItems } = useMemo(() => {
+  const { groups, apiConfigItem, settingsItem, allItems } = useMemo(() => {
     const ACTIVITY_GROUPS: ActivityGroupDef[] = [
       {
         id: "grp-explore",

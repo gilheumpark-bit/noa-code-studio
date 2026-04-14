@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // PART 1 — V-Core WebGPU Isolation Worker
 // ============================================================
@@ -17,17 +16,21 @@ self.addEventListener('message', async (e: MessageEvent) => {
   if (type === 'INIT') {
     try {
       // Hardware sniffing for Graceful Degradation (NOA-EXEC Preflight Rule)
-      if (!navigator.gpu) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const gpu = (navigator as any).gpu as
+        | { requestAdapter(): Promise<{ limits: { maxBufferSize: number } } | null> }
+        | undefined;
+      if (!gpu) {
         throw new Error('WebGPU is not supported in this environment.');
       }
-      
-      const adapter = await navigator.gpu.requestAdapter();
+
+      const adapter = await gpu.requestAdapter();
       if (!adapter) {
         throw new Error('No appropriate GPU adapter found.');
       }
 
       // Check VRAM limits: fallback if less than 2GB (roughly 2147483648 bytes)
-      // Note: adapter.limits.maxBufferSize or similar limits can proxy VRAM checks, 
+      // Note: adapter.limits.maxBufferSize or similar limits can proxy VRAM checks,
       // though true VRAM capacity isn't fully exposed via WebGPU spec yet.
       // We simulate a strict threshold check here.
       const maxBufferSize = adapter.limits.maxBufferSize;

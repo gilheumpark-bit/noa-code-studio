@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * components-coverage.test.tsx
  *

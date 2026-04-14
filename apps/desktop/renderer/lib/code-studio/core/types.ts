@@ -2,14 +2,28 @@
 export interface FileNode {
   id: string;
   name: string;
-  type?: "file" | "folder";
+  type: "file" | "folder";
   path?: string;
   content?: string;
   children?: FileNode[];
   isDirty?: boolean;
+  language?: string;
 }
-export type CodeStudioSettings = Record<string, unknown>;
-export const DEFAULT_SETTINGS: CodeStudioSettings = {};
+export interface CodeStudioSettings {
+  theme: 'dark' | 'light';
+  fontSize: number;
+  tabSize: number;
+  wordWrap: 'on' | 'off';
+  minimap: boolean;
+  [key: string]: unknown;
+}
+export const DEFAULT_SETTINGS: CodeStudioSettings = {
+  theme: 'dark',
+  fontSize: 14,
+  tabSize: 2,
+  wordWrap: 'on',
+  minimap: false,
+};
 
 export function detectLanguage(fileName: string): string {
   if (!fileName || typeof fileName !== "string") return "txt";

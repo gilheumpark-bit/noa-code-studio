@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio — Chat Hook V2
 // Best-in-class implementation with persistence, @mention context,
@@ -54,8 +53,8 @@ interface UseCodeStudioChatOptions {
   systemInstruction?: string;
   autoSave?: boolean;
   tree?: FileNode[];
-  onCommand?: (cmd: string, args: unknown[]) => void;
-  onCodeApply?: (code: string, fileId: string) => void;
+  onCommand?: (cmd: string, args: string) => void;
+  onCodeApply?: (code: string) => void;
 }
 
 interface UseCodeStudioChatReturn {
@@ -325,7 +324,9 @@ export function useCodeStudioChat(options: UseCodeStudioChatOptions = {}): UseCo
     const session: StoredChatSession = {
       id: activeSessionId,
       title: msgList[0].content.slice(0, 50),
-      messages: msgList.map(({ id: _id, ...rest }) => rest),
+      messages: msgList
+        .filter((m): m is ChatMessage & { role: 'user' | 'assistant' } => m.role !== 'system')
+        .map(({ id: _id, ...rest }) => rest),
       createdAt: msgList[0].timestamp,
       updatedAt: Date.now(),
     };
@@ -416,7 +417,7 @@ export function useCodeStudioChat(options: UseCodeStudioChatOptions = {}): UseCo
       });
 
     } catch (err) {
-      if (err.name === 'AbortError') return;
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       logger.error('code-studio/chat', 'streamFail', err);
 
       const errorMessage = categorizeStreamError(err);

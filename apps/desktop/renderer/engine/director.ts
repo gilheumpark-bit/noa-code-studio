@@ -1,4 +1,3 @@
-// @ts-nocheck
 export function analyzeManuscript(_text: string): unknown {
   return { findings: [], stats: {}, score: 100 };
 }

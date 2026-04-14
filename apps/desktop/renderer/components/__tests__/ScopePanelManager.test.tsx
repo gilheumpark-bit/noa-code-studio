@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * ScopePanelManager — renders panel area (ActivityBar)
  */

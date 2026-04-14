@@ -23,6 +23,7 @@ export interface OpenFile {
   name: string;
   content: string;
   isDirty: boolean;
+  language?: string;
 }
 
 export interface FileSnapshot {

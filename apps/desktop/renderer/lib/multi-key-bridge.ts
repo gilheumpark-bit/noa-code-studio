@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // EHSU Multi-Key Bridge
 // ============================================================
@@ -64,7 +63,7 @@ export async function streamWithMultiKey(opts: MultiKeyStreamOptions): Promise<{
 
   // Fallback: 멀티키 미설정 → 기존 단일키
   if (activeCount === 0) {
-    const _accumulated = '';
+    let accumulated = '';
     const text = await originalStreamChat({
       ...opts,
       onChunk: (chunk) => {
@@ -93,7 +92,7 @@ export async function streamWithMultiKey(opts: MultiKeyStreamOptions): Promise<{
 
   // 슬롯 없으면 fallback
   if (!slot) {
-    const _accumulated = '';
+    let accumulated = '';
     const text = await originalStreamChat({
       ...opts,
       onChunk: (chunk) => {
@@ -118,7 +117,7 @@ export async function streamWithMultiKey(opts: MultiKeyStreamOptions): Promise<{
   setActiveModel(slot.model);
   setApiKey(slot.provider, slot.apiKey);
 
-  const _accumulated = '';
+  let accumulated = '';
   try {
     const text = await originalStreamChat({
       ...opts,

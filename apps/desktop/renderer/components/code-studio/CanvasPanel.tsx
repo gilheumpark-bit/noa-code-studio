@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -269,7 +268,7 @@ export default function CanvasPanel({ onApplyCode, onOpenPreview }: CanvasPanelP
           />
           <div className="flex items-center py-1">
             <button 
-              onClick={handleGenerate} 
+              onClick={() => handleGenerate()}
               disabled={!input.trim() || isGenerating} 
               className="p-1.5 rounded-lg bg-accent-amber text-bg-primary disabled:bg-bg-secondary disabled:text-text-tertiary shadow-md shadow-accent-amber/10 transition-all hover:scale-105 active:scale-95"
             >

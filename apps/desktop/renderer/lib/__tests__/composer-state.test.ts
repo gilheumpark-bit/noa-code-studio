@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for src/lib/code-studio-composer-state.ts
  * Covers: canTransition, createModeTransition, all valid/invalid state transitions

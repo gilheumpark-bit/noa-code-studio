@@ -1,4 +1,3 @@
-// @ts-nocheck
 describe('env', () => {
   const originalEnv = process.env;
 

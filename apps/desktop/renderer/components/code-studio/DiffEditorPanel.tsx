@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -21,6 +20,8 @@ interface Props {
   original: string;
   modified: string;
   language?: string;
+  /** @deprecated use `language` instead */
+  _language?: string;
   fileName?: string;
   onAccept?: () => void;
   onReject?: () => void;

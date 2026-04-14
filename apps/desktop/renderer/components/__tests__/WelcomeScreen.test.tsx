@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * WelcomeScreen (code-studio) — renders welcome / getting started UI
  */

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * ThemeToggle — single button that cycles dark ↔ light, with
  * optional dropdown for explicit auto/dark/light selection.

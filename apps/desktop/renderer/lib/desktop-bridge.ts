@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * apps/desktop/renderer/lib/desktop-bridge.ts
  *

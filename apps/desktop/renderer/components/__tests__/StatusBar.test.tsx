@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * StatusBar (code-studio) - renders status bar with file info and scores
  */

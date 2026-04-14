@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Attach a custom right-click menu on the Monaco editor surface by intercepting
  * Monaco's contextmenu event (replaces the built-in menu with app UI).

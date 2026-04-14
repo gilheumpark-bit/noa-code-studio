@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for src/lib/code-studio-verification-loop.ts
  * Covers: single-round pass, hard gate fail, no-progress stop,
@@ -11,7 +10,7 @@ import type { BugReport } from '@noa/quill-engine/pipeline/bugfinder';
 import type { FixSuggestion } from '@noa/quill-engine/pipeline/pipeline-utils';
 import type { StressReport } from '@noa/quill-engine/pipeline/stress-test';
 import type { IPReport } from '@noa/quill-engine/patent-scanner';
-import type { FileNode } from '@/lib/code-studio/core/types';
+import type { FileNode } from '@noa/quill-engine/types';
 
 // ============================================================
 // PART 1 — Mock Setup

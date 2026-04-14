@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * ScopeEditor — export verification + WelcomeScreen render test
  * The component requires many props from parent hooks; we verify exports

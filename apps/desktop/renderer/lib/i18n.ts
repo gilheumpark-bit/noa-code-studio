@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { AppLanguage } from '@noa/shared-types';
 import { TRANSLATIONS } from './studio-translations';
 import type { Lang } from './LangContext';
@@ -36,7 +35,7 @@ export function createT(language: AppLanguage) {
           found = false;
           break;
         }
-        cur = cur[p];
+        cur = cur[p] as Record<string, unknown>;
       }
       if (found && typeof cur === 'string') return cur;
     }

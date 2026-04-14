@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio AI Features — 15 AI-powered coding assistants
 // Unified module consuming streamChat from @/lib/ai-providers
@@ -7,8 +6,11 @@
 import { streamChat, getActiveProvider, PROVIDERS } from '@/lib/ai-providers';
 import { ariManager } from '@/lib/code-studio/ai/ari-engine';
 import { logger } from '@/lib/logger';
-// REMOVED OMIT
-// REMOVED OMIT
+
+/** Build a short prompt suffix to suppress common false-positive lint patterns */
+function buildFPSuppressionPrompt(): string {
+  return 'Ignore intentional patterns: unused vars prefixed with _, assertion-style casts, and deliberate any escapes.';
+}
 
 // ============================================================
 // PART 1 — Types & Helpers

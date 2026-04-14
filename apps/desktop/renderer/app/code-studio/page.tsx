@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import { Suspense } from "react";
@@ -20,8 +19,8 @@ function CodeStudioLoading() {
   const { lang } = useLang();
   const langKey = ((lang ?? "ko").toString().toUpperCase() as AppLanguage);
   const tcs =
-    TRANSLATIONS[langKey]?.codeStudio ??
-    TRANSLATIONS.KO?.codeStudio ??
+    (TRANSLATIONS[langKey] as unknown as Record<string, Record<string, string>> | undefined)?.codeStudio ??
+    (TRANSLATIONS.KO as unknown as Record<string, Record<string, string>> | undefined)?.codeStudio ??
     ({ loading: "Loading..." } as { loading: string });
   return (
     <div className="flex h-screen items-center justify-center bg-bg-primary">

@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // AI Providers — Streaming Engine
 // ============================================================
@@ -11,7 +10,7 @@ import { logger } from '@/lib/logger';
 import { lazyFirebaseAuth } from '@/lib/firebase';
 import {
   PROVIDERS, PROVIDER_LIST,
-  type ProviderId, type StreamOptions,
+  type ProviderId, type ChatMsg, type StreamOptions,
 } from './types';
 import {
   getActiveProvider, getApiKey, getApiKeyAsync,
@@ -106,23 +105,24 @@ async function streamViaProxy(
   const electron =
     typeof window !== 'undefined' ? (window as { electron?: ElectronAiBridge }).electron : undefined;
   if (electron?.aiChat) {
+    const ipc = electron.aiChat;
     const requestId = Math.random().toString(36).substring(7);
 
     return new Promise((resolve, reject) => {
       let fullText = '';
-      
-      const removeChunkListener = electron.aiChat.onChunk(requestId, (chunk: string) => {
+
+      const removeChunkListener = ipc.onChunk(requestId, (chunk: string) => {
         fullText += chunk;
         opts.onChunk(chunk);
       });
 
-      const removeErrorListener = electron.aiChat.onError(requestId, (err: unknown) => {
+      const removeErrorListener = ipc.onError(requestId, (err: unknown) => {
         cleanup();
         const msg = typeof err === 'string' ? err : ((err as { error?: string })?.error || 'Unknown IPC error');
         reject(new Error(msg));
       });
 
-      const removeEndListener = electron.aiChat.onEnd(requestId, () => {
+      const removeEndListener = ipc.onEnd(requestId, () => {
         cleanup();
         resolve(fullText);
       });
@@ -133,7 +133,7 @@ async function streamViaProxy(
         removeEndListener();
       };
 
-      electron.aiChat.request({
+      ipc.request({
         requestId,
         provider,
         model,
@@ -421,7 +421,7 @@ export async function streamChat(opts: StreamOptions): Promise<string> {
   const providerOptimizedMessages = applyProviderOptimizations(provider, trimmedMessages, opts.systemInstruction, model);
   
   const maxTokens = getMaxOutputTokens(model, systemTokens, messageTokens);
-  const safeOpts = { ...opts, messages: providerOptimizedMessages, maxTokens, systemInstruction: provider === 'claude' ? undefined : opts.systemInstruction };
+  const safeOpts: StreamOptions = { ...opts, messages: providerOptimizedMessages as ChatMsg[], maxTokens, systemInstruction: provider === 'claude' ? '' : opts.systemInstruction };
 
   const MAX_RETRIES = 2;
   let lastError: Error | null = null;

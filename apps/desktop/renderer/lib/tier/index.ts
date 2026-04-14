@@ -1,4 +1,3 @@
-// @ts-nocheck
 /** Generation quota / tier gate (BYOK desktop — permissive defaults). */
 
 export function canGenerate(): boolean {

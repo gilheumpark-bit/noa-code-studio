@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * SectionErrorBoundary — catches section-level errors
  */

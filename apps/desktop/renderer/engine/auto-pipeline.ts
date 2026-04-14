@@ -1,4 +1,3 @@
-// @ts-nocheck
 export function executePipeline(): unknown {
   return {
     id: "noop",

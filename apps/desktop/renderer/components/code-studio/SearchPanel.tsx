@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -107,7 +106,7 @@ function escapeRegex(str: string): string {
 
 function FileGroup({
   filePath, results, onOpenFile, showReplace, onReplace, t
-}: FileGroupProps & { t: unknown }) {
+}: FileGroupProps & { t: (key: string) => string }) {
   const [expanded, setExpanded] = useState(true);
 
   return (

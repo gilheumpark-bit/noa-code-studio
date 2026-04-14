@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * ErrorBoundary — render test + error catching test
  * Tests the unified ErrorBoundary with full-page, section, and panel variants.

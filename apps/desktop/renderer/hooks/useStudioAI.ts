@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Studio (소설) AI send/regenerate — minimal shell for Code Studio desktop.
  * Full HFCP stack is mocked in tests; production wiring may extend this module.

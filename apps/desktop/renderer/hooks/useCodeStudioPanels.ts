@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio — Panel State Hook
 // Manages state & logic for stub panels:
@@ -14,7 +13,24 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import { streamChat, type ChatMsg } from "@/lib/ai-providers";
 import type { AgentRole } from "@/lib/code-studio/ai/agents";
 import type { FileNode } from "@noa/quill-engine/types";
-import type { CanvasNode, CanvasConnection } from "@/components/code-studio/CanvasPanel";
+/** Canvas node representing a file or module on the visual canvas */
+export interface CanvasNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+  type: "file" | "component" | "service" | "module";
+}
+
+/** Connection between two canvas nodes */
+export interface CanvasConnection {
+  id: string;
+  from: string;
+  to: string;
+}
 import type { SymbolEntry } from "@/components/code-studio/SymbolPalette";
 import type { AIFeature } from "@/components/code-studio/AIHub";
 import type { WorkspaceThread, WorkspaceMessage } from "@/components/code-studio/AIWorkspace";

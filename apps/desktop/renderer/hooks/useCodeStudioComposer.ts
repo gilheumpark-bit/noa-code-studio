@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // PART 1 — Imports & Types
 // ============================================================
@@ -232,7 +231,7 @@ export function useCodeStudioComposer(): UseCodeStudioComposerReturn {
       }
 
       // 3. Create snapshot for rollback
-      const snap = snapshotManager.create(scope.executionOrder, getContent, instruction);
+      const snap = await snapshotManager.create(scope.executionOrder, getContent, instruction);
       setSnapshot(snap);
 
       // 4. Generate changes in topological order

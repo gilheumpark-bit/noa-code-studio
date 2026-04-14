@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for recent-files — getRecentFiles, trackRecentFile, removeRecentFile, clearRecentFiles
  */

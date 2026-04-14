@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { FileNode } from "@noa/quill-engine/types";
 
 export function findFilePathById(

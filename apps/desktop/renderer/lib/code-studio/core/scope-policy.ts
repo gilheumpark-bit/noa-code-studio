@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Scope policy: global > workspace > module for Code Studio rule resolution.
  */

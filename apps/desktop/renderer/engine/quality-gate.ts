@@ -1,4 +1,3 @@
-// @ts-nocheck
 export function evaluateQuality(_text: string): unknown {
   return { passed: true, attempt: 1, failReasons: [] };
 }

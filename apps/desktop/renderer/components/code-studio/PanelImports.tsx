@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 // ============================================================
 // PART 1 — Dynamic Panel Imports (Existing 18 Panels)

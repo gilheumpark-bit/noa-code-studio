@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio — File System Hook
 // CRUD operations on FileNode tree, undo/redo file changes,
@@ -240,7 +239,7 @@ export function useCodeStudioFileSystem(initialTree: FileNode[] = []): UseCodeSt
 
   const load = useCallback(async () => {
     const loaded = await loadFileTree();
-    if (loaded) setTreeState(loaded);
+    if (loaded) setTreeState(loaded as FileNode[]);
   }, []);
 
   return {

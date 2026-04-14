@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // Code Studio — IndexedDB Persistence Layer
 // ============================================================
@@ -397,7 +396,7 @@ export function flattenTree(
       projectId,
       parentId,
       name: node.name,
-      type: node.type,
+      type: node.type!,
       content: node.content ?? '',
       language: node.type === 'file' ? detectLanguage(node.name) : '',
       updatedAt: Date.now(),

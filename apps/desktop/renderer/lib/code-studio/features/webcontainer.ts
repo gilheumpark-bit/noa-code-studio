@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * code-studio-webcontainer.ts
  * WebContainer wrapper with graceful simulation fallback.
@@ -47,8 +46,22 @@ export async function createWebContainer(): Promise<WebContainerInstance> {
 // PART 2 — Real WebContainer Adapter
 // ============================================================
 
+/** Internal shape of the real @webcontainer/api container returned by boot() */
+interface RawWebContainer {
+  spawn(cmd: string, args: string[]): Promise<{
+    output: ReadableStream<Uint8Array | string>;
+    exit: Promise<number>;
+  }>;
+  fs: {
+    writeFile(path: string, content: string): Promise<void>;
+    readFile(path: string): Promise<Uint8Array | string>;
+  };
+  on(event: string, cb: (...args: unknown[]) => void): void;
+  teardown?(): void;
+}
+
 async function bootRealContainer(): Promise<WebContainerInstance | null> {
-  let api: { WebContainer?: { boot: () => Promise<unknown> } };
+  let api: { WebContainer?: { boot: () => Promise<RawWebContainer> } };
   try {
     // SECURITY: dynamic import of a hardcoded module name only — no eval/new Function.
     // The module name is a constant to prevent any injection vector.
@@ -127,9 +140,9 @@ async function bootRealContainer(): Promise<WebContainerInstance | null> {
       // Wait for the server-ready event
       return new Promise<string>((resolve) => {
         const timeout = setTimeout(() => resolve(`http://localhost:${port}`), 15_000);
-        container.on("server-ready", (_p: number, url: string) => {
+        container.on("server-ready", (...args: unknown[]) => {
           clearTimeout(timeout);
-          resolve(url);
+          resolve(typeof args[1] === 'string' ? args[1] : `http://localhost:${port}`);
         });
         // Timeout fallback
         // Timeout fallback handled above

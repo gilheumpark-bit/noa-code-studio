@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * ChatPanel (code-studio) — renders chat interface
  */

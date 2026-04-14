@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Lightweight 2D force layout for DependencyGraph (desktop).
  */
@@ -39,7 +38,7 @@ export function simulateForceLayout(
   edges: ForceEdge[],
   opts: { width: number; height: number },
 ): ForceNode[] {
-  let cur = nodes.map((n) => ({ ...n, vx: n.vx ?? 0, vy: n.vy ?? 0 }));
+  let cur: ForceNode[] = nodes.map((n) => ({ ...n, vx: n.vx ?? 0, vy: n.vy ?? 0 }));
   for (let i = 0; i < 48; i++) {
     cur = tickForceLayout(cur, edges, opts);
   }

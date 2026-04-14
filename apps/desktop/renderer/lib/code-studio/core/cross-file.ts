@@ -1,4 +1,3 @@
-// @ts-nocheck
 // ============================================================
 // PART 1 — Types & Helpers
 // ============================================================
@@ -401,7 +400,7 @@ export function registerCrossFileProviders(
 
   // Definition Provider (F12)
   const defProvider = monaco.languages.registerDefinitionProvider(languages, {
-    provideDefinition: async (model, position) => {
+    provideDefinition: async (model: ITextModel, position: IPosition) => {
       const locations = await getDefinitionAtPosition(monaco, model.uri, position);
       if (locations.length === 0) return null;
 
@@ -419,7 +418,7 @@ export function registerCrossFileProviders(
 
   // Type Definition Provider
   const typeDefProvider = monaco.languages.registerTypeDefinitionProvider(languages, {
-    provideTypeDefinition: async (model, position) => {
+    provideTypeDefinition: async (model: ITextModel, position: IPosition) => {
       try {
         const client = (await getWorkerForUri(monaco, model.uri)) as TsWorkerClient;
         const offset = model.getOffsetAt(position);
@@ -448,7 +447,7 @@ export function registerCrossFileProviders(
 
   // Reference Provider (Shift+F12)
   const refProvider = monaco.languages.registerReferenceProvider(languages, {
-    provideReferences: async (model, position) => {
+    provideReferences: async (model: ITextModel, position: IPosition) => {
       return await findReferences(monaco, model.uri, position);
     },
   });
@@ -456,7 +455,7 @@ export function registerCrossFileProviders(
 
   // Implementation Provider
   const implProvider = monaco.languages.registerImplementationProvider(languages, {
-    provideImplementation: async (model, position) => {
+    provideImplementation: async (model: ITextModel, position: IPosition) => {
       return await getDefinitionAtPosition(monaco, model.uri, position);
     },
   });
@@ -464,7 +463,7 @@ export function registerCrossFileProviders(
 
   // Rename Provider (F2)
   const renameProvider = monaco.languages.registerRenameProvider(languages, {
-    provideRenameEdits: async (model, position, newName) => {
+    provideRenameEdits: async (model: ITextModel, position: IPosition, newName: string) => {
       const preview = await findRenameLocations(monaco, model.uri, position, newName);
       if (!preview) {
         return { edits: [], rejectReason: "Cannot rename this symbol." };
@@ -492,7 +491,7 @@ export function registerCrossFileProviders(
       return { edits: resourceEdits };
     },
 
-    resolveRenameLocation: async (model, position, _token) => {
+    resolveRenameLocation: async (model: ITextModel, position: IPosition, _token: import("monaco-editor").CancellationToken) => {
       try {
         const client = (await getWorkerForUri(monaco, model.uri)) as TsWorkerClient;
         const offset = model.getOffsetAt(position);

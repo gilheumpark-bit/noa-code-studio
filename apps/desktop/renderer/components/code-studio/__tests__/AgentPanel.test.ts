@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-require-imports */
 describe('AgentPanel helpers', () => {
   it('prefers high-priority agent code blocks (repair) over others when picking apply candidate', () => {

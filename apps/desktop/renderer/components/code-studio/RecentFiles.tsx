@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import { FileText, Trash2, Clock } from "lucide-react";

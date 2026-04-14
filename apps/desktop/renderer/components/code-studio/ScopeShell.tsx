@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -431,21 +430,21 @@ function ScopeShellInner() {
   useCodeStudioKeyboard({
     modalOpen: !!confirmState || showCommandPalette || showShortcuts,
     bindings: [
-      { keys: "ctrl+shift+p", handler: () => setShowCommandPalette(v => !v), description: "Command Palette" },
-      { keys: "ctrl+p", handler: () => setShowQuickOpen(v => !v), description: "Quick Open" },
-      { keys: "ctrl+s", handler: () => {
+      { id: "command-palette", keys: "ctrl+shift+p", handler: () => setShowCommandPalette(v => !v), description: "Command Palette" },
+      { id: "quick-open", keys: "ctrl+p", handler: () => setShowQuickOpen(v => !v), description: "Quick Open" },
+      { id: "save-file", keys: "ctrl+s", handler: () => {
         if (activeFileId) {
           setOpenFiles(prev => prev.map(f => f.id === activeFileId ? { ...f, isDirty: false } : f));
           fsPersist();
           toast(tcs.savedLocally, "success");
         }
       }, description: "Save File" },
-      { keys: "ctrl+shift+f", handler: () => setRightPanel(v => v === "search" ? null : "search"), description: "Search in Files" },
-      { keys: "ctrl+`", handler: () => setShowTerminal(v => !v), description: "Toggle Terminal" },
-      { keys: "ctrl+n", handler: () => setShowNewFile(true), description: "New File" },
-      { keys: "alt+n", handler: () => setShowNewFile(true), description: "New File (Alt)" },
-      { keys: "ctrl+=", handler: () => setSettings(s => ({ ...s, fontSize: Math.min(24, s.fontSize + 1) })), description: "Zoom In" },
-      { keys: "ctrl+-", handler: () => setSettings(s => ({ ...s, fontSize: Math.max(10, s.fontSize - 1) })), description: "Zoom Out" },
+      { id: "search-in-files", keys: "ctrl+shift+f", handler: () => setRightPanel(v => v === "search" ? null : "search"), description: "Search in Files" },
+      { id: "toggle-terminal", keys: "ctrl+`", handler: () => setShowTerminal(v => !v), description: "Toggle Terminal" },
+      { id: "new-file", keys: "ctrl+n", handler: () => setShowNewFile(true), description: "New File" },
+      { id: "new-file-alt", keys: "alt+n", handler: () => setShowNewFile(true), description: "New File (Alt)" },
+      { id: "zoom-in", keys: "ctrl+=", handler: () => setSettings(s => ({ ...s, fontSize: Math.min(24, s.fontSize + 1) })), description: "Zoom In" },
+      { id: "zoom-out", keys: "ctrl+-", handler: () => setSettings(s => ({ ...s, fontSize: Math.max(10, s.fontSize - 1) })), description: "Zoom Out" },
     ],
   });
 
@@ -472,7 +471,7 @@ function ScopeShellInner() {
     (async () => {
       try {
         const [, savedSettings] = await Promise.all([fsLoad(), loadSettings()]);
-        if (!cancelled && savedSettings) setSettings(savedSettings);
+        if (!cancelled && savedSettings) setSettings(savedSettings as CodeStudioSettings);
       } catch (e) {
          
         logger.error("code-studio", "initial load failed", e);
@@ -496,7 +495,7 @@ function ScopeShellInner() {
   // Auto-save settings
   useEffect(() => {
     if (!loaded) return;
-    saveSettings(settings);
+    saveSettings(settings as Parameters<typeof saveSettings>[0]);
   }, [settings, loaded]);
 
   // Session state persistence
@@ -1088,9 +1087,9 @@ function ScopeShellInner() {
                   setMobileEditorSurfaceMenu(pos);
                 });
                 ed.onDidDispose(() => ctxSub.dispose());
-                import("@/lib/code-studio/editor/monaco-setup").then(({ setupMonaco }) => setupMonaco(monaco as unknown, editor, { theme: "dark" }));
-                import("@/lib/code-studio/editor/editor-features").then(({ registerEditorFeatures }) => registerEditorFeatures(monaco as unknown, editor));
-                import("@/lib/code-studio/ai/ghost").then(({ registerGhostTextProvider }) => registerGhostTextProvider(monaco as unknown));
+                import("@/lib/code-studio/editor/monaco-setup").then(({ setupMonaco }) => setupMonaco(monaco as typeof import("monaco-editor"), editor, { theme: "dark" }));
+                import("@/lib/code-studio/editor/editor-features").then(({ registerEditorFeatures }) => registerEditorFeatures(monaco as typeof import("monaco-editor"), editor));
+                import("@/lib/code-studio/ai/ghost").then(({ registerGhostTextProvider }) => registerGhostTextProvider(monaco as typeof import("monaco-editor")));
               }}
             />
           ) : !loaded ? (
@@ -1379,7 +1378,6 @@ function ScopeShellInner() {
             role="dialog"
             aria-modal="true"
           >
-            {/* @ts-expect-error missing onClose in props */}
             <PI.APIKeyConfigComponent onClose={() => setRightPanel(null)} />
           </div>
         )}
@@ -1393,8 +1391,6 @@ function ScopeShellInner() {
             aria-modal="true"
           >
             <PI.SettingsPanelComponent
-              settings={settings}
-              onChange={setSettings}
               onClose={() => setShowSettings(false)}
             />
           </div>

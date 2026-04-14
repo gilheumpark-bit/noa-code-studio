@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -28,14 +27,18 @@ import type { FileNode } from "@noa/quill-engine/types";
 
 interface Props {
   activeFileContent?: string;
+  _activeFileContent?: string;
   activeFileName?: string;
   activeFileLanguage?: string;
   allFileNames?: string[];
-  tree?: FileNode[]; 
+  _allFileNames?: string[];
+  tree?: FileNode[];
   onApplyCode?: (code: string, fileName?: string) => void;
   onInsertCode?: (code: string) => void;
   onTerminalCommand?: (command: string, terminalId?: number | null) => void;
+  _onTerminalCommand?: (command: string, terminalId?: number | null) => void;
   onFileAction?: (action: string, params: Record<string, string>) => void;
+  _onFileAction?: (action: string, params: Record<string, string>) => void;
   onOpenSettings?: () => void;
 }
 
@@ -242,7 +245,7 @@ ${mcpToolsDoc}`;
     const fileList = allFileNamesFromTree.length > 0 ? allFileNamesFromTree : (_allFileNames ?? []);
     if (!mentionQuery) return fileList.slice(0, 20);
     const q = mentionQuery.toLowerCase();
-    return fileList.filter((f) => f.toLowerCase().includes(q)).slice(0, 20);
+    return fileList.filter((f: string) => f.toLowerCase().includes(q)).slice(0, 20);
   }, [allFileNamesFromTree, _allFileNames, mentionQuery]);
 
   const handleMentionSelect = useCallback((mention: string) => {
@@ -312,7 +315,7 @@ ${mcpToolsDoc}`;
                 ? { 't1-auditor': '코드 리뷰', 't2-composer': '코드 작성', 't3-patcher': '버그 수정', 't4-predictor': '자동완성' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
                 : { 't1-auditor': 'Code Review', 't2-composer': 'Code Writer', 't3-patcher': 'Bug Fixer', 't4-predictor': 'Autocomplete' }[activeTier] ?? TIER_REGISTRY[activeTier].role.replace('_', ' ')
               }
-              {stressLevel > 0.6 && <Zap size={10} className="text-accent-red animate-pulse" title="High Stress Tuned" />}
+              {stressLevel > 0.6 && <Zap size={10} className="text-accent-red animate-pulse" aria-label="High Stress Tuned" />}
             </span>
           </button>
 
@@ -533,7 +536,7 @@ ${mcpToolsDoc}`;
             <div className="px-4 py-2 sticky top-0 bg-bg-secondary/90 backdrop-blur-md text-[10px] font-bold text-text-tertiary uppercase tracking-widest border-b border-border/30 mb-1">
               {L4(lang, { ko: '파일 컨텍스트', en: 'File Context' })}
             </div>
-            {filteredFiles.map((f) => (
+            {filteredFiles.map((f: string) => (
               <button 
                 key={f} 
                 onClick={() => handleMentionSelect(`@${f}`)}

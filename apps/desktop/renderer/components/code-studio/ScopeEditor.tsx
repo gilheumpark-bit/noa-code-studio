@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -100,6 +99,13 @@ export interface ScopeEditorProps {
 
   // Command palette
   onShowCommandPalette: () => void;
+
+  /** @deprecated alias — use onCloseMultiKey */
+  _onCloseMultiKey?: () => void;
+  /** @deprecated alias — use centerMode */
+  _centerMode?: boolean;
+  /** @deprecated alias — use onToggleCenterMode */
+  _onToggleCenterMode?: () => void;
 
   // Toolbar callbacks
   rightPanel: string | null;
@@ -283,12 +289,13 @@ export function ScopeEditor(props: ScopeEditorProps) {
           });
           ed.onDidDispose(() => ctxSub.dispose());
           
-          ed.addCommand((mon as unknown).KeyMod.CtrlCmd | (mon as unknown).KeyCode.KeyI, () => {
+          const monTyped = mon as typeof MonacoNS;
+          ed.addCommand(monTyped.KeyMod.CtrlCmd | monTyped.KeyCode.KeyI, () => {
              triggerInlineEdit(ed);
           });
 
           ed.onDidPaste((e) => {
-             processStealthClipboard(mon as Parameters<typeof processStealthClipboard>[0], ed, e.range, paneFile.language);
+             processStealthClipboard(mon as Parameters<typeof processStealthClipboard>[0], ed, e.range, paneFile.language ?? "typescript");
           });
 
           if (!isFocused) return;
@@ -345,7 +352,8 @@ export function ScopeEditor(props: ScopeEditorProps) {
     });
     
     // Register Cmd+I
-    ed.addCommand((monaco as unknown).KeyMod.CtrlCmd | (monaco as unknown).KeyCode.KeyI, () => {
+    const monacoTyped = monaco as typeof MonacoNS;
+    ed.addCommand(monacoTyped.KeyMod.CtrlCmd | monacoTyped.KeyCode.KeyI, () => {
       triggerInlineEdit(ed);
     });
 
@@ -353,7 +361,7 @@ export function ScopeEditor(props: ScopeEditorProps) {
     ed.onDidPaste((e) => {
        const currFile = files.find(f => f.id === activeFileId);
        if (currFile) {
-          processStealthClipboard(monaco as Parameters<typeof processStealthClipboard>[0], ed, e.range, currFile.language);
+          processStealthClipboard(monaco as Parameters<typeof processStealthClipboard>[0], ed, e.range, currFile.language ?? "typescript");
        } else {
           processStealthClipboard(monaco as Parameters<typeof processStealthClipboard>[0], ed, e.range, "typescript");
        }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 // ============================================================
@@ -12,7 +11,7 @@ import React, { Component, ComponentType, ErrorInfo } from 'react';
 import { logger } from '@/lib/logger';
 import Link from 'next/link';
 import { L4 } from '@/lib/i18n';
-import type { AppLanguage } from '@/lib/studio-types';
+import type { AppLanguage } from '@/types/i18n';
 import { AlertTriangle, RotateCcw, ClipboardCopy } from 'lucide-react';
 
 export type ErrorBoundaryVariant = 'full-page' | 'section' | 'panel';

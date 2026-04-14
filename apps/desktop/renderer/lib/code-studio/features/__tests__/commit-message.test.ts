@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for commit-message — generateCommitMessage, formatConventionalCommit
  */

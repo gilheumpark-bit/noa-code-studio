@@ -61,6 +61,11 @@
       "import": "./src/autofix-policy.ts",
       "types": "./src/autofix-policy.ts"
     },
+    "./patent-scanner": {
+      "require": "./src/patent-scanner.ts",
+      "import": "./src/patent-scanner.ts",
+      "types": "./src/patent-scanner.ts"
+    },
     "./types": {
       "require": "./src/types.ts",
       "import": "./src/types.ts",

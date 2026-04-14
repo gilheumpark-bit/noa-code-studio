@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * hooks-coverage.test.tsx
  * Comprehensive hook coverage tests for:
@@ -342,6 +341,7 @@ describe('useCodeStudioKeyboard', () => {
 
     act(() => {
       result.current.register({
+        id: 'editor.save',
         keys: 'ctrl+s',
         handler: jest.fn(),
         description: 'Save',
@@ -355,9 +355,9 @@ describe('useCodeStudioKeyboard', () => {
 
   it('handler is invoked on matching keydown event', () => {
     const handler = jest.fn();
-    const { _result } = renderHook(() =>
+    const { result: _result } = renderHook(() =>
       useCodeStudioKeyboard({
-        bindings: [{ keys: 'ctrl+k', handler, description: 'test' }],
+        bindings: [{ id: 'test.ctrlk', keys: 'ctrl+k', handler, description: 'test' }],
       }),
     );
 
@@ -375,8 +375,8 @@ describe('useCodeStudioKeyboard', () => {
     const { result } = renderHook(() => useCodeStudioKeyboard());
 
     act(() => {
-      result.current.register({ keys: 'f1', handler: jest.fn(), description: 'Help' });
-      result.current.register({ keys: 'f2', handler: jest.fn(), description: 'Debug' });
+      result.current.register({ id: 'general.help', keys: 'f1', handler: jest.fn(), description: 'Help' });
+      result.current.register({ id: 'general.debug', keys: 'f2', handler: jest.fn(), description: 'Debug' });
     });
 
     expect(result.current.getBindings()).toHaveLength(2);

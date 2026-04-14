@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Deep tests for feature modules:
  * 1. collaboration.ts — CRDTDocument (8 tests)

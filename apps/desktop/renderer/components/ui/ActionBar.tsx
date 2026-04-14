@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -84,6 +83,7 @@ export function ActionBar({
   }, [content, title, shareType, handleCopy]);
 
   const handlePrint = useCallback(async () => {
+    if (!printElementId) return;
     const { printContent } = await import('@/lib/web-features');
     printContent(printElementId);
   }, [printElementId]);
@@ -91,7 +91,8 @@ export function ActionBar({
   const handleDeepLink = useCallback(async () => {
     if (!deepLink) return;
     const { copyDeepLink } = await import('@/lib/web-features');
-    await copyDeepLink(deepLink);
+    const linkPath = `#${deepLink.type}-${deepLink.index}`;
+    await copyDeepLink(linkPath);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [deepLink]);

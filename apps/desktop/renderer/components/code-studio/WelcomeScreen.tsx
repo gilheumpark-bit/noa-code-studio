@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 // ============================================================
@@ -45,7 +44,7 @@ export default function WelcomeScreen({
   const { lang } = useLang();
   const langKey = ((lang ?? "ko").toString().toUpperCase() as AppLanguage);
   const t =
-    (TRANSLATIONS[langKey]?.codeStudio as Record<string, string>) ??
+    (TRANSLATIONS[langKey]?.codeStudio as unknown as Record<string, string>) ??
     ({
       title: "EH Code Studio",
       subtitle: L4(lang, { ko: "에이전틱 코딩 엔진", en: "Agentic coding engine" }),

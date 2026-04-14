@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Token estimation & message truncation for AI chat routing.
  * Consumed by lib/ai-providers.ts — do not import ai-providers here (cycle).

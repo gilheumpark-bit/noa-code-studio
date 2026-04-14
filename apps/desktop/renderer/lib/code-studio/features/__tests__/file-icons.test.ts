@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Unit tests for file-icons — getFileIcon, getFolderIcon, isImageFile, isBinaryFile
  */

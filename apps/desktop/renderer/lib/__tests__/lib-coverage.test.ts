@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * lib-coverage.test.ts
  * Boost test coverage for lib services:

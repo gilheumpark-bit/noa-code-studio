@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   EDITOR_SURFACE_MENU_ACTION_IDS,
   runEditorSurfaceMenuAction,
@@ -25,7 +24,7 @@ describe("editor-surface-context-menu", () => {
     const onApp = jest.fn();
 
     for (const id of EDITOR_SURFACE_MENU_ACTION_IDS) {
-      runEditorSurfaceMenuAction(editor, id, onApp);
+      runEditorSurfaceMenuAction(editor as any, id, onApp);
     }
 
     expect(runIds).toContain("editor.action.clipboardCutAction");
@@ -44,7 +43,7 @@ describe("editor-surface-context-menu", () => {
       getDomNode: () => null,
     };
     expect(() =>
-      runEditorSurfaceMenuAction(editor, "unknown-menu-id", jest.fn()),
+      runEditorSurfaceMenuAction(editor as any, "unknown-menu-id", jest.fn()),
     ).not.toThrow();
   });
 });
