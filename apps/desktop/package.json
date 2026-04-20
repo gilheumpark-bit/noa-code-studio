@@ -81,7 +81,7 @@
     "ts-loader": "^9.5.7",
     "ts-morph": "^23.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5",
+    "typescript": "^6",
     "zustand": "^5.0.12"
   },
   "build": {
