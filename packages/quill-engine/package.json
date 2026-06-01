@@ -12,7 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.29.2",
+    "@babel/runtime-corejs3": "^7.29.7",
     "@noa/shared-types": "workspace:*",
     "acorn": "^8.16.0",
     "esquery": "^1.7.0"
